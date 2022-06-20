@@ -26,45 +26,32 @@ environment:
 # dependencies can be manually updated by changing the version numbers below to
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
-dependencies:
+dependencies: #dependencias que seran usadas en tiempo de ejecucion
   flutter:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-  auto_size_text: 3.0.0
-  built_collection: 5.1.1
-  built_value: 8.1.3
-  cached_network_image: 3.1.0+1
-  flutter_datetime_picker: 1.5.1
-  font_awesome_flutter: 10.1.0
-  google_fonts: 2.2.0
-  google_sign_in: 5.2.1
-  intl: 0.17.0
-  json_path: 0.3.1
-  json_serializable: 6.1.3
-  page_transition: 2.0.4
-  rxdart: 0.26.0
-  shared_preferences: 2.0.11
-  sign_in_with_apple:
-    git:
-      url: https://github.com/asmengistu/dart_packages
-      ref: ab18d53a80e0a4bb90f1ad84f37f1b408930f28d
-      path: packages/sign_in_with_apple/sign_in_with_apple/
-  timeago: 3.1.0
-  url_launcher: 6.0.15
-
+  
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
+  rxdart: ^0.27.4 #combina streams, usado para las validaciones en los botones
+  flutter_speed_dial: ^6.0.0 #botones desplegables, aplicado en el bottomMEnuBar en el boton add
+  syncfusion_flutter_calendar: ^20.1.60 #calendario
+  flutter_colorpicker: ^1.0.3 #seleccionador de color
+  expandable: ^5.0.1 #toggle containers
+  
 
-dev_dependencies:
-  build_runner: 2.1.7
-  built_value_generator: 8.1.3
-  flutter_launcher_icons: 0.9.2
+dev_dependencies: #dependencias que seran usadas unicamente en tiempo de compilacion
 
   flutter_test:
     sdk: flutter
+
+  
+
+
+
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -85,12 +72,13 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  # assets:
-  #   - images/a_dot_burr.jpeg
+  assets:
+    - Files/Assets/LogoN.png
+    - Files/Assets/LogoB.png
   #   - images/a_dot_ham.jpeg
 
-  assets:
-    - assets/images/
+  #assets:
+
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
