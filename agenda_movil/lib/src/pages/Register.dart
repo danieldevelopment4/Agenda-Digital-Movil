@@ -16,30 +16,31 @@ class Register extends StatefulWidget {
 
 class _RegisterState extends State<Register> {
 
-  late Size size;
-  late TextStyle subTitlle;
-  late ButtonStyle buttonText;
-  late Management management;
+  late Size _size;
+  late TextStyle _subTitlle;
+  late ButtonStyle _buttonText;
+  late Management _management;
 
   @override
   Widget build(BuildContext context) {
-    size = MediaQuery.of(context).size;//dimeiones de la pantalla
-    subTitlle = TextStyle(
+    _size = MediaQuery.of(context).size;//dimeiones de la pantalla
+    _management = Provider.of(context);
+    _subTitlle = TextStyle(
       fontWeight: FontWeight.w700,
       fontSize: 22,
       color: Colors.blue[700]
     );
-    buttonText = TextButton.styleFrom(
+    _buttonText = TextButton.styleFrom(
       primary: Colors.white, //color de la letra 
       onSurface: Colors.white, //color de la letra cuando el boton esta DESACTIVADO
       backgroundColor: Colors.blue[700], 
-      minimumSize: Size(size.width*.4, 40), //tamaño minimo deo boton, con esto todos quedaran iguales
-      maximumSize: Size(size.width*.4, 40), //tamaño minimo deo boton, con esto todos quedaran iguales
+      minimumSize: Size(_size.width*.4, 40), //tamaño minimo deo boton, con esto todos quedaran iguales
+      maximumSize: Size(_size.width*.4, 40), //tamaño minimo deo boton, con esto todos quedaran iguales
       textStyle: const TextStyle(
-        fontSize: 16,
+        fontSize: 18,
       ),
     );
-    management = Provider.of(context);
+    _management = Provider.of(context);
 
     return Scaffold(
       body: Stack(
@@ -81,8 +82,6 @@ class _RegisterState extends State<Register> {
 
   Widget _register(BuildContext context){
 
-    final management = Provider.of(context);
-
     final size = MediaQuery.of(context).size;//dimeiones de la pantalla
 
     return ListView(
@@ -109,12 +108,12 @@ class _RegisterState extends State<Register> {
                 children: <Widget>[
                   Text(
                     "Se parte de nuestra comunidad",
-                    style: subTitlle,
+                    style: _subTitlle,
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 30),
                   StreamBuilder(
-                    stream: management.emailStream, 
+                    stream: _management.emailStream, 
                     builder: (BuildContext context, AsyncSnapshot<String> snapshot) {  
                       return TextField(
                         keyboardType: TextInputType.emailAddress,
@@ -125,13 +124,13 @@ class _RegisterState extends State<Register> {
                           errorStyle: const TextStyle(color: Colors.red),
                           icon: Icon(Icons.alternate_email, color: Colors.blue[700],),//icono de la izquierda
                         ),
-                        onChanged: management.changeEmail,
+                        onChanged: _management.changeEmail,
                       );
                     },
                   ),
                   const SizedBox(height: 12),
                   StreamBuilder(
-                    stream: management.passwordStream, 
+                    stream: _management.passwordStream, 
                     builder: (BuildContext context, AsyncSnapshot<String> snapshot) { 
                       return TextField(
                         enableInteractiveSelection: false,//Impide copiar cosas
@@ -142,13 +141,13 @@ class _RegisterState extends State<Register> {
                           errorStyle: const TextStyle(color: Colors.red),
                           icon: Icon(Icons.password, color: Colors.blue[700],),//icono de la izquierda
                         ),
-                        onChanged: management.changePassword,
+                        onChanged: _management.changePassword,
                       );
                     },
                   ),
                   const SizedBox(height: 12),
                   StreamBuilder(
-                    stream: management.passwordConfirmationStream, 
+                    stream: _management.passwordConfirmationStream, 
                     builder: (BuildContext context, AsyncSnapshot<String> snapshot) { 
                       return TextField(
                         enableInteractiveSelection: false,//Impide copiar cosas
@@ -159,18 +158,18 @@ class _RegisterState extends State<Register> {
                           errorStyle: const TextStyle(color: Colors.red),
                           icon: Icon(Icons.password, color: Colors.blue[700],),//icono de la izquierda
                         ),
-                        onChanged: management.changePasswordConfirmation,
+                        onChanged: _management.changePasswordConfirmation,
                       );
                     },
                   ),
                   const SizedBox(height: 30),
                   StreamBuilder(
-                    stream: management.buttonRegisterStream, 
+                    stream: _management.buttonRegisterStream, 
                     builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {  
                       return TextButton(
-                        onPressed: (snapshot.hasData)?(){Navigator.pushReplacementNamed(context, Home.route);}:null,
+                        onPressed: (snapshot.hasData)?(){Navigator.pushReplacementNamed(context, Home.HomeRoute);}:null,
                         child: const Text("Registrarse",),
-                        style: buttonText,
+                        style: _buttonText,
                       );
                     },
                   ),
@@ -178,7 +177,7 @@ class _RegisterState extends State<Register> {
                   TextButton(
                     onPressed: () => Navigator.pushReplacementNamed(context, Login.route),
                     child: const Text("Cancelar",),
-                    style: buttonText,
+                    style: _buttonText,
                   )
                 ],
               ),

@@ -8,28 +8,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 
 class BottomBarMenu extends StatefulWidget {
-  const BottomBarMenu({Key? key}) : super(key: key);
+  BottomBarMenu({Key? key}) : super(key: key);
 
   @override
   _BottomBarMenuState createState() => _BottomBarMenuState();
+  
 }
 
 class _BottomBarMenuState extends State<BottomBarMenu> {
 
-  late Management management;
-  int _currentIndex = 0;
+  late Management _management;
 
-  setBottomBarIndex(int index) {
-    _currentIndex = index;
-    management.setIndex=index;
-    setState(() {});
-  }
-
-  @override
+   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
-    management = Provider.of(context);
-    _currentIndex = management.getIndex;
+    _management = Provider.of(context);
     
     return Stack(
       children: [
@@ -48,17 +41,26 @@ class _BottomBarMenuState extends State<BottomBarMenu> {
               SpeedDialChild(
                 label: "Agregar Docente",
                 child: const Icon(Icons.account_circle),
-                onTap: () => Navigator.pushReplacementNamed(context, CreateTeacher.route)
+                onTap: (){
+                  Navigator.pushReplacementNamed(context, CreateTeacher.route);
+                   _management.setIndex = -1;
+                }
               ),
               SpeedDialChild(
                 label: "Agregar Actividad",
                 child: const Icon(Icons.local_activity),
-                onTap: () => Navigator.pushReplacementNamed(context, CreateActivity.route)
+                onTap: (){
+                  Navigator.pushReplacementNamed(context, CreateActivity.route);
+                  _management.setIndex = -1;
+                }
               ),
               SpeedDialChild(
                 label: "Agregar Materia",
                 child: const Icon(Icons.subject),
-                onTap: () => Navigator.pushReplacementNamed(context, CreateSubject.route)
+                onTap: (){
+                  Navigator.pushReplacementNamed(context, CreateSubject.route);
+                  _management.setIndex = -1;
+                }
               ),
             ],
           ),
@@ -73,11 +75,11 @@ class _BottomBarMenuState extends State<BottomBarMenu> {
                 icon: Icon(
                   Icons.home,
                   size: 40,
-                  color: _currentIndex == 0 ? Colors.blue[700] : Colors.grey,
+                  color: _management.getIndex == 0 ? Colors.blue[700] : Colors.grey,
                 ),
                 onPressed: () {
-                  setBottomBarIndex(0);
-                  Navigator.pushReplacementNamed(context, Home.route);
+                  _management.setIndex=0;
+                  Navigator.pushReplacementNamed(context, Home.HomeRoute);
                 },
                 splashColor: Colors.white,
               ),
@@ -85,14 +87,16 @@ class _BottomBarMenuState extends State<BottomBarMenu> {
                 width: size.width * 0.20,
               ),
               IconButton(
-                  icon: Icon(
-                    Icons.calendar_month,
-                    size: 40,
-                    color: _currentIndex == 2 ? Colors.blue[700] : Colors.grey,
-                  ),
-                  onPressed: () {
-                    setBottomBarIndex(2);
-                  }),
+                icon: Icon(
+                  Icons.calendar_month,
+                  size: 40,
+                  color:  _management.getIndex == 1 ? Colors.blue[700] : Colors.grey,
+                ),
+                onPressed: () {
+                  _management.setIndex=1;
+                  Navigator.pushReplacementNamed(context, Home.CalendarRoute);
+                }
+              ),
             ],
           ),
         )

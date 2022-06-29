@@ -27,22 +27,10 @@ class _CreateActivityState extends State<CreateActivity> {
           "Agenda Digital",
           style: _appBarTitlle
         ),
-        leading: Builder(
-          builder: (BuildContext context) {
-            return IconButton(
-              icon: const Icon(Icons.settings),
-              iconSize: 30,
-              onPressed: () {
-                Scaffold.of(context).openDrawer();
-              },
-              tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
-            );
-          },
-        )
       ),
-      drawer: const Menu(),
-      bottomNavigationBar: const BottomBarMenu(),
-     body: Center(child: Text("Actividades"))
+      drawer: Menu(),
+      bottomNavigationBar: BottomBarMenu(),
+     body: const Center(child: Text("Actividades"))
     );
   }
 }

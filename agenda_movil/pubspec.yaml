@@ -41,6 +41,8 @@ dependencies: #dependencias que seran usadas en tiempo de ejecucion
   syncfusion_flutter_calendar: ^20.1.60 #calendario
   flutter_colorpicker: ^1.0.3 #seleccionador de color
   expandable: ^5.0.1 #toggle containers
+  percent_indicator: ^4.2.2 #progressBar
+  flutter_rating_bar: ^4.0.1 #Rating progressBar ✦✦✦✧✧
   
 
 dev_dependencies: #dependencias que seran usadas unicamente en tiempo de compilacion
@@ -75,6 +77,7 @@ flutter:
   assets:
     - Files/Assets/LogoN.png
     - Files/Assets/LogoB.png
+    - Files/Assets/menuHeader.jpg
   #   - images/a_dot_ham.jpeg
 
   #assets:

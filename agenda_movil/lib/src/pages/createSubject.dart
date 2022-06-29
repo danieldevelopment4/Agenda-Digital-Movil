@@ -2,6 +2,7 @@ import 'package:agenda_movil/src/Logic/Management.dart';
 import 'package:agenda_movil/src/Logic/Provider.dart';
 import 'package:agenda_movil/src/Widget/BottomBarMenu.dart';
 import 'package:agenda_movil/src/Widget/Menu.dart';
+import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 
@@ -16,11 +17,16 @@ class CreateSubject extends StatefulWidget {
 
 class _CreateSubjectState extends State<CreateSubject> {
 
+  late Size _size;
   late TextStyle _appBarTitlle;
   late TextStyle _subTitlle;
   late TextStyle _text;
+  late TextStyle _cardText;
+  late TextStyle _cardSubText;
   late Management _management;
   late Color _color;
+  late ButtonStyle _colorButton;
+  late ButtonStyle _sendButton;
 
   @override
   void initState() {
@@ -29,6 +35,8 @@ class _CreateSubjectState extends State<CreateSubject> {
   
   @override
   Widget build(BuildContext context) {
+    
+    _size = MediaQuery.of(context).size;//dimeiones de la pantalla
     _management = Provider.of(context);
     _appBarTitlle = const TextStyle(
       fontSize: 30,
@@ -40,31 +48,42 @@ class _CreateSubjectState extends State<CreateSubject> {
     _text = const TextStyle(
       fontSize: 20,
     );
+    _cardText = const TextStyle(
+      fontWeight: FontWeight.bold,
+      fontSize: 20,
+    );
+    _cardSubText = const TextStyle(
+      fontSize: 18,
+    );
+    _colorButton = TextButton.styleFrom(
+      backgroundColor: _color, 
+      minimumSize: const Size(65, 38), //tamaño minimo deo boton, con esto todos quedaran iguales
+      maximumSize: const Size(65, 38), //tamaño minimo deo boton, con esto todos quedaran iguales
+      shape: const StadiumBorder()
+    );
+    _sendButton = TextButton.styleFrom(
+      primary: Colors.white, //color de la letra 
+      onSurface: Colors.white, //color de la letra cuando el boton esta DESACTIVADO
+      backgroundColor: Colors.blue[700], 
+      minimumSize: Size(_size.width*.9, 40), //tamaño minimo deo boton, con esto todos quedaran iguales
+      maximumSize: Size(_size.width*.9, 40), //tamaño minimo deo boton, con esto todos quedaran iguales
+      textStyle: const TextStyle(
+        fontSize: 18,
+      ),
+    );
 
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blue[700],
         title: Text(
           "Agenda Digital",
-          style: _appBarTitlle
+          style: _subTitlle
         ),
-        leading: Builder(
-          builder: (BuildContext context) {
-            return IconButton(
-              icon: const Icon(Icons.settings),
-              iconSize: 30,
-              onPressed: () {
-                Scaffold.of(context).openDrawer();
-              },
-              tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
-            );
-          },
-        )
       ),
-      drawer: const Menu(),
-      bottomNavigationBar: const BottomBarMenu(),
+      drawer: Menu(),
+      bottomNavigationBar: BottomBarMenu(),
       body: Container(
-        padding: const EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 5),
+        padding: const EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
         child: Column(
           children: <Widget>[
             Text(
@@ -77,7 +96,9 @@ class _CreateSubjectState extends State<CreateSubject> {
               "Registrar nueva materia",
               style: _subTitlle,
             ),
-            _registerSubsect(context)
+            _registerSubsect(context),
+            _sendRegister(),
+            const SizedBox(height: 10,)
           ],
         ),
       ),
@@ -92,12 +113,12 @@ class _CreateSubjectState extends State<CreateSubject> {
             stream: _management.subjectIdStream, 
             builder: (BuildContext context, AsyncSnapshot<String> snapshot) { 
               return TextField(
+                style: _cardSubText,
                 decoration: InputDecoration(
                   label: const Text("ID"), 
                   errorText: (snapshot.error.toString()!="null")?snapshot.error.toString():null,
                   errorStyle: const TextStyle(color: Colors.red),
-                  // icon: Icon(Icons.code, color: Colors.blue[700],),//icono de la izquierda
-                  counterText: snapshot.data,
+                  labelStyle: _cardSubText
                 ),
                 onChanged: _management.changeSubjectId,
               );
@@ -108,7 +129,7 @@ class _CreateSubjectState extends State<CreateSubject> {
           stream: _management.subjectIdStream, 
           builder: (BuildContext context, AsyncSnapshot<String> snapshot) { 
             return TextButton(
-              onPressed: (snapshot.hasData)?(){}:null,
+              onPressed: (snapshot.hasData)?(){print("buscarIDMateria");}:null,
               child: const Icon(Icons.search, color: Colors.white, size: 30,),
               style: TextButton.styleFrom(
                 backgroundColor: Colors.blue[700], 
@@ -125,17 +146,16 @@ class _CreateSubjectState extends State<CreateSubject> {
       child: ListView(
         children: <Widget>[
           StreamBuilder(
-            stream: _management.subjectIdStream, 
+            stream: _management.subjectNameStream, 
             builder: (BuildContext context, AsyncSnapshot<String> snapshot) { 
               return TextField(
+                style: _cardSubText,
                 decoration: InputDecoration(
                   label: const Text("Nombre asignatura"), 
                   errorText: (snapshot.error.toString()!="null")?snapshot.error.toString():null,
                   errorStyle: const TextStyle(color: Colors.red),
-                  // icon: Icon(Icons.code, color: Colors.blue[700],),//icono de la izquierda
-                  counterText: snapshot.data,
                 ),
-                onChanged: _management.changeSubjectId,
+                onChanged: _management.changeSubjectName,
               );
             },
           ),
@@ -148,12 +168,7 @@ class _CreateSubjectState extends State<CreateSubject> {
               ),
               TextButton(
                 child: const Text(""),
-                style: TextButton.styleFrom(
-                  backgroundColor: _color, 
-                  minimumSize: const Size(60, 40), //tamaño minimo deo boton, con esto todos quedaran iguales
-                  maximumSize: const Size(60, 40), //tamaño minimo deo boton, con esto todos quedaran iguales
-                  shape: StadiumBorder()
-                ),
+                style: _colorButton,
                 onPressed: (){
                   showDialog(
                     context: context,
@@ -164,9 +179,10 @@ class _CreateSubjectState extends State<CreateSubject> {
                   );
                 } ,
               ),
-                
             ],
-          )
+          ),
+          _expandableTeacher(),
+          _expandableSchedule(),
         ],
       ),
     );
@@ -194,6 +210,108 @@ class _CreateSubjectState extends State<CreateSubject> {
           },
         ),
       ],
+    );
+  }
+
+  Widget _expandableTeacher(){
+
+    Container expandable = Container(
+      padding: const EdgeInsets.all(10),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Row(
+            children: [
+              Expanded(
+                child: StreamBuilder(
+                  stream: _management.subjectNameStream, 
+                  builder: (BuildContext context, AsyncSnapshot<String> snapshot) { 
+                    return TextField(
+                      style: _cardSubText,
+                      decoration: InputDecoration(
+                        label: const Text("ID del docente"), 
+                        errorText: (snapshot.error.toString()!="null")?snapshot.error.toString():null,
+                        errorStyle: const TextStyle(color: Colors.red),
+                      ),
+                      onChanged: _management.changeSubjectName,
+                    );
+                  },
+                ),
+              ),
+              StreamBuilder(
+                stream: _management.subjectIdStream, 
+                builder: (BuildContext context, AsyncSnapshot<String> snapshot) { 
+                  return TextButton(
+                    onPressed: (snapshot.hasData)?(){print("ID docente");}:null,
+                    child: const Icon(Icons.search, color: Colors.white, size: 30,),
+                    style: TextButton.styleFrom(
+                      backgroundColor: Colors.blue[700], 
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
+          Text(
+            "Nombre:",
+            style: _cardSubText
+          ),
+          Text(
+            "Correo:",
+            style: _cardSubText
+          ),
+          Text(
+            "Celular:",
+            style: _cardSubText
+          )
+        ],
+      ),
+    );
+
+    return Card(
+      child: ExpandablePanel(
+        header: Text(
+          "Docente",
+          style: _cardText
+        ),
+        collapsed: Text(
+          "NO asignado",
+          style: _cardSubText
+        ),
+        expanded: expandable
+      ),
+    );
+  }
+
+  Widget _expandableSchedule(){
+
+    Container expandable = Container();
+
+    return Card(
+      child: ExpandablePanel(
+        header: Text(
+          "Horario",
+          style: _cardText
+        ),
+        collapsed: Text(
+          "NO asignado",
+          style: _cardSubText
+        ),
+        expanded: expandable
+      ),
+    );
+  }
+
+  Widget _sendRegister(){
+    return StreamBuilder(
+      stream: _management.buttonRegisterStream, 
+      builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {  
+        return TextButton(
+          onPressed: (snapshot.hasData)?(){print("Registrar materia");}:null,
+          child: const Text("Registrar Materia",),
+          style: _sendButton,
+        );
+      },
     );
   }
 }
