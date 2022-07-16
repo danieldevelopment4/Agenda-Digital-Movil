@@ -43,16 +43,13 @@ dependencies: #dependencias que seran usadas en tiempo de ejecucion
   expandable: ^5.0.1 #toggle containers
   percent_indicator: ^4.2.2 #progressBar
   flutter_rating_bar: ^4.0.1 #Rating progressBar ✦✦✦✧✧
-  
+  http: ^0.13.4 #consumo de api rest
+  shared_preferences: ^2.0.15 #persistencia
 
 dev_dependencies: #dependencias que seran usadas unicamente en tiempo de compilacion
 
   flutter_test:
     sdk: flutter
-
-  
-
-
 
 
   # The "flutter_lints" package below contains a set of recommended lints to

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 import 'package:agenda_movil/src/pages/Error404.dart';
 import 'package:agenda_movil/src/pages/Home.dart';
-import 'package:agenda_movil/src/pages/Login.dart';
+import 'package:agenda_movil/src/pages/Loggin.dart';
 import 'package:agenda_movil/src/pages/Register.dart';
 import 'package:agenda_movil/src/pages/Subject.dart';
 import 'package:agenda_movil/src/pages/createActivity.dart';
@@ -14,7 +14,7 @@ Map<String, WidgetBuilder>getRoutes(){
   return <String,WidgetBuilder>{
     Home.HomeRoute : (BuildContext context) => Home(0),
     Home.CalendarRoute : (BuildContext context) => Home(1),
-    Login.route : (BuildContext context) => const Login(),
+    Loggin.route : (BuildContext context) => const Loggin(),
     Register.route : (BuildContext context) => const Register(),
     CreateActivity.route : (BuildContext context) => const CreateActivity(),
     CreateSubject.route : (BuildContext context) => const CreateSubject(),

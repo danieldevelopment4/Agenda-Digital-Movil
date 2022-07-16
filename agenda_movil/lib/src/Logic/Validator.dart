@@ -25,7 +25,28 @@ class Validator{
     }
   );
 
-  //subject
+  //register
+  final validateName = StreamTransformer<String,String>.fromHandlers(
+    handleData: (name, sink){
+      if(name.length>=3){
+        sink.add(name);
+      }else{
+        sink.addError("Nombre demasiado corto");
+      }
+    }
+  );
+
+  final validateLastName = StreamTransformer<String,String>.fromHandlers(
+    handleData: (name, sink){
+      if(name.length>=5){
+        sink.add(name);
+      }else{
+        sink.addError("Apellido demasiado corto");
+      }
+    }
+  );
+
+    //subject
   final validateSubjectId = StreamTransformer<String,String>.fromHandlers(
     handleData: (subjectId, sink){
       if(subjectId.length>=6){

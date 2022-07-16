@@ -1,6 +1,6 @@
 import 'package:agenda_movil/src/Logic/Management.dart';
 import 'package:agenda_movil/src/Logic/Provider.dart';
-import 'package:agenda_movil/src/pages/Login.dart';
+import 'package:agenda_movil/src/pages/Loggin.dart';
 import 'package:agenda_movil/src/pages/Rate.dart';
 import 'package:flutter/material.dart';
 
@@ -100,7 +100,7 @@ class Menu extends StatelessWidget {
               ],
             ),
             style: _buttonStyle,
-            onPressed: () => Navigator.pushNamed(context, Login.route),
+            onPressed: () => Navigator.pushNamed(context, Loggin.route),
           )
         ],
       ),

@@ -1,6 +1,6 @@
 import 'package:agenda_movil/src/Logic/Provider.dart';
 import 'package:agenda_movil/src/Routes/Routes.dart';
-import 'package:agenda_movil/src/pages/Login.dart';
+import 'package:agenda_movil/src/pages/Loggin.dart';
 import 'package:flutter/material.dart';
 
 class MyApp extends StatelessWidget {
@@ -12,7 +12,7 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: "Agenda Digital",
         debugShowCheckedModeBanner: false,
-        initialRoute: Login.route,
+        initialRoute: Loggin.route,
         routes: getRoutes(),
         onGenerateRoute: (settings){
           return MaterialPageRoute(builder: error404());

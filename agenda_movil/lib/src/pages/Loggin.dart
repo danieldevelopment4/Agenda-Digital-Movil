@@ -2,24 +2,25 @@ import 'dart:math';
 
 import 'package:agenda_movil/src/Logic/Management.dart';
 import 'package:agenda_movil/src/Logic/Provider.dart';
-import 'package:agenda_movil/src/pages/Loggin.dart';
+import 'package:agenda_movil/src/pages/Register.dart';
 import 'package:flutter/material.dart';
 
 import 'Home.dart';
 
-class Register extends StatefulWidget {
-  const Register({Key? key}) : super(key: key);
+class Loggin extends StatefulWidget {
+  const Loggin({Key? key}) : super(key: key);
 
-  static const String route = "Register";
+  static const String route = "Login";
 
   @override
-  State<Register> createState() => _RegisterState();
+  State<Loggin> createState() => _LogginState();
 }
 
-class _RegisterState extends State<Register> {
+class _LogginState extends State<Loggin> {
   late Size _size;
   late TextStyle _subTitlle;
   late ButtonStyle _buttonText;
+  late ButtonStyle _outSideButtonText;
   late TextStyle _dialogText;
   late Management _management;
   bool _passwordVisible= false;
@@ -28,29 +29,33 @@ class _RegisterState extends State<Register> {
   Widget build(BuildContext context) {
     _size = MediaQuery.of(context).size; //dimeiones de la pantalla
     _management = Provider.of(context);
-    _subTitlle = TextStyle(
-        fontWeight: FontWeight.w700, fontSize: 22, color: Colors.blue[700]);
     _dialogText = const TextStyle(
       fontSize: 24,
     );
+    _subTitlle = TextStyle(
+        fontWeight: FontWeight.w700, fontSize: 22, color: Colors.blue[700]);
     _buttonText = TextButton.styleFrom(
       primary: Colors.white, //color de la letra
-      onSurface:
-          Colors.white, //color de la letra cuando el boton esta DESACTIVADO
+      onSurface: Colors.white, //color de la letra cuando el boton esta DESACTIVADO
       backgroundColor: Colors.blue[700],
-      minimumSize: Size(_size.width * .4,
-          40), //tamaño minimo deo boton, con esto todos quedaran iguales
-      maximumSize: Size(_size.width * .4,
-          40), //tamaño minimo deo boton, con esto todos quedaran iguales
+      minimumSize: Size(_size.width * .4, 40), //tamaño minimo deo boton, con esto todos quedaran iguales
+      maximumSize: Size(_size.width * .4, 40), //tamaño minimo deo boton, con esto todos quedaran iguales
       textStyle: const TextStyle(
         fontSize: 18,
       ),
     );
-    _management = Provider.of(context);
+    _outSideButtonText = TextButton.styleFrom(
+      primary: Colors.blue[700], //color de la letra
+      onSurface:
+          Colors.blue[700], //color de la letra cuando el boton esta DESACTIVADO
+      textStyle: const TextStyle(
+        fontSize: 18,
+      ),
+    );
 
     return Scaffold(
         body: Stack(
-      children: <Widget>[_back(context), _register(context)],
+      children: [_back(context), _login(context)],
     ));
   }
 
@@ -68,7 +73,7 @@ class _RegisterState extends State<Register> {
                 begin: Alignment(0, 0),
                 end: Alignment(1, 1),
                 colors: <Color>[
-              Color.fromARGB(255, 45, 45, 232),
+              Color.fromRGBO(13, 71, 161, 1),
               Color.fromRGBO(13, 71, 161, 1)
             ])),
       ),
@@ -81,9 +86,7 @@ class _RegisterState extends State<Register> {
     ]);
   }
 
-  Widget _register(BuildContext context) {
-    final size = MediaQuery.of(context).size; //dimeiones de la pantalla
-
+  Widget _login(BuildContext context) {
     return ListView(
       children: [
         Column(children: [
@@ -92,7 +95,7 @@ class _RegisterState extends State<Register> {
             width: double.infinity,
           ),
           Container(
-            width: size.width * .85,
+            width: _size.width * .85,
             padding: const EdgeInsets.all(25),
             decoration: BoxDecoration(
                 color: Colors.white,
@@ -102,62 +105,17 @@ class _RegisterState extends State<Register> {
                       color: Colors.blue[700]!,
                       blurRadius: 20, //nivel de difuminado
                       offset: const Offset(0, 5), //posicion
-                      spreadRadius: 5 //agrandar la caja
+                      spreadRadius: 8 //agrandar la caja
                       )
                 ]),
             child: Column(
               children: <Widget>[
                 Text(
-                  "Se parte de nuestra comunidad",
+                  "Inicio de sesion",
                   style: _subTitlle,
-                  textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 30),
-                StreamBuilder(//NOMBRE
-                  stream: _management.nameStream,
-                  builder:
-                      (BuildContext context, AsyncSnapshot<String> snapshot) {
-                    return TextField(
-                      textCapitalization: TextCapitalization.sentences,
-                      decoration: InputDecoration(
-                        hintText: "Daniel",
-                        label: const Text("Nombre"),
-                        errorText: (snapshot.error.toString() != "null")
-                            ? snapshot.error.toString()
-                            : null,
-                        errorStyle: const TextStyle(color: Colors.red),
-                        icon: Icon(
-                          Icons.text_fields_sharp,
-                          color: Colors.blue[700],
-                        ), //icono de la izquierda
-                      ),
-                      onChanged: _management.changeName,
-                    );
-                  },
-                ),
-                const SizedBox(height: 12),
-                StreamBuilder(//APELLIDO
-                  stream: _management.lastNameStream,
-                  builder:
-                      (BuildContext context, AsyncSnapshot<String> snapshot) {
-                    return TextField(
-                      textCapitalization: TextCapitalization.sentences,
-                      decoration: InputDecoration(
-                        hintText: "Gomez",
-                        label: const Text("Apellido"),
-                        errorText: (snapshot.error.toString() != "null") ? snapshot.error.toString() : null,
-                        errorStyle: const TextStyle(color: Colors.red),
-                        icon: Icon(
-                          Icons.text_fields_sharp,
-                          color: Colors.blue[700],
-                        ), //icono de la izquierda
-                      ),
-                      onChanged: _management.changeLastName,
-                    );
-                  },
-                ),
-                const SizedBox(height: 12),
-                StreamBuilder(//EMAIL
+                StreamBuilder(
                   stream: _management.emailStream,
                   builder:
                       (BuildContext context, AsyncSnapshot<String> snapshot) {
@@ -170,9 +128,9 @@ class _RegisterState extends State<Register> {
                             ? snapshot.error.toString()
                             : null,
                         errorStyle: const TextStyle(color: Colors.red),
-                        icon: Icon(
+                        icon: const Icon(
                           Icons.alternate_email,
-                          color: Colors.blue[700],
+                          color: Color.fromRGBO(13, 71, 161, 1),
                         ), //icono de la izquierda
                       ),
                       onChanged: _management.changeEmail,
@@ -180,7 +138,7 @@ class _RegisterState extends State<Register> {
                   },
                 ),
                 const SizedBox(height: 12),
-                StreamBuilder(//CONTRASEÑA
+                StreamBuilder(
                   stream: _management.passwordStream,
                   builder:
                       (BuildContext context, AsyncSnapshot<String> snapshot) {
@@ -196,14 +154,14 @@ class _RegisterState extends State<Register> {
                         icon: Icon(
                           Icons.password,
                           color: Colors.blue[700],
-                        ),
+                        ), //icono de la izquierda
                         suffixIcon: IconButton(
                           icon: Icon( (_passwordVisible) ? Icons.visibility : Icons.visibility_off, color: Colors.blue[700],),
                           onPressed: () {
                             _passwordVisible = !_passwordVisible;
                             setState(() {});
                           }
-                        ), //icono de la izquierda
+                        ),
                       ),
                       onChanged: _management.changePassword,
                     );
@@ -211,13 +169,17 @@ class _RegisterState extends State<Register> {
                 ),
                 const SizedBox(height: 30),
                 StreamBuilder(
-                  stream: _management.buttonRegisterStream,
+                  stream: _management.buttonLoginStream,
                   builder:
                       (BuildContext context, AsyncSnapshot<bool> snapshot) {
                     return TextButton(
-                      onPressed: (snapshot.hasData)?(){registerRequest(context);}:null,
+                      onPressed: (snapshot.hasData)
+                          ? () {
+                              logginRequest();
+                            }
+                          : null,
                       child: const Text(
-                        "Registrarse",
+                        "Iniciar sesion",
                       ),
                       style: _buttonText,
                     );
@@ -226,9 +188,17 @@ class _RegisterState extends State<Register> {
                 const SizedBox(height: 12),
                 TextButton(
                   onPressed: () =>
-                      Navigator.pushReplacementNamed(context, Loggin.route),
+                      Navigator.pushReplacementNamed(context, Register.route),
                   child: const Text(
-                    "Cancelar",
+                    "Registrarse",
+                  ),
+                  style: _buttonText,
+                ),
+                const SizedBox(height: 12),
+                TextButton(
+                  onPressed: null,
+                  child: const Text(
+                    "Google Login",
                   ),
                   style: _buttonText,
                 )
@@ -241,41 +211,31 @@ class _RegisterState extends State<Register> {
           ),
           TextButton(
             onPressed: () {},
-            child: const Text("¿Olvido la contraseña?"),
-            style: TextButton.styleFrom(
-                primary: Colors.blue[700], //color de la letra
-                onSurface: Colors.blue[
-                    700], //color de la letra cuando el boton esta DESACTIVADO
-                minimumSize: Size(size.width * .1,
-                    40) //tamaño minimo deo boton, con esto todos quedaran iguales
-                ),
+            child: const Text("¿Olvidaste tu contraseña?"),
+            style: _outSideButtonText,
           )
         ]),
       ],
     );
   }
 
-  void registerRequest(BuildContext context) async {
+  void logginRequest() async {
     Map<String, String> body = {
-      "name": _management.name,
-      "lastName": _management.lastName,
       "email": _management.email,
       "password": _management.password
     };
-    Map<String, dynamic> response = await _management.registerRequest(body);
-    print("STATUS::" + response["status"].toString());
+    Map<String, dynamic> response = await _management.logingRequest(body);
     if (response["status"]) {
-      _showAlert( context, Icons.verified,  const Color.fromARGB(255, 133, 213, 42), const Color.fromRGBO(3, 133, 14, 1), response["message"], "Continuar", _logginSuccessful);
-      print(response["message"]);
-      //
+      Navigator.pushReplacementNamed(context, Home.HomeRoute);
     } else {
-      _showAlert( context, Icons.back_hand, const Color.fromRGBO(213, 5, 5, 1), const Color.fromRGBO(85, 2, 16, 1), response["message"], "Aceptar", _logginDeclined);
       print("ERROR");
-      print(response["message"]);
+      _showAlert(context, Icons.back_hand, const Color.fromRGBO(213, 5, 5, 1),
+          const Color.fromRGBO(85, 2, 16, 1), response["message"], "Aceptar");
     }
   }
 
-  void _showAlert(BuildContext context, IconData icon, Color color1, Color color2, String message, String textButton, Function toDo) {
+  void _showAlert(BuildContext context, IconData icon, Color color1,
+      Color color2, String message, String textButton) {
     showDialog(
         context: context,
         barrierDismissible: false,
@@ -301,16 +261,12 @@ class _RegisterState extends State<Register> {
                           height: 200,
                           width: 200,
                           decoration: BoxDecoration(
-                            borderRadius:const BorderRadius.all(Radius.circular(40)),
-                            gradient: RadialGradient(
-                              radius: 1.4,
-                              center: Alignment.topLeft,
-                              colors: <Color>[
-                                color1,
-                                color2
-                              ]
-                            )
-                          ),
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(40)),
+                              gradient: RadialGradient(
+                                  radius: 1.4,
+                                  center: Alignment.topLeft,
+                                  colors: <Color>[color1, color2])),
                         ),
                       ),
                     ),
@@ -332,7 +288,7 @@ class _RegisterState extends State<Register> {
                   style: _dialogText,
                 ),
                 TextButton(
-                    onPressed: () => toDo(context),
+                    onPressed: () => Navigator.pop(context),
                     child: Text(
                       textButton,
                       style: _dialogText,
@@ -341,15 +297,5 @@ class _RegisterState extends State<Register> {
             ),
           );
         });
-  }
-
-  void _logginSuccessful(BuildContext context) {
-    print("_logginSuccessful");
-    Navigator.pushReplacementNamed(context, Home.HomeRoute);
-  }
-
-  void _logginDeclined(BuildContext context) {
-    print("_logginDeclined");
-    Navigator.pop(context);
   }
 }
