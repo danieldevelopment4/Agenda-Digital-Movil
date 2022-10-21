@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 import 'package:agenda_movil/src/Logic/Management.dart';
 import 'package:agenda_movil/src/Logic/Provider.dart';
 import 'package:agenda_movil/src/Widget/BottomBarMenu.dart';
@@ -6,16 +8,16 @@ import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 
-class CreateSubject extends StatefulWidget {
-  const CreateSubject({Key? key}) : super(key: key);
+class CreateSubjectPage extends StatefulWidget {
+  const CreateSubjectPage({Key? key}) : super(key: key);
 
   static const String route = "CreateSubject";
 
   @override
-  State<CreateSubject> createState() => _CreateSubjectState();
+  State<CreateSubjectPage> createState() => _CreateSubjectPageState();
 }
 
-class _CreateSubjectState extends State<CreateSubject> {
+class _CreateSubjectPageState extends State<CreateSubjectPage> {
 
   late Size _size;
   late TextStyle _appBarTitlle;
@@ -110,7 +112,7 @@ class _CreateSubjectState extends State<CreateSubject> {
       children: <Widget>[
         Expanded(
           child: StreamBuilder(
-            stream: _management.subjectIdStream, 
+            stream: _management.streams.subjectIdStream, 
             builder: (BuildContext context, AsyncSnapshot<String> snapshot) { 
               return TextField(
                 style: _cardSubText,
@@ -120,13 +122,13 @@ class _CreateSubjectState extends State<CreateSubject> {
                   errorStyle: const TextStyle(color: Colors.red),
                   labelStyle: _cardSubText
                 ),
-                onChanged: _management.changeSubjectId,
+                onChanged: _management.streams.changeSubjectId,
               );
             },
           ),
         ),
         StreamBuilder(
-          stream: _management.subjectIdStream, 
+          stream: _management.streams.subjectIdStream, 
           builder: (BuildContext context, AsyncSnapshot<String> snapshot) { 
             return TextButton(
               onPressed: (snapshot.hasData)?(){print("buscarIDMateria");}:null,
@@ -146,7 +148,7 @@ class _CreateSubjectState extends State<CreateSubject> {
       child: ListView(
         children: <Widget>[
           StreamBuilder(
-            stream: _management.subjectNameStream, 
+            stream: _management.streams.subjectNameStream, 
             builder: (BuildContext context, AsyncSnapshot<String> snapshot) { 
               return TextField(
                 style: _cardSubText,
@@ -155,7 +157,7 @@ class _CreateSubjectState extends State<CreateSubject> {
                   errorText: (snapshot.error.toString()!="null")?snapshot.error.toString():null,
                   errorStyle: const TextStyle(color: Colors.red),
                 ),
-                onChanged: _management.changeSubjectName,
+                onChanged: _management.streams.changeSubjectName,
               );
             },
           ),
@@ -224,7 +226,7 @@ class _CreateSubjectState extends State<CreateSubject> {
             children: [
               Expanded(
                 child: StreamBuilder(
-                  stream: _management.subjectNameStream, 
+                  stream: _management.streams.subjectNameStream, 
                   builder: (BuildContext context, AsyncSnapshot<String> snapshot) { 
                     return TextField(
                       style: _cardSubText,
@@ -233,13 +235,13 @@ class _CreateSubjectState extends State<CreateSubject> {
                         errorText: (snapshot.error.toString()!="null")?snapshot.error.toString():null,
                         errorStyle: const TextStyle(color: Colors.red),
                       ),
-                      onChanged: _management.changeSubjectName,
+                      onChanged: _management.streams.changeSubjectName,
                     );
                   },
                 ),
               ),
               StreamBuilder(
-                stream: _management.subjectIdStream, 
+                stream: _management.streams.subjectIdStream, 
                 builder: (BuildContext context, AsyncSnapshot<String> snapshot) { 
                   return TextButton(
                     onPressed: (snapshot.hasData)?(){print("ID docente");}:null,
@@ -304,7 +306,7 @@ class _CreateSubjectState extends State<CreateSubject> {
 
   Widget _sendRegister(){
     return StreamBuilder(
-      stream: _management.buttonRegisterStream, 
+      stream: _management.streams.buttonRegisterStream, 
       builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {  
         return TextButton(
           onPressed: (snapshot.hasData)?(){print("Registrar materia");}:null,

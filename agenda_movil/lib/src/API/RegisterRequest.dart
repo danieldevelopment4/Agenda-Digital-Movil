@@ -1,18 +1,15 @@
+// ignore_for_file: file_names
+
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 
 class RegisterRequest {
-  Future<Map<String, dynamic>> register(Map<String, String> body) async {
-    var url = Uri.parse(
-        "https://back-end-agenda-digital.herokuapp.com/student/register");
-    Map<String, String> header = {
-      "Accept": "application/json",
-      "content-type": "application/json"
-    };
+  Future<Map<String, dynamic>> register(String host, Map<String, String> header, Map<String, String> body) async {
+    var url = Uri.parse(host+"/student/register");
     var response = await http.post(url, body: jsonEncode(body), headers: header);
-    print('Response status: ${response.statusCode}');
-    print('Response body: ${response.body}');
+    // print('Response status: ${response.statusCode}');
+    // print('Response body: ${response.body}');
     if (response.statusCode == 200) {
       return {
         "status": true, // "OK"

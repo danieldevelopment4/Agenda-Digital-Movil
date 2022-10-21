@@ -1,7 +1,9 @@
 import 'package:agenda_movil/src/Logic/Management.dart';
 import 'package:agenda_movil/src/Logic/Provider.dart';
-import 'package:agenda_movil/src/pages/Loggin.dart';
-import 'package:agenda_movil/src/pages/Rate.dart';
+import 'package:agenda_movil/src/Model/StudentModel.dart';
+import 'package:agenda_movil/src/Persistence/Percistence.dart';
+import 'package:agenda_movil/src/pages/LogginPage.dart';
+import 'package:agenda_movil/src/pages/RatePage.dart';
 import 'package:flutter/material.dart';
 
 
@@ -15,6 +17,8 @@ class Menu extends StatelessWidget {
 
   late Management _management;
 
+  final Percistence _percistence = Percistence();
+
   @override
   Widget build(BuildContext context) {
 
@@ -22,7 +26,7 @@ class Menu extends StatelessWidget {
     _management = Provider.of(context);
 
     _headerTextStyle = const TextStyle(
-      fontSize: 35,
+      fontSize: 28,
       color: Colors.white
     );
     _buttonStyle = TextButton.styleFrom(
@@ -44,7 +48,7 @@ class Menu extends StatelessWidget {
             child: Row(
               children: <Widget>[
                 Text(
-                  "Daniel Gomez",
+                  studentFromJson(_percistence.student).name+"\n"+studentFromJson(_percistence.student).lastName,
                   style: _headerTextStyle
                 ),
                 CircleAvatar(
@@ -76,7 +80,7 @@ class Menu extends StatelessWidget {
               style: _optionsStyle,
             ),
             onTap: (){
-              Navigator.pushReplacementNamed(context, Rate.route);
+              Navigator.pushReplacementNamed(context, RatePage.route);
               _management.setIndex=-1;
             },
           ),
@@ -100,7 +104,10 @@ class Menu extends StatelessWidget {
               ],
             ),
             style: _buttonStyle,
-            onPressed: () => Navigator.pushNamed(context, Loggin.route),
+            onPressed: (){
+              _percistence.student = "";
+              Navigator.pushNamed(context, LogginPage.route);
+            },
           )
         ],
       ),

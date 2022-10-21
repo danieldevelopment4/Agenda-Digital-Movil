@@ -1,19 +1,21 @@
+// ignore_for_file: file_names
+
 import 'package:agenda_movil/src/Logic/Management.dart';
 import 'package:agenda_movil/src/Logic/Provider.dart';
 import 'package:agenda_movil/src/Widget/BottomBarMenu.dart';
 import 'package:agenda_movil/src/Widget/Menu.dart';
 import 'package:flutter/material.dart';
 
-class CreateTeacher extends StatefulWidget {
-  const CreateTeacher({Key? key}) : super(key: key);
+class CreateTeacherPage extends StatefulWidget {
+  const CreateTeacherPage({Key? key}) : super(key: key);
 
   static const String route = "CreateTeacher";
 
   @override
-  State<CreateTeacher> createState() => _CreateTeacherState();
+  State<CreateTeacherPage> createState() => _CreateTeacherPageState();
 }
 
-class _CreateTeacherState extends State<CreateTeacher> {
+class _CreateTeacherPageState extends State<CreateTeacherPage> {
 
   late Size _size;
   late Management _management;
@@ -84,7 +86,7 @@ class _CreateTeacherState extends State<CreateTeacher> {
       child: Column(
         children: <Widget>[
           StreamBuilder(
-            stream: _management.emailStream, 
+            stream: _management.streams.emailStream, 
             builder: (BuildContext context, AsyncSnapshot<String> snapshot) {  
               return TextField(
                 keyboardType: TextInputType.name,
@@ -94,13 +96,13 @@ class _CreateTeacherState extends State<CreateTeacher> {
                   errorText: (snapshot.error.toString()!="null")?snapshot.error.toString():null,
                   errorStyle: const TextStyle(color: Colors.red),
                 ),
-                onChanged: _management.changeEmail,
+                onChanged: _management.streams.changeEmail,
               );
             },
           ),
           const SizedBox(height: 12),
           StreamBuilder(
-            stream: _management.emailStream, 
+            stream: _management.streams.emailStream, 
             builder: (BuildContext context, AsyncSnapshot<String> snapshot) {  
               return TextField(
                 keyboardType: TextInputType.name,
@@ -110,13 +112,13 @@ class _CreateTeacherState extends State<CreateTeacher> {
                   errorText: (snapshot.error.toString()!="null")?snapshot.error.toString():null,
                   errorStyle: const TextStyle(color: Colors.red),
                 ),
-                onChanged: _management.changeEmail,
+                onChanged: _management.streams.changeEmail,
               );
             },
           ),
           const SizedBox(height: 12),
           StreamBuilder(
-            stream: _management.emailStream, 
+            stream: _management.streams.emailStream, 
             builder: (BuildContext context, AsyncSnapshot<String> snapshot) {  
               return TextField(
                 keyboardType: TextInputType.emailAddress,
@@ -126,13 +128,13 @@ class _CreateTeacherState extends State<CreateTeacher> {
                   errorText: (snapshot.error.toString()!="null")?snapshot.error.toString():null,
                   errorStyle: const TextStyle(color: Colors.red),
                 ),
-                onChanged: _management.changeEmail,
+                onChanged: _management.streams.changeEmail,
               );
             },
           ),
           const SizedBox(height: 12),
           StreamBuilder(
-            stream: _management.emailStream, 
+            stream: _management.streams.emailStream, 
             builder: (BuildContext context, AsyncSnapshot<String> snapshot) {  
               return TextField(
                 keyboardType: TextInputType.phone,
@@ -142,7 +144,7 @@ class _CreateTeacherState extends State<CreateTeacher> {
                   errorText: (snapshot.error.toString()!="null")?snapshot.error.toString():null,
                   errorStyle: const TextStyle(color: Colors.red),
                 ),
-                onChanged: _management.changeEmail,
+                onChanged: _management.streams.changeEmail,
               );
             },
           ),
@@ -177,7 +179,7 @@ class _CreateTeacherState extends State<CreateTeacher> {
 
   Widget _sendRegister(){
     return StreamBuilder(
-      stream: _management.buttonRegisterStream, 
+      stream: _management.streams.buttonRegisterStream, 
       builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {  
         return TextButton(
           onPressed: (snapshot.hasData)?(){print("Registrar materia");}:null,

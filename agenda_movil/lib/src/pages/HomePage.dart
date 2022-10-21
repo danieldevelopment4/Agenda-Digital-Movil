@@ -1,14 +1,21 @@
+// ignore_for_file: constant_identifier_names
+
 import 'package:agenda_movil/src/Logic/Management.dart';
 import 'package:agenda_movil/src/Logic/Provider.dart';
+import 'package:agenda_movil/src/Model/SubscriptionModel.dart';
 import 'package:agenda_movil/src/Widget/BottomBarMenu.dart';
 import 'package:agenda_movil/src/Widget/Calendar.dart';
 import 'package:agenda_movil/src/Widget/Menu.dart';
-import 'package:agenda_movil/src/pages/Subject.dart';
+import 'package:agenda_movil/src/pages/MatterPage.dart';
 import 'package:flutter/material.dart';
 
-class Home extends StatefulWidget {
+import '../Model/StudentModel.dart';
+import '../Persistence/Percistence.dart';
+import 'CreateSubjectPage.dart';
 
-  Home(int route, {Key? key}) : super(key: key){
+class HomePage extends StatefulWidget {
+
+  HomePage(int route, {Key? key}) : super(key: key){
     _route = route;
   }
 
@@ -17,15 +24,20 @@ class Home extends StatefulWidget {
   static const String CalendarRoute = "CalendarRoute";
 
   @override
-  State<Home> createState() => _HomeState();
+  State<HomePage> createState() => _HomePageState();
 }
 
-class _HomeState extends State<Home> {
+class _HomePageState extends State<HomePage> {
 
   late TextStyle _subTitlle;
+  late TextStyle _emojiText;
+  late TextStyle _dataText;
+  late ButtonStyle _buttonText;
   late Management _management;
   late Size _size;
   late PageController _pageController;
+
+  final Percistence _percistence = Percistence();
 
   @override
   void initState() {
@@ -37,6 +49,23 @@ class _HomeState extends State<Home> {
     _management = Provider.of(context);
     _subTitlle = const TextStyle(
       fontSize: 30,
+    );
+    _buttonText = TextButton.styleFrom(
+      primary: Colors.white, //color de la letra
+      onSurface: Colors.white, //color de la letra cuando el boton esta DESACTIVADO
+      backgroundColor: Colors.blue[700],
+      minimumSize: Size(_size.width * .4, 40), //tamaño minimo deo boton, con esto todos quedaran iguales
+      maximumSize: Size(_size.width * .4, 40), //tamaño minimo deo boton, con esto todos quedaran iguales
+      textStyle: const TextStyle(
+        fontSize: 18,
+      ),
+    );
+    _emojiText = TextStyle(
+      fontSize: 20,
+      color: Colors.blue[700],
+    );
+    _dataText = const TextStyle(
+      fontSize: 20,
     );
     _size = MediaQuery.of(context).size;//dimeiones de la pantalla
 
@@ -53,7 +82,12 @@ class _HomeState extends State<Home> {
         controller: _pageController,
         scrollDirection: Axis.horizontal,
         children: <Widget>[
-          _subject(),
+          FutureBuilder(
+            future: _subject(),
+            builder: (context, snapshot) {
+              
+            },
+          ),
           _calendar()
         ],
         onPageChanged: (int value){
@@ -66,27 +100,74 @@ class _HomeState extends State<Home> {
     );
   }
 
-  Widget _subject(){
-    return ListView(
-      children: <Widget>[
-        _card("Progra 3", "", 12, "Jahiro Armando Riaño", Colors.orange),
-        _card("Competencias comunicativas", "Ensayo IOT", 25, "Maria Piñeros", Colors.deepPurple),
-        _card("Calculo 4", "Correccion parcial", 12, "Alvaro Perez", Colors.red),
-        _card("Ingles VI", "", 12, "No asignado", Colors.green),
-        _card("BD2", "", 18, "Monica Duran", Colors.green),
-        _card("Metodos Numericos", "Correccion parcial", 12, "Fredy Alarcon", Colors.brown),
-        _card("Sistemas Distribuidos", "Ejercicios Edificios\nMicro Expo", 20, "Camilo Bohorques", Colors.lime),
-        
-      ],
-    );
+  Future<Widget> _subject() async{
+    Map<String, String> body = {
+      "id": studentFromJson(_percistence.student).id
+    };
+
+    Map<String, dynamic> response = await _management.subscripciptionRequest(body);
+    if(response["status"]){
+      return _subjectList();
+    }else{
+      return Center(
+        child: Column(
+          children: <Widget>[
+            Text(
+              response["emoji"],
+              style: _emojiText,
+            ),
+            Text(response["message"])
+          ],
+        )
+      );
+    }
+
   }
+
+  Widget _subjectList(){
+    List<Widget>  mattersList = List.empty(growable: true);
+
+    List<SubscriptionModel> subscriptionList = subscriptionFromJson(_percistence.subscription);
+    if(subscriptionList.length>0){
+      return ListView(
+        children: mattersList
+      );
+    }else{
+      return Center(
+        child: Column(
+          children: <Widget>[
+            Text(
+              "Parece que todavia no has inscrito ninguna materia, haz click en el boton ",
+              style: _dataText,
+            ),
+            TextButton(
+              onPressed: (){
+                Navigator.pushReplacementNamed(context, CreateSubjectPage.route);
+                _management.setIndex = -1;
+              },
+              child: const Text(
+                "👉Agregar Materia👈",
+              ),
+              style: _buttonText,
+            ),
+            Text(
+              "para registrar tu primera materia en esta maravillosa app",
+              style: _dataText,
+            ),
+          ],
+        ),
+      );
+    }
+    
+  }
+
 
   Widget _card(String subjectName, String activitys, int menbers, String teacher, Color color){
     return GestureDetector(
       onTap: () {
         print("Tap:"+subjectName);
         _management.setIndex=-1;
-        Navigator.pushReplacementNamed(context, Subject.route);
+        Navigator.pushReplacementNamed(context, MatterPage.route);
       },
       child: Container(
         margin: const EdgeInsets.all(5),

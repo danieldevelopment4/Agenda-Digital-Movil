@@ -1,9 +1,9 @@
 import 'package:agenda_movil/src/Logic/Management.dart';
 import 'package:agenda_movil/src/Logic/Provider.dart';
-import 'package:agenda_movil/src/pages/Home.dart';
-import 'package:agenda_movil/src/pages/createActivity.dart';
-import 'package:agenda_movil/src/pages/createSubject.dart';
-import 'package:agenda_movil/src/pages/createTeacher.dart';
+import 'package:agenda_movil/src/pages/HomePage.dart';
+import 'package:agenda_movil/src/pages/CreateActivityPage.dart';
+import 'package:agenda_movil/src/pages/CreateSubjectPage.dart';
+import 'package:agenda_movil/src/pages/CreateTeacherPage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 
@@ -42,7 +42,7 @@ class _BottomBarMenuState extends State<BottomBarMenu> {
                 label: "Agregar Docente",
                 child: const Icon(Icons.account_circle),
                 onTap: (){
-                  Navigator.pushReplacementNamed(context, CreateTeacher.route);
+                  Navigator.pushReplacementNamed(context, CreateTeacherPage.route);
                    _management.setIndex = -1;
                 }
               ),
@@ -50,7 +50,7 @@ class _BottomBarMenuState extends State<BottomBarMenu> {
                 label: "Agregar Actividad",
                 child: const Icon(Icons.local_activity),
                 onTap: (){
-                  Navigator.pushReplacementNamed(context, CreateActivity.route);
+                  Navigator.pushReplacementNamed(context, CreateActivityPage.route);
                   _management.setIndex = -1;
                 }
               ),
@@ -58,7 +58,7 @@ class _BottomBarMenuState extends State<BottomBarMenu> {
                 label: "Agregar Materia",
                 child: const Icon(Icons.subject),
                 onTap: (){
-                  Navigator.pushReplacementNamed(context, CreateSubject.route);
+                  Navigator.pushReplacementNamed(context, CreateSubjectPage.route);
                   _management.setIndex = -1;
                 }
               ),
@@ -79,7 +79,7 @@ class _BottomBarMenuState extends State<BottomBarMenu> {
                 ),
                 onPressed: () {
                   _management.setIndex=0;
-                  Navigator.pushReplacementNamed(context, Home.HomeRoute);
+                  Navigator.pushReplacementNamed(context, HomePage.HomeRoute);
                 },
                 splashColor: Colors.white,
               ),
@@ -94,7 +94,7 @@ class _BottomBarMenuState extends State<BottomBarMenu> {
                 ),
                 onPressed: () {
                   _management.setIndex=1;
-                  Navigator.pushReplacementNamed(context, Home.CalendarRoute);
+                  Navigator.pushReplacementNamed(context, HomePage.CalendarRoute);
                 }
               ),
             ],

@@ -1,12 +1,13 @@
+// ignore_for_file: file_names
+
 import 'package:agenda_movil/src/Widget/BottomBarMenu.dart';
 import 'package:agenda_movil/src/Widget/Menu.dart';
-import 'package:agenda_movil/src/pages/createActivity.dart';
+import 'package:agenda_movil/src/pages/CreateActivityPage.dart';
 import 'package:flutter/material.dart';
-import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
-class Subject extends StatelessWidget {
-  Subject({Key? key}) : super(key: key);
+class MatterPage extends StatelessWidget {
+  MatterPage({Key? key}) : super(key: key);
 
   static const String route = "Subject";
 
@@ -217,7 +218,7 @@ class Subject extends StatelessWidget {
 
   Widget _card(String activityName, double note, String description, String date, int remember, String percent, Color color, BuildContext context){
     return GestureDetector(
-        onDoubleTap: () => Navigator.pushReplacementNamed(context, CreateActivity.route),
+        onDoubleTap: () => Navigator.pushReplacementNamed(context, CreateActivityPage.route),
         child: Container(
         margin: const EdgeInsets.all(5),
         child: Card(

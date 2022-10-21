@@ -1,17 +1,19 @@
+// ignore_for_file: file_names
+
 import 'package:agenda_movil/src/Widget/BottomBarMenu.dart';
 import 'package:agenda_movil/src/Widget/Menu.dart';
 import 'package:flutter/material.dart';
 
-class CreateActivity extends StatefulWidget {
-  const CreateActivity({Key? key}) : super(key: key);
+class CreateActivityPage extends StatefulWidget {
+  const CreateActivityPage({Key? key}) : super(key: key);
 
   static const String route = "CreateActivity";
 
   @override
-  State<CreateActivity> createState() => _CreateActivityState();
+  State<CreateActivityPage> createState() => _CreateActivityPageState();
 }
 
-class _CreateActivityState extends State<CreateActivity> {
+class _CreateActivityPageState extends State<CreateActivityPage> {
 
   late TextStyle _appBarTitlle;
 

@@ -1,22 +1,24 @@
+// ignore_for_file: file_names
+
 import 'dart:math';
 
 import 'package:agenda_movil/src/Logic/Management.dart';
 import 'package:agenda_movil/src/Logic/Provider.dart';
-import 'package:agenda_movil/src/pages/Loggin.dart';
+import 'package:agenda_movil/src/pages/LogginPage.dart';
 import 'package:flutter/material.dart';
 
-import 'Home.dart';
+import 'HomePage.dart';
 
-class Register extends StatefulWidget {
-  const Register({Key? key}) : super(key: key);
+class RegisterPage extends StatefulWidget {
+  const RegisterPage({Key? key}) : super(key: key);
 
   static const String route = "Register";
 
   @override
-  State<Register> createState() => _RegisterState();
+  State<RegisterPage> createState() => _RegisterPageState();
 }
 
-class _RegisterState extends State<Register> {
+class _RegisterPageState extends State<RegisterPage> {
   late Size _size;
   late TextStyle _subTitlle;
   late ButtonStyle _buttonText;
@@ -114,7 +116,7 @@ class _RegisterState extends State<Register> {
                 ),
                 const SizedBox(height: 30),
                 StreamBuilder(//NOMBRE
-                  stream: _management.nameStream,
+                  stream: _management.streams.nameStream,
                   builder:
                       (BuildContext context, AsyncSnapshot<String> snapshot) {
                     return TextField(
@@ -131,13 +133,13 @@ class _RegisterState extends State<Register> {
                           color: Colors.blue[700],
                         ), //icono de la izquierda
                       ),
-                      onChanged: _management.changeName,
+                      onChanged: _management.streams.changeName,
                     );
                   },
                 ),
                 const SizedBox(height: 12),
                 StreamBuilder(//APELLIDO
-                  stream: _management.lastNameStream,
+                  stream: _management.streams.lastNameStream,
                   builder:
                       (BuildContext context, AsyncSnapshot<String> snapshot) {
                     return TextField(
@@ -152,13 +154,13 @@ class _RegisterState extends State<Register> {
                           color: Colors.blue[700],
                         ), //icono de la izquierda
                       ),
-                      onChanged: _management.changeLastName,
+                      onChanged: _management.streams.changeLastName,
                     );
                   },
                 ),
                 const SizedBox(height: 12),
                 StreamBuilder(//EMAIL
-                  stream: _management.emailStream,
+                  stream: _management.streams.emailStream,
                   builder:
                       (BuildContext context, AsyncSnapshot<String> snapshot) {
                     return TextField(
@@ -175,13 +177,13 @@ class _RegisterState extends State<Register> {
                           color: Colors.blue[700],
                         ), //icono de la izquierda
                       ),
-                      onChanged: _management.changeEmail,
+                      onChanged: _management.streams.changeEmail,
                     );
                   },
                 ),
                 const SizedBox(height: 12),
                 StreamBuilder(//CONTRASEÑA
-                  stream: _management.passwordStream,
+                  stream: _management.streams.passwordStream,
                   builder:
                       (BuildContext context, AsyncSnapshot<String> snapshot) {
                     return TextField(
@@ -205,13 +207,13 @@ class _RegisterState extends State<Register> {
                           }
                         ), //icono de la izquierda
                       ),
-                      onChanged: _management.changePassword,
+                      onChanged: _management.streams.changePassword,
                     );
                   },
                 ),
                 const SizedBox(height: 30),
                 StreamBuilder(
-                  stream: _management.buttonRegisterStream,
+                  stream: _management.streams.buttonRegisterStream,
                   builder:
                       (BuildContext context, AsyncSnapshot<bool> snapshot) {
                     return TextButton(
@@ -226,7 +228,7 @@ class _RegisterState extends State<Register> {
                 const SizedBox(height: 12),
                 TextButton(
                   onPressed: () =>
-                      Navigator.pushReplacementNamed(context, Loggin.route),
+                      Navigator.pushReplacementNamed(context, LogginPage.route),
                   child: const Text(
                     "Cancelar",
                   ),
@@ -257,21 +259,21 @@ class _RegisterState extends State<Register> {
 
   void registerRequest(BuildContext context) async {
     Map<String, String> body = {
-      "name": _management.name,
-      "lastName": _management.lastName,
-      "email": _management.email,
-      "password": _management.password
+      "name": _management.streams.name,
+      "lastName": _management.streams.lastName,
+      "email": _management.streams.email,
+      "password": _management.streams.password
     };
     Map<String, dynamic> response = await _management.registerRequest(body);
-    print("STATUS::" + response["status"].toString());
+    // print("STATUS::" + response["status"].toString());
     if (response["status"]) {
       _showAlert( context, Icons.verified,  const Color.fromARGB(255, 133, 213, 42), const Color.fromRGBO(3, 133, 14, 1), response["message"], "Continuar", _logginSuccessful);
-      print(response["message"]);
+      // print(response["message"]);
       //
     } else {
       _showAlert( context, Icons.back_hand, const Color.fromRGBO(213, 5, 5, 1), const Color.fromRGBO(85, 2, 16, 1), response["message"], "Aceptar", _logginDeclined);
-      print("ERROR");
-      print(response["message"]);
+      // print("ERROR");
+      // print(response["message"]);
     }
   }
 
@@ -344,12 +346,12 @@ class _RegisterState extends State<Register> {
   }
 
   void _logginSuccessful(BuildContext context) {
-    print("_logginSuccessful");
-    Navigator.pushReplacementNamed(context, Home.HomeRoute);
+    // print("_logginSuccessful");
+    Navigator.pushReplacementNamed(context, HomePage.HomeRoute);
   }
 
   void _logginDeclined(BuildContext context) {
-    print("_logginDeclined");
+    // print("_logginDeclined");
     Navigator.pop(context);
   }
 }
