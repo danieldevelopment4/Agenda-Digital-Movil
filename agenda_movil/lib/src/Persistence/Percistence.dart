@@ -16,7 +16,7 @@ class Percistence{
   late SharedPreferences _prefs;
 
   initPrefs() async {
-    WidgetsFlutterBinding.ensureInitialized();//evita una eception que no se por que al del video no le da :?
+    WidgetsFlutterBinding.ensureInitialized();//evita una exception que no se por que al del video no le da :?
     //slgun dia debere de entender que puercas y por que al del video no le da error, pero eso sera otro dia
     _prefs = await SharedPreferences.getInstance();
   }

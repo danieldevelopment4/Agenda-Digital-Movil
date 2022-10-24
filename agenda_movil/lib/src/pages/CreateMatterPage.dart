@@ -4,31 +4,41 @@ import 'package:agenda_movil/src/Logic/Management.dart';
 import 'package:agenda_movil/src/Logic/Provider.dart';
 import 'package:agenda_movil/src/Widget/BottomBarMenu.dart';
 import 'package:agenda_movil/src/Widget/Menu.dart';
+import 'package:elegant_notification/elegant_notification.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 
-class CreateSubjectPage extends StatefulWidget {
-  const CreateSubjectPage({Key? key}) : super(key: key);
+class CreateMatterPage extends StatefulWidget {
+  const CreateMatterPage({Key? key}) : super(key: key);
 
-  static const String route = "CreateSubject";
+  static const String route = "CreateMatter";
 
   @override
-  State<CreateSubjectPage> createState() => _CreateSubjectPageState();
+  State<CreateMatterPage> createState() => _CreateMatterPageState();
 }
 
-class _CreateSubjectPageState extends State<CreateSubjectPage> {
+class _CreateMatterPageState extends State<CreateMatterPage> {
 
   late Size _size;
+  late Management _management;
+
   late TextStyle _appBarTitlle;
+  late TextStyle _notificationTitle;
+  late TextStyle _notificationText;
   late TextStyle _subTitlle;
   late TextStyle _text;
   late TextStyle _cardText;
   late TextStyle _cardSubText;
-  late Management _management;
-  late Color _color;
   late ButtonStyle _colorButton;
   late ButtonStyle _sendButton;
+
+  late Color _color;
+  bool _searchMatterLoading = false;
+  bool _createMatterLoading = false;
+
+  TextEditingController _nameTextField = TextEditingController();
+  TextEditingController _idTextField = TextEditingController();
 
   @override
   void initState() {
@@ -42,6 +52,13 @@ class _CreateSubjectPageState extends State<CreateSubjectPage> {
     _management = Provider.of(context);
     _appBarTitlle = const TextStyle(
       fontSize: 30,
+    );
+    _notificationTitle = const TextStyle(
+      fontSize: 15,
+      fontWeight: FontWeight.bold
+    );
+    _notificationText = const TextStyle(
+      fontSize: 15,
     );
     _subTitlle = TextStyle(
       color: Colors.blue[700],
@@ -98,12 +115,20 @@ class _CreateSubjectPageState extends State<CreateSubjectPage> {
               "Registrar nueva materia",
               style: _subTitlle,
             ),
-            _registerSubsect(context),
-            _sendRegister(),
+            _registerMatter(context),
+            _sendRegister(context),
             const SizedBox(height: 10,)
           ],
         ),
       ),
+    );
+  }
+
+  Widget _loading(){
+    return const CircularProgressIndicator(
+      color: Colors.white,
+      
+      strokeWidth: 4,
     );
   }
 
@@ -112,9 +137,10 @@ class _CreateSubjectPageState extends State<CreateSubjectPage> {
       children: <Widget>[
         Expanded(
           child: StreamBuilder(
-            stream: _management.streams.subjectIdStream, 
+            stream: _management.streams.matterIdStream, 
             builder: (BuildContext context, AsyncSnapshot<String> snapshot) { 
               return TextField(
+                controller: _idTextField,
                 style: _cardSubText,
                 decoration: InputDecoration(
                   label: const Text("ID"), 
@@ -122,17 +148,17 @@ class _CreateSubjectPageState extends State<CreateSubjectPage> {
                   errorStyle: const TextStyle(color: Colors.red),
                   labelStyle: _cardSubText
                 ),
-                onChanged: _management.streams.changeSubjectId,
+                onChanged: _management.streams.changeMatterId,
               );
             },
           ),
         ),
         StreamBuilder(
-          stream: _management.streams.subjectIdStream, 
+          stream: _management.streams.matterIdStream, 
           builder: (BuildContext context, AsyncSnapshot<String> snapshot) { 
             return TextButton(
-              onPressed: (snapshot.hasData)?(){print("buscarIDMateria");}:null,
-              child: const Icon(Icons.search, color: Colors.white, size: 30,),
+              onPressed: (snapshot.hasData)?(){_serachMatterRequest();}:null,
+              child: (_searchMatterLoading)?_loading():const Icon(Icons.search, color: Colors.white, size: 30,),
               style: TextButton.styleFrom(
                 backgroundColor: Colors.blue[700], 
               ),
@@ -143,21 +169,22 @@ class _CreateSubjectPageState extends State<CreateSubjectPage> {
     );
   }
 
-  Widget _registerSubsect(BuildContext context){
+  Widget _registerMatter(BuildContext context){
     return Expanded(
       child: ListView(
         children: <Widget>[
           StreamBuilder(
-            stream: _management.streams.subjectNameStream, 
+            stream: _management.streams.matterNameStream, 
             builder: (BuildContext context, AsyncSnapshot<String> snapshot) { 
               return TextField(
+                controller: _nameTextField,
                 style: _cardSubText,
                 decoration: InputDecoration(
                   label: const Text("Nombre asignatura"), 
                   errorText: (snapshot.error.toString()!="null")?snapshot.error.toString():null,
                   errorStyle: const TextStyle(color: Colors.red),
                 ),
-                onChanged: _management.streams.changeSubjectName,
+                onChanged: _management.streams.changeMatterName,
               );
             },
           ),
@@ -226,7 +253,7 @@ class _CreateSubjectPageState extends State<CreateSubjectPage> {
             children: [
               Expanded(
                 child: StreamBuilder(
-                  stream: _management.streams.subjectNameStream, 
+                  stream: _management.streams.matterNameStream, 
                   builder: (BuildContext context, AsyncSnapshot<String> snapshot) { 
                     return TextField(
                       style: _cardSubText,
@@ -235,13 +262,13 @@ class _CreateSubjectPageState extends State<CreateSubjectPage> {
                         errorText: (snapshot.error.toString()!="null")?snapshot.error.toString():null,
                         errorStyle: const TextStyle(color: Colors.red),
                       ),
-                      onChanged: _management.streams.changeSubjectName,
+                      onChanged: _management.streams.changeMatterName,
                     );
                   },
                 ),
               ),
               StreamBuilder(
-                stream: _management.streams.subjectIdStream, 
+                stream: _management.streams.matterIdStream, 
                 builder: (BuildContext context, AsyncSnapshot<String> snapshot) { 
                   return TextButton(
                     onPressed: (snapshot.hasData)?(){print("ID docente");}:null,
@@ -304,16 +331,69 @@ class _CreateSubjectPageState extends State<CreateSubjectPage> {
     );
   }
 
-  Widget _sendRegister(){
+  Widget _sendRegister(BuildContext context){
     return StreamBuilder(
-      stream: _management.streams.buttonRegisterStream, 
-      builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {  
+      stream: _management.streams.matterNameStream, 
+      builder: (BuildContext context, AsyncSnapshot<String> snapshot) {  
         return TextButton(
-          onPressed: (snapshot.hasData)?(){print("Registrar materia");}:null,
-          child: const Text("Registrar Materia",),
+          onPressed: (snapshot.hasData)?(){_createMatterRequest(context);}:null,
+          child: (_createMatterLoading)?_loading():const Text("Registrar Materia",),
           style: _sendButton,
         );
       },
     );
   }
+
+  void _createMatterRequest(BuildContext context)async{
+    setState(() {
+      _createMatterLoading=true;
+    });
+    String rgb = _color.red.toString()+","+_color.green.toString()+","+_color.blue.toString();
+    Map<String, dynamic> response = await _management.createMatterRequest(rgb);
+    setState(() {
+      _management.streams.resetMatterName();
+      _nameTextField.text="";
+      _createMatterLoading=false;
+    });
+    _notificateRequest(response);
+  }
+
+  void _serachMatterRequest()async{
+    setState(() {
+      _searchMatterLoading=true;
+    });
+    Map<String, dynamic> response = await _management.searchMatterRequest();
+    setState(() {
+      _management.streams.resetMatterId();
+      _idTextField.text="";
+      _searchMatterLoading=false;
+    });
+    _notificateRequest(response);
+  }
+
+  void _notificateRequest(Map<String, dynamic> response){
+    if (response["status"]) {
+      _management.subscripciptionRequest();
+      ElegantNotification.success(
+        title: Text("Accion exitosa", style: _notificationTitle,),
+        description:  Text(response["message"], style: _notificationText,),
+        toastDuration: const Duration(seconds: 2, milliseconds: 500)
+      ).show(context);
+    } else {
+      if(response["type"]=="info"){
+        ElegantNotification.info(
+          title: Text("Informacion", style: _notificationTitle,),
+          description:  Text(response["message"], style: _notificationText,),
+          toastDuration: const Duration(seconds: 4),
+        ).show(context);
+      }else{
+        ElegantNotification.error(
+          title: Text("Error", style: _notificationTitle,),
+          description:  Text(response["message"], style: _notificationText,),
+          toastDuration: const Duration(seconds: 3, milliseconds: 500)
+        ).show(context);
+      }
+    }
+  }
+
 }

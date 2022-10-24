@@ -267,6 +267,8 @@ class _RegisterPageState extends State<RegisterPage> {
     Map<String, dynamic> response = await _management.registerRequest(body);
     // print("STATUS::" + response["status"].toString());
     if (response["status"]) {
+      _management.setStudent();
+      _management.subscripciptionRequest();
       _showAlert( context, Icons.verified,  const Color.fromARGB(255, 133, 213, 42), const Color.fromRGBO(3, 133, 14, 1), response["message"], "Continuar", _logginSuccessful);
       // print(response["message"]);
       //

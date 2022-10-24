@@ -9,7 +9,7 @@ import 'package:agenda_movil/src/pages/LogginPage.dart';
 import 'package:agenda_movil/src/pages/RegisterPage.dart';
 import 'package:agenda_movil/src/pages/MatterPage.dart';
 import 'package:agenda_movil/src/pages/CreateActivityPage.dart';
-import 'package:agenda_movil/src/pages/CreateSubjectPage.dart';
+import 'package:agenda_movil/src/pages/CreateMatterPage.dart';
 import 'package:agenda_movil/src/pages/CreateTeacherPage.dart';
 
 Map<String, WidgetBuilder>getRoutes(){
@@ -19,7 +19,7 @@ Map<String, WidgetBuilder>getRoutes(){
     LogginPage.route : (BuildContext context) => const LogginPage(),
     RegisterPage.route : (BuildContext context) => const RegisterPage(),
     CreateActivityPage.route : (BuildContext context) => const CreateActivityPage(),
-    CreateSubjectPage.route : (BuildContext context) => const CreateSubjectPage(),
+    CreateMatterPage.route : (BuildContext context) => const CreateMatterPage(),
     CreateTeacherPage.route : (BuildContext context) => const CreateTeacherPage(),
     MatterPage.route : (BuildContext context) => MatterPage(),
     RatePage.route : (BuildContext context) => const RatePage(),

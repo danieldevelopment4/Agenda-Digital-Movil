@@ -11,9 +11,9 @@ class Streams with Validator{
   //register
   final _nameStream = BehaviorSubject<String>();
   final _lastNameStream = BehaviorSubject<String>();
-  //subject
-  final _subjectId = BehaviorSubject<String>();
-  final _subjectName = BehaviorSubject<String>();
+  //matter
+  final _matterIdStream = BehaviorSubject<String>();
+  final _matterNameStream = BehaviorSubject<String>();
 
   //streams whit validated
   //login
@@ -24,9 +24,9 @@ class Streams with Validator{
   Stream<String> get nameStream => _nameStream.stream.transform(validateName);
   Stream<String> get lastNameStream => _lastNameStream.stream.transform(validateLastName);
   Stream<bool> get buttonRegisterStream => CombineLatestStream.combine4(nameStream, lastNameStream, emailStream, passwordStream, (n, l, e, p) =>  true); //combina 4 streams para el stream del boton cual se habilita o desabilita o desabilita segun el contenido
-  //subject
-  Stream<String> get subjectIdStream => _subjectId.stream.transform(validateSubjectId);
-  Stream<String> get subjectNameStream => _subjectName.stream.transform(validateSubjectName);
+  //matter
+  Stream<String> get matterIdStream => _matterIdStream.stream.transform(validateMatterId);
+  Stream<String> get matterNameStream => _matterNameStream.stream.transform(validateMatterName);
 
   //add data to stream
   //login
@@ -35,9 +35,9 @@ class Streams with Validator{
   //register
   Function(String) get changeName => _nameStream.sink.add;
   Function(String) get changeLastName => _lastNameStream.sink.add;
-  //subject
-  Function(String) get changeSubjectId => _subjectId.sink.add;
-  Function(String) get changeSubjectName => _subjectName.sink.add;
+  //matter
+  Function(String) get changeMatterId => _matterIdStream.sink.add;
+  Function(String) get changeMatterName => _matterNameStream.sink.add;
 
   //get lasted data on the stream
   //register
@@ -45,14 +45,28 @@ class Streams with Validator{
   String get lastName => _lastNameStream.value;
   String get email => _emailStream.value;
   String get password => _passwordStream.value;
+  //matter
+  String get matterId => _matterIdStream.value;
+  String get matterName => _matterNameStream.value;
+
+  //reset stream
+  //matter
+  void resetMatterId(){
+    _matterIdStream.sink.add("");
+    _matterIdStream.sink.addError("null");
+  }
+  void resetMatterName(){
+    _matterNameStream.sink.add("");
+    _matterNameStream.sink.addError("null");
+  }
 
   dispose() {
     _emailStream.close();
     _passwordStream.close();
     _nameStream.close();
-    _subjectName.close();
-    _subjectId.close();
-    _subjectName.close();
+    _matterNameStream.close();
+    _matterIdStream.close();
+    _matterNameStream.close();
   }
 
 }

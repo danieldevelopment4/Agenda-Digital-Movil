@@ -1,8 +1,10 @@
+// ignore_for_file: file_names
+
 import 'package:agenda_movil/src/Logic/Management.dart';
 import 'package:agenda_movil/src/Logic/Provider.dart';
 import 'package:agenda_movil/src/pages/HomePage.dart';
 import 'package:agenda_movil/src/pages/CreateActivityPage.dart';
-import 'package:agenda_movil/src/pages/CreateSubjectPage.dart';
+import 'package:agenda_movil/src/pages/CreateMatterPage.dart';
 import 'package:agenda_movil/src/pages/CreateTeacherPage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
@@ -58,7 +60,7 @@ class _BottomBarMenuState extends State<BottomBarMenu> {
                 label: "Agregar Materia",
                 child: const Icon(Icons.subject),
                 onTap: (){
-                  Navigator.pushReplacementNamed(context, CreateSubjectPage.route);
+                  Navigator.pushReplacementNamed(context, CreateMatterPage.route);
                   _management.setIndex = -1;
                 }
               ),

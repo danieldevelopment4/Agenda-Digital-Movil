@@ -49,19 +49,19 @@ class Validator{
   );
 
     //subject
-  final validateSubjectId = StreamTransformer<String,String>.fromHandlers(
+  final validateMatterId = StreamTransformer<String,String>.fromHandlers(
     handleData: (subjectId, sink){
-      if(subjectId.length>=6){
+      if(subjectId.isNotEmpty){
         sink.add(subjectId);
       }else{
-        sink.addError("El ID es demasiado corto");
+        sink.addError("Debe ingresar un ID para consultar");
       }
     }
   );
 
-  final validateSubjectName = StreamTransformer<String,String>.fromHandlers(
+  final validateMatterName = StreamTransformer<String,String>.fromHandlers(
     handleData: (subjectName, sink){
-      if(subjectName.length>=6){
+      if(subjectName.length>=3){
         sink.add(subjectName);
       }else{
         sink.addError("El nombre es demasiado corto");

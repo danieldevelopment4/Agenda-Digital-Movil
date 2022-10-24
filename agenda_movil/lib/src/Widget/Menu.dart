@@ -48,7 +48,7 @@ class Menu extends StatelessWidget {
             child: Row(
               children: <Widget>[
                 Text(
-                  studentFromJson(_percistence.student).name+"\n"+studentFromJson(_percistence.student).lastName,
+                  _management.getStudent.name+"\n"+_management.getStudent.lastName,
                   style: _headerTextStyle
                 ),
                 CircleAvatar(
@@ -106,6 +106,7 @@ class Menu extends StatelessWidget {
             style: _buttonStyle,
             onPressed: (){
               _percistence.student = "";
+              _percistence.subscription = "";
               Navigator.pushNamed(context, LogginPage.route);
             },
           )

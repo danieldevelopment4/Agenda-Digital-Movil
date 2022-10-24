@@ -2,30 +2,48 @@
 
 import 'dart:convert';
 
-Student studentFromJson(String str) => Student.fromJson(json.decode(str));
+StudentModel studentFromJson(String str) => StudentModel.fromJson(json.decode(str));
 
-String studentToJson(Student data) => json.encode(data.toJson());
+List<StudentModel> studentListFromJson(String str) => List<StudentModel>.from(json.decode(str).map((x) => StudentModel.fromJson(x)));
 
-class Student {
-    Student({
-        required this.id,
-        required this.name,
-        required this.lastName,
-    });
+String studentToJson(StudentModel data) => json.encode(data.toJson());
 
-    final String id;
-    final String name;
-    final String lastName;
+class StudentModel {
+  StudentModel(
+    {
+      this.id,
+      required this.name,
+      required this.lastName,
+    }
+  );
 
-    factory Student.fromJson(Map<String, dynamic> json) => Student(
-        id: json["id"],
-        name: json["name"],
-        lastName: json["lastName"],
-    );
+  final String? id;
+  final String name;
+  final String lastName;
 
-    Map<String, dynamic> toJson() => {
-        "id": id,
-        "name": name,
-        "lastName": lastName,
-    };
+  factory StudentModel.fromJson(Map<String, dynamic> json) => StudentModel(
+      id: json["id"],
+      name: json["name"],
+      lastName: json["lastName"],
+  );
+
+  Map<String, dynamic> toJson() => {
+      "id": id,
+      "name": name,
+      "lastName": lastName,
+  };
+
+  String? get getId{
+    return id;
+  } 
+
+  String get getName{
+    return name;
+  }
+
+  String get getLastName{
+    return lastName;
+  }   
+
+
 }

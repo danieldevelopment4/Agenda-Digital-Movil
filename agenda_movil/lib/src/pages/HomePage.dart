@@ -11,7 +11,7 @@ import 'package:flutter/material.dart';
 
 import '../Model/StudentModel.dart';
 import '../Persistence/Percistence.dart';
-import 'CreateSubjectPage.dart';
+import 'CreateMatterPage.dart';
 
 class HomePage extends StatefulWidget {
 
@@ -42,11 +42,14 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     _pageController = PageController(initialPage: widget._route);
+    
   }
 
   @override
   Widget build(BuildContext context) {
+    _size = MediaQuery.of(context).size;//dimeiones de la pantalla
     _management = Provider.of(context);
+    // _management.setSubscriptionList();
     _subTitlle = const TextStyle(
       fontSize: 30,
     );
@@ -61,13 +64,13 @@ class _HomePageState extends State<HomePage> {
       ),
     );
     _emojiText = TextStyle(
-      fontSize: 20,
+      fontSize: 40,
+      fontWeight: FontWeight.bold,
       color: Colors.blue[700],
     );
     _dataText = const TextStyle(
       fontSize: 20,
     );
-    _size = MediaQuery.of(context).size;//dimeiones de la pantalla
 
     return Scaffold(
       appBar: AppBar(
@@ -82,12 +85,7 @@ class _HomePageState extends State<HomePage> {
         controller: _pageController,
         scrollDirection: Axis.horizontal,
         children: <Widget>[
-          FutureBuilder(
-            future: _subject(),
-            builder: (context, snapshot) {
-              
-            },
-          ),
+          _matters(),
           _calendar()
         ],
         onPageChanged: (int value){
@@ -100,63 +98,44 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Future<Widget> _subject() async{
-    Map<String, String> body = {
-      "id": studentFromJson(_percistence.student).id
-    };
-
-    Map<String, dynamic> response = await _management.subscripciptionRequest(body);
-    if(response["status"]){
-      return _subjectList();
-    }else{
-      return Center(
-        child: Column(
-          children: <Widget>[
-            Text(
-              response["emoji"],
-              style: _emojiText,
-            ),
-            Text(response["message"])
-          ],
-        )
-      );
-    }
-
+  Widget _withOutMatters(){
+    return Column(
+      children: <Widget>[
+        const Expanded(child: SizedBox()),
+        Text(
+          "(⊙_⊙)？",
+          textAlign: TextAlign.center,
+          style: _emojiText
+        ),
+        const SizedBox( height: 25,),
+        Text(
+          "Parece que aun no tienes materias pero no te preocupes",
+          textAlign: TextAlign.center,
+          style: _dataText
+        ),
+        TextButton(
+          onPressed: () => {
+            Navigator.pushReplacementNamed(context, CreateMatterPage.route),
+            _management.setIndex = -1
+          },
+          child: const Text("Agregar materia"),
+          style: _buttonText,
+        ),
+        const Expanded(child: SizedBox()),
+      ],
+    );
   }
 
-  Widget _subjectList(){
+  Widget _matters(){
     List<Widget>  mattersList = List.empty(growable: true);
 
-    List<SubscriptionModel> subscriptionList = subscriptionFromJson(_percistence.subscription);
-    if(subscriptionList.length>0){
+    List<SubscriptionModel> subscriptionList = _management.getSubscriptionList;
+    if(subscriptionList.isNotEmpty){
       return ListView(
         children: mattersList
       );
     }else{
-      return Center(
-        child: Column(
-          children: <Widget>[
-            Text(
-              "Parece que todavia no has inscrito ninguna materia, haz click en el boton ",
-              style: _dataText,
-            ),
-            TextButton(
-              onPressed: (){
-                Navigator.pushReplacementNamed(context, CreateSubjectPage.route);
-                _management.setIndex = -1;
-              },
-              child: const Text(
-                "👉Agregar Materia👈",
-              ),
-              style: _buttonText,
-            ),
-            Text(
-              "para registrar tu primera materia en esta maravillosa app",
-              style: _dataText,
-            ),
-          ],
-        ),
-      );
+      return _withOutMatters();
     }
     
   }

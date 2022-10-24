@@ -218,12 +218,11 @@ class _LogginPageState extends State<LogginPage> {
   }
 
   void logginRequest() async {
-    Map<String, String> body = {
-      "email": _management.streams.email,
-      "password": _management.streams.password
-    };
-    Map<String, dynamic> response = await _management.logingRequest(body);
+    
+    Map<String, dynamic> response = await _management.logingRequest();
     if (response["status"]) {
+      _management.setStudent();
+      _management.subscripciptionRequest();
       Navigator.pushReplacementNamed(context, HomePage.HomeRoute);
     } else {
       // print("ERROR");
