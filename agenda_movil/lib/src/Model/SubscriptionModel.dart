@@ -21,8 +21,20 @@ class SubscriptionModel {
 
   factory SubscriptionModel.fromJson(Map<String, dynamic> json) => SubscriptionModel(
     id: json["id"],
-    matter: MatterModel.fromJson(json["matter"]),
+    matter: (json["request"])?MatterModel.fromHalfJson(json["matter"]):MatterModel.fromJson(json["matter"]),
     request: json["request"],
   );
+
+  int get getId{
+    return id;
+  }
+
+  MatterModel get getMatter{
+    return matter;
+  }
+
+  bool get getRequest{
+    return request;
+  }
 
 }

@@ -79,7 +79,7 @@ class Management{
   }
 
   //subscripciption
-  void subscripciptionRequest() async{
+  Future<bool> subscripciptionRequest() async{
     Map<String, dynamic> body = {
       "student":getStudent.toJson()
     };
@@ -87,6 +87,7 @@ class Management{
     if(ok){
       setSubscriptionList();  
     }
+    return ok;
   }
 
   //matter

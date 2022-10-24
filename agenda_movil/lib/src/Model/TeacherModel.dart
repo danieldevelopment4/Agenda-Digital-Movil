@@ -24,4 +24,29 @@ class TeacherModel {
     email: json["email"],
     cellphone: json["cellphone"],
   );
+
+  int get getId{
+    return id;
+  }
+
+  String get getName{
+    return name;
+  }
+
+  String get getLastName{
+    return lastName;
+  }
+
+  String get getFullName{
+    return name+" "+lastName;
+  }
+
+  String get getEmail{
+    return email;
+  }
+
+  int? get getCellPhone{
+    return cellphone;
+  }
+
 }

@@ -26,6 +26,7 @@ class _LogginPageState extends State<LogginPage> {
   late TextStyle _dialogText;
   late Management _management;
   bool _passwordVisible= false;
+  bool _load = false;
 
   @override
   Widget build(BuildContext context) {
@@ -175,9 +176,18 @@ class _LogginPageState extends State<LogginPage> {
                     stream: _management.streams.buttonLoginStream,
                     builder:(BuildContext context, AsyncSnapshot<bool> snapshot) {
                       return TextButton(
-                        onPressed: (snapshot.hasData)? () {logginRequest();}: null,
-                        child: const Text(
-                          "Iniciar sesion",
+                        onPressed: (snapshot.hasData)? () {
+                          setState(() {
+                            _load = true;
+                          });
+                          logginRequest();
+                        }: null,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            const Text("Iniciar sesion"),
+                            (_load)?_loading():const Text(""),
+                          ],
                         ),
                         style: _buttonText,
                       );
@@ -217,14 +227,24 @@ class _LogginPageState extends State<LogginPage> {
     );
   }
 
+  Widget _loading(){
+    return const CircularProgressIndicator(
+      color: Colors.white,
+      strokeWidth: 4,
+    );
+  }
+
   void logginRequest() async {
     
     Map<String, dynamic> response = await _management.logingRequest();
     if (response["status"]) {
       _management.setStudent();
-      _management.subscripciptionRequest();
+      await _management.subscripciptionRequest();
       Navigator.pushReplacementNamed(context, HomePage.HomeRoute);
     } else {
+      setState(() {
+        _load=false;
+      });
       // print("ERROR");
       _showAlert(context, Icons.back_hand, const Color.fromRGBO(213, 5, 5, 1),
           const Color.fromRGBO(85, 2, 16, 1), response["message"], "Aceptar");

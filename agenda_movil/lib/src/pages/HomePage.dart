@@ -2,6 +2,7 @@
 
 import 'package:agenda_movil/src/Logic/Management.dart';
 import 'package:agenda_movil/src/Logic/Provider.dart';
+import 'package:agenda_movil/src/Model/MatterModel.dart';
 import 'package:agenda_movil/src/Model/SubscriptionModel.dart';
 import 'package:agenda_movil/src/Widget/BottomBarMenu.dart';
 import 'package:agenda_movil/src/Widget/Calendar.dart';
@@ -9,7 +10,6 @@ import 'package:agenda_movil/src/Widget/Menu.dart';
 import 'package:agenda_movil/src/pages/MatterPage.dart';
 import 'package:flutter/material.dart';
 
-import '../Model/StudentModel.dart';
 import '../Persistence/Percistence.dart';
 import 'CreateMatterPage.dart';
 
@@ -29,15 +29,13 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
 
-  late TextStyle _subTitlle;
+  late TextStyle _appBar;
   late TextStyle _emojiText;
   late TextStyle _dataText;
   late ButtonStyle _buttonText;
   late Management _management;
   late Size _size;
   late PageController _pageController;
-
-  final Percistence _percistence = Percistence();
 
   @override
   void initState() {
@@ -50,7 +48,7 @@ class _HomePageState extends State<HomePage> {
     _size = MediaQuery.of(context).size;//dimeiones de la pantalla
     _management = Provider.of(context);
     // _management.setSubscriptionList();
-    _subTitlle = const TextStyle(
+    _appBar = const TextStyle(
       fontSize: 30,
     );
     _buttonText = TextButton.styleFrom(
@@ -77,7 +75,7 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: Colors.blue[700],
         title: Text(
           "Agenda Digital",
-          style: _subTitlle
+          style: _appBar
         ),
       ),
       drawer: Menu(),
@@ -127,10 +125,13 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _matters(){
-    List<Widget>  mattersList = List.empty(growable: true);
-
     List<SubscriptionModel> subscriptionList = _management.getSubscriptionList;
+    
     if(subscriptionList.isNotEmpty){
+      List<Widget>  mattersList = List.empty(growable: true); 
+      for(int i=0; i<subscriptionList.length; i++){
+        mattersList.add(_card(subscriptionList[i]));
+      }
       return ListView(
         children: mattersList
       );
@@ -141,48 +142,60 @@ class _HomePageState extends State<HomePage> {
   }
 
 
-  Widget _card(String subjectName, String activitys, int menbers, String teacher, Color color){
+  Widget _card(SubscriptionModel subscription){
+    MatterModel matter = subscription.getMatter;
+    List<String> rgb = matter.getRgb.split(',') ;
+    Color shadow = Color.fromRGBO(int.parse(rgb[0]), int.parse(rgb[1]), int.parse(rgb[2]), 1);
+    TextStyle titleStile = const TextStyle(
+      fontSize: 20,
+    );
+    TextStyle warningEmojiStile = const TextStyle(
+      color: Colors.red,
+      fontSize: 20,
+    );
+    String teacher = ((matter.getTeacher==null)?"Docente no asignado":"Docente: "+matter.getTeacher!.getFullName);
+    List<Widget> column = List.empty(growable: true);
+    List<Widget> row = List.empty(growable: true);
+    row.add(Text(matter.getName, style: titleStile,));
+    if(subscription.request){
+      List<Widget> waiting = List.empty(growable: true);
+      waiting.add(Text("(*^▽^*)", style: warningEmojiStile,));//(≧∇≦)ﾉ   (*^▽^*)
+      waiting.add(Text("Ya casi nos\nacepta el admin", style: warningEmojiStile, textAlign: TextAlign.center,));
+      row.add(const Expanded(child: SizedBox()));
+      row.add(Column(children: waiting,));
+    }else{
+      row.add(const Expanded(child: SizedBox()));
+      row.add(Text(matter.getStucentsCount.toString(), style: const TextStyle(color: Colors.grey),));
+      row.add(const Icon(Icons.person));
+      column.add(const Divider());
+      column.add(Text(teacher));
+    }
+    column.insert(0, ListTile(title: Row(children: row,),));
+    
+
     return GestureDetector(
       onTap: () {
-        print("Tap:"+subjectName);
+        print("Tap:"+subscription.getId.toString()+"::"+matter.getName);
         _management.setIndex=-1;
         Navigator.pushReplacementNamed(context, MatterPage.route);
       },
       child: Container(
-        margin: const EdgeInsets.all(5),
+        margin: const EdgeInsets.all(7),
         child: Card(
-          elevation: 15,//sombreado
-          shadowColor: color,
+          elevation: 35,//sombreado
+          shadowColor: shadow,
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(15))
           ),
           child: Container(
             padding: const EdgeInsets.all(7),
             child: Column(
-              children: <Widget>[
-                ListTile(
-                  title: Row(
-                  children: <Widget>[
-                    Text(subjectName),
-                    const Expanded(child: SizedBox()),
-                    Text(
-                      menbers.toString(),
-                      style: const TextStyle(color: Colors.grey),
-                    ),
-                    const Icon(Icons.person),
-                  ],
-                ),
-                  subtitle: Text(activitys),
-                ),
-                const Divider(),
-                Text("Docente: "+teacher)
-              ],
+              children: column,
             ),
           ),
         ),
       ),
     );
-
   }
 
 
@@ -217,6 +230,5 @@ class _HomePageState extends State<HomePage> {
       ],
     );
   }
-
 
 }
