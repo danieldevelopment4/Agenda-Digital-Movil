@@ -2,6 +2,7 @@
 
 import 'package:agenda_movil/src/Logic/Management.dart';
 import 'package:agenda_movil/src/Logic/Provider.dart';
+import 'package:agenda_movil/src/Model/ActivityModel.dart';
 import 'package:agenda_movil/src/Model/MatterModel.dart';
 import 'package:agenda_movil/src/Model/SubscriptionModel.dart';
 import 'package:agenda_movil/src/Widget/BottomBarMenu.dart';
@@ -10,7 +11,6 @@ import 'package:agenda_movil/src/Widget/Menu.dart';
 import 'package:agenda_movil/src/pages/MatterPage.dart';
 import 'package:flutter/material.dart';
 
-import '../Persistence/Percistence.dart';
 import 'CreateMatterPage.dart';
 
 class HomePage extends StatefulWidget {
@@ -20,6 +20,7 @@ class HomePage extends StatefulWidget {
   }
 
   late final int _route;
+  static const String TableRoute = "TableRoute";
   static const String HomeRoute = "HomeRoute";
   static const String CalendarRoute = "CalendarRoute";
 
@@ -28,14 +29,18 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  
+  late Size _size;
+  late Management _management;
 
   late TextStyle _appBar;
   late TextStyle _emojiText;
   late TextStyle _dataText;
   late ButtonStyle _buttonText;
-  late Management _management;
-  late Size _size;
+
   late PageController _pageController;
+
+  late List<SubscriptionModel> _subscriptionList;
 
   @override
   void initState() {
@@ -47,7 +52,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     _size = MediaQuery.of(context).size;//dimeiones de la pantalla
     _management = Provider.of(context);
-    // _management.setSubscriptionList();
+    _subscriptionList = _management.getSubscriptionList;
     _appBar = const TextStyle(
       fontSize: 30,
     );
@@ -83,6 +88,7 @@ class _HomePageState extends State<HomePage> {
         controller: _pageController,
         scrollDirection: Axis.horizontal,
         children: <Widget>[
+          _notes(),
           _matters(),
           _calendar()
         ],
@@ -93,6 +99,110 @@ class _HomePageState extends State<HomePage> {
       ),
       bottomNavigationBar:  BottomBarMenu(),
       
+    );
+  }
+
+  Widget _headerContainer(String text, Color color){
+    return Container(
+      // height: height,
+      margin: const EdgeInsets.all(5),
+      decoration: const BoxDecoration(
+        color: Color.fromRGBO(3, 169, 244, .7),
+        borderRadius: BorderRadius.all(Radius.circular(5)),
+      ),
+      child: Center(
+        child: Text(
+          text,
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: color
+          ),
+          textAlign: TextAlign.center,
+        )
+      ),
+    );
+  }
+
+  Widget _rowContainer(String text, Color color){
+    return Container(
+      // height: height,
+      margin: const EdgeInsets.all(5),
+      decoration: const BoxDecoration(
+        color: Color.fromRGBO(33, 150, 243, .3),
+        borderRadius: BorderRadius.all(Radius.circular(10)),
+      ),
+      child: Center(
+        child: Text(
+          text,
+          style: TextStyle(
+            fontSize: 20,
+            color: color
+          ),
+          textAlign: TextAlign.center,
+        )
+      ),
+    );
+  }
+
+  Widget _notes(){
+    
+    List<TableRow> rows = List.empty(growable: true);
+    rows.add(TableRow(
+        children: <Widget>[
+          _headerContainer("Materia", Colors.black),
+          _headerContainer("%", Colors.black),
+          _headerContainer("Nota", Colors.black),
+        ]
+      )
+    );
+    for (int i = 0; i < _subscriptionList.length; i++) {
+      int percent = 0;
+      double note = 0;
+      MatterModel matter = _subscriptionList[i].getMatter;
+      if(!_subscriptionList[i].getRequest){
+        List<ActivityModel> activitiesList = matter.getActivitiesList;
+        if (activitiesList.isNotEmpty) {
+          int term = activitiesList[activitiesList.length-1].getTerm;
+          for (var i = activitiesList.length-1; i >= 0; i--) {
+            if(term==activitiesList[i].getTerm){
+              percent+=activitiesList[i].getPercen;
+              if(activitiesList[i].getSumission!=null){
+                if (activitiesList[i].getSumission!.getNote!=null) {
+                  note += activitiesList[i].getSumission!.getNote!*activitiesList[i].getPercen;
+                }
+              }
+            }else{
+              break;
+            }
+          }
+        }
+      }
+      rows.add(TableRow(
+          children: <Widget>[
+            _rowContainer(matter.getName, Colors.black),
+            _rowContainer(percent.toString(), Colors.black),
+            _rowContainer(note.toString(), (note<3)?Colors.deepOrange:Colors.green[700]!),
+          ]
+        )
+      );
+    }
+
+
+    return Expanded(
+      child: ListView(
+        children: <Widget>[
+          Table(
+            columnWidths: const {
+              0: FlexColumnWidth(70),
+              1: FlexColumnWidth(15),
+              2: FlexColumnWidth(15)
+            },
+            children: rows,
+            defaultVerticalAlignment: TableCellVerticalAlignment.top,
+          )
+        ],
+      ),
     );
   }
 
@@ -125,12 +235,10 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _matters(){
-    List<SubscriptionModel> subscriptionList = _management.getSubscriptionList;
-    
-    if(subscriptionList.isNotEmpty){
+    if(_subscriptionList.isNotEmpty){
       List<Widget>  mattersList = List.empty(growable: true); 
-      for(int i=0; i<subscriptionList.length; i++){
-        mattersList.add(_card(subscriptionList[i]));
+      for(int i=0; i<_subscriptionList.length; i++){
+        mattersList.add(_card(_subscriptionList[i], i));
       }
       return ListView(
         children: mattersList
@@ -140,64 +248,6 @@ class _HomePageState extends State<HomePage> {
     }
     
   }
-
-
-  Widget _card(SubscriptionModel subscription){
-    MatterModel matter = subscription.getMatter;
-    List<String> rgb = matter.getRgb.split(',') ;
-    Color shadow = Color.fromRGBO(int.parse(rgb[0]), int.parse(rgb[1]), int.parse(rgb[2]), 1);
-    TextStyle titleStile = const TextStyle(
-      fontSize: 20,
-    );
-    TextStyle warningEmojiStile = const TextStyle(
-      color: Colors.red,
-      fontSize: 20,
-    );
-    String teacher = ((matter.getTeacher==null)?"Docente no asignado":"Docente: "+matter.getTeacher!.getFullName);
-    List<Widget> column = List.empty(growable: true);
-    List<Widget> row = List.empty(growable: true);
-    row.add(Text(matter.getName, style: titleStile,));
-    if(subscription.request){
-      List<Widget> waiting = List.empty(growable: true);
-      waiting.add(Text("(*^▽^*)", style: warningEmojiStile,));//(≧∇≦)ﾉ   (*^▽^*)
-      waiting.add(Text("Ya casi nos\nacepta el admin", style: warningEmojiStile, textAlign: TextAlign.center,));
-      row.add(const Expanded(child: SizedBox()));
-      row.add(Column(children: waiting,));
-    }else{
-      row.add(const Expanded(child: SizedBox()));
-      row.add(Text(matter.getStucentsCount.toString(), style: const TextStyle(color: Colors.grey),));
-      row.add(const Icon(Icons.person));
-      column.add(const Divider());
-      column.add(Text(teacher));
-    }
-    column.insert(0, ListTile(title: Row(children: row,),));
-    
-
-    return GestureDetector(
-      onTap: () {
-        print("Tap:"+subscription.getId.toString()+"::"+matter.getName);
-        _management.setIndex=-1;
-        Navigator.pushReplacementNamed(context, MatterPage.route);
-      },
-      child: Container(
-        margin: const EdgeInsets.all(7),
-        child: Card(
-          elevation: 35,//sombreado
-          shadowColor: shadow,
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(15))
-          ),
-          child: Container(
-            padding: const EdgeInsets.all(7),
-            child: Column(
-              children: column,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
 
   Widget _calendar(){
     return ListView(
@@ -231,4 +281,57 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  Widget _card(SubscriptionModel subscription, int matterIndex){
+    MatterModel matter = subscription.getMatter;
+    TextStyle titleStile = const TextStyle(
+      fontSize: 20,
+    );
+    TextStyle warningStile = const TextStyle(
+      color: Colors.red,
+      fontSize: 20,
+    );
+    String teacher = ((matter.getTeacher==null)?"Docente no asignado":"Docente: "+matter.getTeacher!.getFullName);
+    List<Widget> column = List.empty(growable: true);
+    List<Widget> row = List.empty(growable: true);
+    row.add(Text(matter.getName, style: titleStile,));
+    if(subscription.request){
+      List<Widget> waiting = List.empty(growable: true);
+      waiting.add(Text("Estamos a la \nespera del admin", style: warningStile, textAlign: TextAlign.center,));
+      row.add(const Expanded(child: SizedBox()));
+      row.add(Column(children: waiting,));
+    }else{
+      row.add(const Expanded(child: SizedBox()));
+      row.add(Text(matter.getStucentsCount.toString(), style: const TextStyle(color: Colors.grey),));
+      row.add(const Icon(Icons.person));
+      column.add(const Divider(color: Colors.blue, height: 2.8,));
+      column.add(Text(teacher));
+    }
+    column.insert(0, ListTile(title: Row(children: row,),));
+    
+
+    return GestureDetector(
+      onTap: (!subscription.getRequest)?() {
+        print("Matter:"+subscription.getId.toString()+"::"+matter.getName);
+        _management.setMatterIndex=matterIndex;
+        _management.setIndex=-1;
+        Navigator.pushReplacementNamed(context, MatterPage.route);
+      }:(){},
+      child: Container(
+        margin: const EdgeInsets.all(7),
+        child: Card(
+          elevation: 10,//sombreado
+          shape: const RoundedRectangleBorder(
+            side: BorderSide(color: Colors.blue),
+            borderRadius: BorderRadius.all(Radius.circular(12)),
+          ),
+          child: Container(
+            padding: const EdgeInsets.all(7),
+            child: Column(
+              children: column,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }

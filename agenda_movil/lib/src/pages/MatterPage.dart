@@ -1,10 +1,15 @@
 // ignore_for_file: file_names
 
+import 'package:agenda_movil/src/Model/ActivityModel.dart';
+import 'package:agenda_movil/src/Model/MatterModel.dart';
 import 'package:agenda_movil/src/Widget/BottomBarMenu.dart';
 import 'package:agenda_movil/src/Widget/Menu.dart';
 import 'package:agenda_movil/src/pages/CreateActivityPage.dart';
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
+
+import '../Logic/Management.dart';
+import '../Logic/Provider.dart';
 
 class MatterPage extends StatelessWidget {
   MatterPage({Key? key}) : super(key: key);
@@ -12,6 +17,8 @@ class MatterPage extends StatelessWidget {
   static const String route = "Subject";
 
   late Size _size;
+  late Management _management;
+  
   late TextStyle _titlle;
   late TextStyle _headerSubTitlle;
   late TextStyle _headerSubTitlleApproved;
@@ -21,9 +28,17 @@ class MatterPage extends StatelessWidget {
   late TextStyle _cardTitlleDeprecated;
   late TextStyle _cardSubTitlle;
 
+  TextEditingController searchTextField = TextEditingController();
+
+  late MatterModel _matter;
+  late List<ActivityModel> _activitiesList;
+
   @override
   Widget build(BuildContext context) {
     _size = MediaQuery.of(context).size;//dimeiones de la pantalla
+    _management = Provider.of(context);
+     _matter = _management.getMatter();
+     _activitiesList = _matter.getActivitiesList;
     _titlle = const TextStyle(
       fontWeight: FontWeight.bold,
       fontSize: 30,
@@ -67,18 +82,7 @@ class MatterPage extends StatelessWidget {
           "Agenda Digital",
           style: _titlle
         ),
-        leading: Builder(
-          builder: (BuildContext context) {
-            return IconButton(
-              icon: const Icon(Icons.settings),
-              iconSize: 30,
-              onPressed: () {
-                Scaffold.of(context).openDrawer();
-              },
-              tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
-            );
-          },
-        )
+        
       ),
       drawer: Menu(),
       bottomNavigationBar: BottomBarMenu(),
@@ -89,31 +93,8 @@ class MatterPage extends StatelessWidget {
          Expanded(
            child: PageView(
             children: <Widget>[
-              Column(
-                children: [
-                  Text(
-                    "NOTAS",
-                    style: _headerSubTitlle
-                  ),
-                  _notes(),
-                ],
-              ),
-              Column(
-                children: [
-                   Text(
-                    "ACTIVIDADES",
-                    style: _headerSubTitlle),                  
-                  _activitys(context),
-                ],
-              ),
-              Column(
-                children: [
-                  Text(
-                    "DOCENTE",
-                    style: _headerSubTitlle),
-                  _teacher(),
-                ],
-              ),
+              _activitys(context),
+              _teacher(),
             ],
            ),
          )
@@ -123,11 +104,30 @@ class MatterPage extends StatelessWidget {
   }
 
   Widget _header(){
+
+    int percent = 0;
+    double note = 0;
+    
+    if (_activitiesList.isNotEmpty) {
+      int term = _activitiesList[_activitiesList.length-1].getTerm;
+      for (var i = _activitiesList.length-1; i >= 0; i--) {
+        if(term==_activitiesList[i].getTerm){
+          percent+=_activitiesList[i].getPercen;
+          if(_activitiesList[i].getSumission!=null){
+            if (_activitiesList[i].getSumission!.getNote!=null) {
+              note += _activitiesList[i].getSumission!.getNote!*_activitiesList[i].getPercen;
+            }
+          }
+        }else{
+          break;
+        }
+      }
+    }
     return Column(
           children: <Widget>[
             const SizedBox(width: double.infinity),
             Text(
-              "Progra 3",
+              _matter.getName,
               style: _titlle,
             ),
             Row(
@@ -138,32 +138,19 @@ class MatterPage extends StatelessWidget {
                   style: _headerSubTitlle,
                 ),
                 Text(
-                  "3.5",
-                  style: (3.5>=3)?_headerSubTitlleApproved:_headerSubTitlleDeprecated,
+                  note.toString(),
+                  style: (note>=3)?_headerSubTitlleApproved:_headerSubTitlleDeprecated,
                 ),
               ],
             ),
-            // CircularPercentIndicator(
-            //   radius: 55.0,
-            //   animation: true,
-            //   animationDuration: 1200,
-            //   lineWidth: 15.0,//grozor del progressbar
-            //   percent: 0.78,
-            //   center: Text(
-            //     "78%",
-            //     style: _headerSubTitlle,
-            //   ),
-            //   circularStrokeCap: CircularStrokeCap.butt,//terminacion del progressbar
-            //   progressColor: Colors.blue[700],
-            // ),
             LinearPercentIndicator(
               width: _size.width*.95,
               animation: true,
               animationDuration: 1200,
               lineHeight: 20.0,
-              percent: 0.78,
+              percent: percent/100,
               center: Text(
-                "78%",
+                percent.toString(),
                 style: _headerSubTitlle,
               ),
               progressColor: Colors.green[300],
@@ -172,132 +159,141 @@ class MatterPage extends StatelessWidget {
     );
   }
 
-  Widget _notes(){
-    return Expanded(
-      child: ListView(
-        children: <Widget>[
-          Table(
-            children: const <TableRow>[
-              TableRow(
+  Widget _activitys(BuildContext context){
+    List<Widget>  activities = List.empty(growable: true); 
+    
+    for(int i=0; i<_activitiesList.length; i++){
+      activities.add(_card(_activitiesList[i], i));
+    }
+    return Column(
+      children: <Widget>[
+        Container(
+          margin: const EdgeInsets.fromLTRB(5, 0, 5, 0),
+          child: Column(
+            children: <Widget>[
+              Row(
                 children: <Widget>[
-                  Text("Actividad"),
-                  Text("Porcentaje"),
-                  Text("Nota"),
-                ]
+                  Text(
+                    "ACTIVIDADES",
+                    style: _headerSubTitlle
+                  ), 
+                  const Expanded(child: SizedBox()),
+                  IconButton(icon: const Icon(Icons.add), iconSize: 30, color: Colors.blue[700], onPressed: (){
+                      Navigator.pushNamed(context, CreateActivityPage.route);
+                    }
+                  ),
+                  
+                ],
               ),
-              TableRow(
-                children: <Widget>[
-                  Text("Taller grupal"),
-                  Text("10%"),
-                  Text("4.8"),
-                ]
+              TextField(
+                controller: searchTextField,
+                decoration: InputDecoration(
+                  hintText: "Filtrar",
+                  prefix: Icon(Icons.search_rounded, color: Colors.blue[700]!),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: Colors.blue[700]!)
+                  )
+
+                ), 
               ),
             ],
-            defaultColumnWidth: const FlexColumnWidth(),
-            defaultVerticalAlignment: TableCellVerticalAlignment.top,
-          )
-        ],
-      ),
+          ),
+        ),
+        Expanded(
+          child: ListView(
+            children: activities,
+          ),
+        ),
+      ],
     );
   }
 
-  Widget _activitys(BuildContext context){
-    return Expanded(
-      child: ListView(
-        children: <Widget>[
-          _card("Proyecto", 3.5, "", "23/05/2020 23:59", 5, "20", Colors.green, context),
-          _card("Taller Individual", 5, "Moodle", "23/05/2020 23:59", 5, "10", Colors.green, context),
-          _card("Taller grupal", 4.9, "Moodle", "23/05/2020 23:59", 5, "10", Colors.green, context),
-          _card("Parcial 1", 1.8, "", "23/05/2020 23:59", 5, "20", Colors.red, context),
-          _card("Parcial 2", 2.3, "", "23/05/2020 23:59", 5, "20", Colors.red, context),
-          _card("Quiz", 3.5, "C/C++", "23/05/2020 23:59", 5, "20", Colors.green, context),
-        ],
-      ),
+  Widget _card(ActivityModel activity, int matterIndex){
+    TextStyle titleStile = const TextStyle(
+      fontSize: 20,
     );
-  }
+    TextStyle subtitleStile = const TextStyle(
+      fontSize: 13,
+      color: Colors.grey
+    );
+    List<Widget> column = List.empty(growable: true);
+    List<Widget> row = List.empty(growable: true);
+    List<Widget> row1 = List.empty(growable: true);
+    Color color = Colors.grey;
 
-  Widget _card(String activityName, double note, String description, String date, int remember, String percent, Color color, BuildContext context){
+    row.add(Text(activity.getName, style: titleStile,));
+    row.add(const Expanded(child: SizedBox()));
+    if(activity.getSumission!=null){
+      if(activity.getSumission!.getNote!=null){
+        if(activity.getSumission!.getNote!>=3){
+          color = Colors.green;
+        }else{
+          color = Colors.deepOrange;
+        }
+        row.add(Text(
+          activity.getSumission!.getNote!.toString(),
+          style: TextStyle(
+            fontSize: 13,
+            color: color
+          ),
+        ));
+        row.add(const Icon(Icons.rate_review));
+      }
+    }
+    column.add(ListTile(title: Row(children: row,)));
+    column.add(Text(
+      (activity.getDescription!=null)?activity.getDescription!:"",
+      style: subtitleStile,
+    ));
+    column.add(Divider(color: color, height: 2.8,));
+    row1.add(Text(activity.getSubmissionDate, style: subtitleStile,));
+    row1.add(const Icon(Icons.calendar_month, color: Colors.grey,));
+    row1.add(const Expanded(child: SizedBox()));
+    row1.add(Text(activity.getNoDayRecordatories.toString(), style: subtitleStile,));
+    row1.add(const Icon(Icons.timelapse, color: Colors.grey,));
+    row1.add(const Expanded(child: SizedBox()));
+    row1.add(Text(activity.getPercen.toString(), style: subtitleStile,));
+    row1.add(const Icon(Icons.percent, color: Colors.grey,));
+    column.add(ListTile(title: Row(children: row1,)));
+
     return GestureDetector(
-        onDoubleTap: () => Navigator.pushReplacementNamed(context, CreateActivityPage.route),
-        child: Container(
-        margin: const EdgeInsets.all(5),
+      onTap: () {
+        print("Activity:"+activity.getId.toString()+"::"+activity.getName);
+        _management.setMatterIndex=matterIndex;
+        _management.setIndex=-1;
+        // Navigator.pushReplacementNamed(context, MatterPage.route);
+      },
+      child: Container(
+        margin: const EdgeInsets.all(7),
         child: Card(
-          elevation: 15,//sombreado
-          shadowColor: color,
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(15))
+          elevation: 10,//sombreado
+          shape: RoundedRectangleBorder(
+            side: BorderSide(color: color),
+            borderRadius: const BorderRadius.all(Radius.circular(12)),
           ),
           child: Container(
             padding: const EdgeInsets.all(7),
-            child:Column(
-              children: <Widget>[
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Text(
-                      activityName,
-                      style: _cardTitlle,
-                    ),
-                    Row(
-                      children: <Widget>[
-                        Text(
-                          note.toString(),
-                          style: (note>=3)?_cardTitlleApproved:_cardTitlleDeprecated
-                        ),
-                        const Icon(Icons.rate_review),
-                      ],
-                    ),
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Row(
-                      children: <Widget>[
-                        Text(
-                          date.toString(),
-                          style: _cardSubTitlle
-                        ),
-                        const Icon(Icons.calendar_month, color: Colors.grey),
-                      ],
-                    ),
-                    Row(
-                      children: <Widget>[
-                        Text(
-                          remember.toString(),
-                          style: _cardSubTitlle
-                        ),
-                        const Icon(Icons.timelapse, color: Colors.grey),
-                      ],
-                    ),
-                    Row(
-                      children: <Widget>[
-                        Text(
-                          percent.toString(),
-                          style: _cardSubTitlle
-                        ),
-                        const Icon(Icons.percent, color: Colors.grey),
-                      ],
-                    ),
-                  ],
-                ),
-                const Divider(),
-                Text(
-                  description,
-                  style: _cardSubTitlle
-                )
-              ],
+            child: Column(
+              children: column,
             ),
           ),
         ),
       ),
     );
-
   }
 
 
   Widget _teacher(){
-    return Expanded(child: ListView());
+    return Column(
+      children: <Widget>[
+        Text(
+          "DOCENTE",
+          style: _headerSubTitlle
+        ),
+        Expanded(child: ListView()),
+      ],
+    );
   }
 
 }

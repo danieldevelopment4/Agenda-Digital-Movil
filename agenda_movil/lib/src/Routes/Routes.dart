@@ -14,8 +14,9 @@ import 'package:agenda_movil/src/pages/CreateTeacherPage.dart';
 
 Map<String, WidgetBuilder>getRoutes(){
   return <String,WidgetBuilder>{
-    HomePage.HomeRoute : (BuildContext context) => HomePage(0),
-    HomePage.CalendarRoute : (BuildContext context) => HomePage(1),
+    HomePage.TableRoute : (BuildContext context) => HomePage(0),
+    HomePage.HomeRoute : (BuildContext context) => HomePage(1),
+    HomePage.CalendarRoute : (BuildContext context) => HomePage(2),
     LogginPage.route : (BuildContext context) => const LogginPage(),
     RegisterPage.route : (BuildContext context) => const RegisterPage(),
     CreateActivityPage.route : (BuildContext context) => const CreateActivityPage(),

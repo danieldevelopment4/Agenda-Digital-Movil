@@ -20,11 +20,16 @@ class LogginPage extends StatefulWidget {
 
 class _LogginPageState extends State<LogginPage> {
   late Size _size;
+  late Management _management;
+  
   late TextStyle _subTitlle;
   late ButtonStyle _buttonText;
   late ButtonStyle _outSideButtonText;
   late TextStyle _dialogText;
-  late Management _management;
+
+  final TextEditingController _emailTextField = TextEditingController();
+  final TextEditingController _passwordTextField = TextEditingController();
+
   bool _passwordVisible= false;
   bool _load = false;
 
@@ -41,8 +46,8 @@ class _LogginPageState extends State<LogginPage> {
       primary: Colors.white, //color de la letra
       onSurface: Colors.white, //color de la letra cuando el boton esta DESACTIVADO
       backgroundColor: Colors.blue[700],
-      minimumSize: Size(_size.width * .4, 40), //tamaño minimo deo boton, con esto todos quedaran iguales
-      maximumSize: Size(_size.width * .4, 40), //tamaño minimo deo boton, con esto todos quedaran iguales
+      minimumSize: Size(_size.width * .55, 40), //tamaño minimo deo boton, con esto todos quedaran iguales
+      maximumSize: Size(_size.width * .55, 40), //tamaño minimo deo boton, con esto todos quedaran iguales
       textStyle: const TextStyle(
         fontSize: 18,
       ),
@@ -124,13 +129,12 @@ class _LogginPageState extends State<LogginPage> {
                     builder:
                         (BuildContext context, AsyncSnapshot<String> snapshot) {
                       return TextField(
+                        controller: _emailTextField,
                         keyboardType: TextInputType.emailAddress,
                         decoration: InputDecoration(
                           hintText: "daga70414@gmail.com",
                           label: const Text("Correo"),
-                          errorText: (snapshot.error.toString() != "null")
-                              ? snapshot.error.toString()
-                              : null,
+                          errorText: (snapshot.error.toString() != "null")? snapshot.error.toString(): null,
                           errorStyle: const TextStyle(color: Colors.red),
                           icon: const Icon(
                             Icons.alternate_email,
@@ -147,13 +151,12 @@ class _LogginPageState extends State<LogginPage> {
                     builder:
                         (BuildContext context, AsyncSnapshot<String> snapshot) {
                       return TextField(
+                        controller: _passwordTextField,
                         enableInteractiveSelection: false, //Impide copiar cosas
                         obscureText: !_passwordVisible,
                         decoration: InputDecoration(
                           label: const Text("Contraseña"),
-                          errorText: (snapshot.error.toString() != "null")
-                              ? snapshot.error.toString()
-                              : null,
+                          errorText: (snapshot.error.toString() != "null")? snapshot.error.toString(): null,
                           errorStyle: const TextStyle(color: Colors.red),
                           icon: Icon(
                             Icons.password,
@@ -185,7 +188,7 @@ class _LogginPageState extends State<LogginPage> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
-                            const Text("Iniciar sesion"),
+                            const Text("Iniciar sesion\t"),
                             (_load)?_loading():const Text(""),
                           ],
                         ),
@@ -243,6 +246,10 @@ class _LogginPageState extends State<LogginPage> {
       Navigator.pushReplacementNamed(context, HomePage.HomeRoute);
     } else {
       setState(() {
+        _management.streams.resetEmail();
+        _emailTextField.text="";
+        _management.streams.resetPassword();
+        _passwordTextField.text="";
         _load=false;
       });
       // print("ERROR");

@@ -1,6 +1,5 @@
 import 'package:agenda_movil/src/Logic/Management.dart';
 import 'package:agenda_movil/src/Logic/Provider.dart';
-import 'package:agenda_movil/src/Model/StudentModel.dart';
 import 'package:agenda_movil/src/Persistence/Percistence.dart';
 import 'package:agenda_movil/src/pages/LogginPage.dart';
 import 'package:agenda_movil/src/pages/RatePage.dart';

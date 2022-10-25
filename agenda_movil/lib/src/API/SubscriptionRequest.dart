@@ -15,7 +15,7 @@ class SubscriptionRequest {
     try {
       var url = Uri.parse( host+"/subscription/show");
       var response = await http.post(url, body: jsonEncode(body), headers: header);
-      print('Response body: ${response.body}');
+      // print('Response body: ${response.body}');
       if (response.statusCode == 200) {
         _percistence.subscription = response.body;
         return true; 

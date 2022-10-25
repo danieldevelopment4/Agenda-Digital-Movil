@@ -10,7 +10,6 @@ class MatterModel {
     {
       required this.id,
       required this.name,
-      required this.rgb,
       this.studentsCount,
       this.teacher,
       this.activities,
@@ -21,7 +20,6 @@ class MatterModel {
 
   final int id;
   final String name;
-  final String rgb;
   final int? studentsCount;
   final TeacherModel? teacher;
   final List<ActivityModel>? activities;
@@ -31,7 +29,6 @@ class MatterModel {
   factory MatterModel.fromJson(Map<String, dynamic> json) => MatterModel(
       id: json["id"],
       name: json["name"],
-      rgb: json["rgb"],
       studentsCount: json["studentsCount"],
       teacher: ((json["teacher"] == null)?null:TeacherModel.fromJson(json["teacher"])),
       activities: List<ActivityModel>.from(json["activities"].map((x) => ActivityModel.fromJson(x))),
@@ -42,7 +39,6 @@ class MatterModel {
   factory MatterModel.fromHalfJson(Map<String, dynamic> json) => MatterModel(
       id: json["id"],
       name: json["name"],
-      rgb: json["rgb"]
   );
 
   int get getId{
@@ -51,10 +47,6 @@ class MatterModel {
 
   String get getName{
     return name;
-  }
-
-  String get getRgb{
-    return rgb;
   }
 
   int get getStucentsCount{

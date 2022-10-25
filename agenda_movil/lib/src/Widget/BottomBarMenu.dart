@@ -21,88 +21,59 @@ class _BottomBarMenuState extends State<BottomBarMenu> {
 
   late Management _management;
 
+
    @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
     _management = Provider.of(context);
-    
-    return Stack(
-      children: [
-        CustomPaint(
-          size: Size(size.width, 80),
-          painter: _BBMPainter(),
-        ),
-        Center(
-          heightFactor: 0.6,
-          child: SpeedDial(
-            icon: Icons.add,
-            backgroundColor: Colors.blue[700],
-            overlayColor: Colors.black,
-            overlayOpacity: 0.4,
-            children: <SpeedDialChild>[ 
-              SpeedDialChild(
-                label: "Agregar Docente",
-                child: const Icon(Icons.account_circle),
-                onTap: (){
-                  Navigator.pushReplacementNamed(context, CreateTeacherPage.route);
-                   _management.setIndex = -1;
-                }
-              ),
-              SpeedDialChild(
-                label: "Agregar Actividad",
-                child: const Icon(Icons.local_activity),
-                onTap: (){
-                  Navigator.pushReplacementNamed(context, CreateActivityPage.route);
-                  _management.setIndex = -1;
-                }
-              ),
-              SpeedDialChild(
-                label: "Agregar Materia",
-                child: const Icon(Icons.subject),
-                onTap: (){
-                  Navigator.pushReplacementNamed(context, CreateMatterPage.route);
-                  _management.setIndex = -1;
-                }
-              ),
-            ],
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.blueAccent)
+      ),
+      child: Row(
+        children: <Widget>[
+          const Expanded(child: SizedBox()),
+          IconButton(
+            icon: Icon(
+              Icons.table_chart,
+              size: 40,
+              color: _management.getIndex == 0 ? Colors.blue[700] : Colors.grey,
+            ),
+            onPressed: () {
+              _management.setIndex=0;
+              Navigator.pushReplacementNamed(context, HomePage.TableRoute);
+            },
+            splashColor: Colors.white,
           ),
-        ),
-        SizedBox(
-          width: size.width,
-          height: 80,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              IconButton(
-                icon: Icon(
-                  Icons.home,
-                  size: 40,
-                  color: _management.getIndex == 0 ? Colors.blue[700] : Colors.grey,
-                ),
-                onPressed: () {
-                  _management.setIndex=0;
-                  Navigator.pushReplacementNamed(context, HomePage.HomeRoute);
-                },
-                splashColor: Colors.white,
-              ),
-              Container(
-                width: size.width * 0.20,
-              ),
-              IconButton(
-                icon: Icon(
-                  Icons.calendar_month,
-                  size: 40,
-                  color:  _management.getIndex == 1 ? Colors.blue[700] : Colors.grey,
-                ),
-                onPressed: () {
-                  _management.setIndex=1;
-                  Navigator.pushReplacementNamed(context, HomePage.CalendarRoute);
-                }
-              ),
-            ],
+          const Expanded(child: SizedBox()),
+          IconButton(
+            icon: Icon(
+              Icons.home,
+              size: 40,
+              color: _management.getIndex == 1 ? Colors.blue[700] : Colors.grey,
+            ),
+            onPressed: () {
+              _management.setIndex=1;
+              Navigator.pushReplacementNamed(context, HomePage.HomeRoute);
+            },
+            splashColor: Colors.white,
           ),
-        )
-      ],
+          const Expanded(child: SizedBox()),
+          IconButton(
+            icon: Icon(
+              Icons.calendar_month,
+              size: 40,
+              color: _management.getIndex == 2 ? Colors.blue[700] : Colors.grey,
+            ),
+            onPressed: () {
+              _management.setIndex=2;
+              Navigator.pushReplacementNamed(context, HomePage.CalendarRoute);
+            },
+            splashColor: Colors.white,
+          ),
+          const Expanded(child: SizedBox()),
+        ],
+      ),
     );
   }
 }

@@ -20,11 +20,19 @@ class RegisterPage extends StatefulWidget {
 
 class _RegisterPageState extends State<RegisterPage> {
   late Size _size;
+  late Management _management;
+
   late TextStyle _subTitlle;
   late ButtonStyle _buttonText;
   late TextStyle _dialogText;
-  late Management _management;
+
+  TextEditingController _nameTextField = TextEditingController();
+  TextEditingController _lastNameTextField = TextEditingController();
+  TextEditingController _emailTextField = TextEditingController();
+  TextEditingController _passwordTextField = TextEditingController();
+
   bool _passwordVisible= false;
+  bool _load = false;
 
   @override
   Widget build(BuildContext context) {
@@ -37,13 +45,10 @@ class _RegisterPageState extends State<RegisterPage> {
     );
     _buttonText = TextButton.styleFrom(
       primary: Colors.white, //color de la letra
-      onSurface:
-          Colors.white, //color de la letra cuando el boton esta DESACTIVADO
+      onSurface: Colors.white, //color de la letra cuando el boton esta DESACTIVADO
       backgroundColor: Colors.blue[700],
-      minimumSize: Size(_size.width * .4,
-          40), //tamaño minimo deo boton, con esto todos quedaran iguales
-      maximumSize: Size(_size.width * .4,
-          40), //tamaño minimo deo boton, con esto todos quedaran iguales
+      minimumSize: Size(_size.width * .55, 40), //tamaño minimo deo boton, con esto todos quedaran iguales
+      maximumSize: Size(_size.width * .55, 40), //tamaño minimo deo boton, con esto todos quedaran iguales
       textStyle: const TextStyle(
         fontSize: 18,
       ),
@@ -120,6 +125,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   builder:
                       (BuildContext context, AsyncSnapshot<String> snapshot) {
                     return TextField(
+                      controller: _nameTextField,
                       textCapitalization: TextCapitalization.sentences,
                       decoration: InputDecoration(
                         hintText: "Daniel",
@@ -143,6 +149,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   builder:
                       (BuildContext context, AsyncSnapshot<String> snapshot) {
                     return TextField(
+                      controller: _lastNameTextField,
                       textCapitalization: TextCapitalization.sentences,
                       decoration: InputDecoration(
                         hintText: "Gomez",
@@ -164,6 +171,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   builder:
                       (BuildContext context, AsyncSnapshot<String> snapshot) {
                     return TextField(
+                      controller: _emailTextField,
                       keyboardType: TextInputType.emailAddress,
                       decoration: InputDecoration(
                         hintText: "daga70414@gmail.com",
@@ -187,6 +195,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   builder:
                       (BuildContext context, AsyncSnapshot<String> snapshot) {
                     return TextField(
+                      controller: _passwordTextField,
                       enableInteractiveSelection: false, //Impide copiar cosas
                       obscureText: !_passwordVisible,
                       decoration: InputDecoration(
@@ -212,15 +221,24 @@ class _RegisterPageState extends State<RegisterPage> {
                   },
                 ),
                 const SizedBox(height: 30),
-                StreamBuilder(
+                StreamBuilder(//Boton
                   stream: _management.streams.buttonRegisterStream,
                   builder:
                       (BuildContext context, AsyncSnapshot<bool> snapshot) {
                     return TextButton(
-                      onPressed: (snapshot.hasData)?(){registerRequest(context);}:null,
-                      child: const Text(
-                        "Registrarse",
-                      ),
+                      onPressed: (snapshot.hasData)?(){
+                        setState(() {
+                          _load = true;
+                        });
+                        registerRequest(context);
+                      }:null,
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            const Text("Registrarse\t"),
+                            (_load)?_loading():const Text(""),
+                          ],
+                        ),
                       style: _buttonText,
                     );
                   },
@@ -256,6 +274,13 @@ class _RegisterPageState extends State<RegisterPage> {
       ],
     );
   }
+  
+  Widget _loading(){
+    return const CircularProgressIndicator(
+      color: Colors.white,
+      strokeWidth: 4,
+    );
+  }
 
   void registerRequest(BuildContext context) async {
     Map<String, String> body = {
@@ -273,9 +298,19 @@ class _RegisterPageState extends State<RegisterPage> {
       // print(response["message"]);
       //
     } else {
+      setState(() {
+        _management.streams.resetName();
+        _nameTextField.text="";
+        _management.streams.resetLastName();
+        _lastNameTextField.text="";
+        _management.streams.resetEmail();
+        _emailTextField.text="";
+        _management.streams.resetPassword();
+        _passwordTextField.text="";
+        _load=false;
+      });
       _showAlert( context, Icons.back_hand, const Color.fromRGBO(213, 5, 5, 1), const Color.fromRGBO(85, 2, 16, 1), response["message"], "Aceptar", _logginDeclined);
       // print("ERROR");
-      // print(response["message"]);
     }
   }
 

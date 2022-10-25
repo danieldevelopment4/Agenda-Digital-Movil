@@ -127,7 +127,6 @@ class _CreateMatterPageState extends State<CreateMatterPage> {
   Widget _loading(){
     return const CircularProgressIndicator(
       color: Colors.white,
-      
       strokeWidth: 4,
     );
   }
@@ -141,6 +140,7 @@ class _CreateMatterPageState extends State<CreateMatterPage> {
             builder: (BuildContext context, AsyncSnapshot<String> snapshot) { 
               return TextField(
                 controller: _idTextField,
+                keyboardType: TextInputType.number,
                 style: _cardSubText,
                 decoration: InputDecoration(
                   label: const Text("ID"), 
@@ -188,28 +188,28 @@ class _CreateMatterPageState extends State<CreateMatterPage> {
               );
             },
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: <Widget>[
-              Text(
-                "Color de la materia",
-                style: _text,
-              ),
-              TextButton(
-                child: const Text(""),
-                style: _colorButton,
-                onPressed: (){
-                  showDialog(
-                    context: context,
-                    barrierDismissible: false,
-                    builder: (context){
-                      return _colorPicker();
-                    }
-                  );
-                } ,
-              ),
-            ],
-          ),
+          // Row(
+          //   mainAxisAlignment: MainAxisAlignment.spaceAround,
+          //   children: <Widget>[
+          //     Text(
+          //       "Color de la materia",
+          //       style: _text,
+          //     ),
+          //     TextButton(
+          //       child: const Text(""),
+          //       style: _colorButton,
+          //       onPressed: (){
+          //         showDialog(
+          //           context: context,
+          //           barrierDismissible: false,
+          //           builder: (context){
+          //             return _colorPicker();
+          //           }
+          //         );
+          //       } ,
+          //     ),
+          //   ],
+          // ),
           _expandableTeacher(),
           _expandableSchedule(),
         ],

@@ -9,7 +9,7 @@ class ActivityModel{
       this.description,
       required this.percent,
       required this.noDaysRecordatories,
-      this.submissionDate,
+      required this.submissionDate,
       required this.term,
       this.submit
     }
@@ -18,9 +18,9 @@ class ActivityModel{
   final int id;
   final String name;
   final String? description;
-  final double percent;
+  final int percent;
   final int noDaysRecordatories;
-  final DateTime? submissionDate;
+  final DateTime submissionDate;
   final int term;
   final SubmitModel? submit;
 
@@ -32,7 +32,39 @@ class ActivityModel{
       noDaysRecordatories: json["noDaysRecordatories"],
       submissionDate: DateTime.parse(json["submissionDate"]),
       term: json["term"],
-      submit: SubmitModel.fromJson(json["submit"]),
+      submit: json["submit"] == null ? null : SubmitModel.fromJson(json["submit"]),
   );
+
+  int get getId{
+    return id;
+  }
+
+  String get getName{
+    return name;
+  }
+
+  String? get getDescription{
+    return description;
+  }
+
+  int get getPercen{
+    return percent;
+  }
+
+  int get getNoDayRecordatories{
+    return noDaysRecordatories;
+  }
+
+  String get getSubmissionDate{
+    return submissionDate.toString();
+  }
+
+  int get getTerm{
+    return term;
+  }
+
+  SubmitModel? get getSumission{
+    return submit;
+  }
 
 }

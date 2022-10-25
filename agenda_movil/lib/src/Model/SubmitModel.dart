@@ -22,4 +22,16 @@ class SubmitModel{
     state: SubmitStateEnum.values.firstWhere((e)=>e.toString().split('.')[1].toUpperCase()==json["state"].toUpperCase()),
   );
 
+  int get getId{
+    return id;
+  }
+
+  double? get getNote{
+    return note;
+  }
+
+  String get getState{
+    return state.toString();
+  }
+
 }

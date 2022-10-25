@@ -2,11 +2,13 @@
 
 import 'dart:async';
 
+import 'package:agenda_movil/src/API/ActivityRequest.dart';
 import 'package:agenda_movil/src/API/RateRequest.dart';
 import 'package:agenda_movil/src/API/MatterRequest.dart';
 import 'package:agenda_movil/src/API/StudentRequest.dart';
 import 'package:agenda_movil/src/API/SubscriptionRequest.dart';
 import 'package:agenda_movil/src/Logic/Streams.dart';
+import 'package:agenda_movil/src/Model/MatterModel.dart';
 import 'package:agenda_movil/src/Model/SubscriptionModel.dart';
 
 import '../Model/StudentModel.dart';
@@ -33,8 +35,11 @@ class Management{
 
   var streams = Streams();
 
+//
+
+
 //BottonMenuBar
-  int _currentIndex = 0;
+  int _currentIndex = 1;
   int get getIndex {
     return _currentIndex;
   }
@@ -91,6 +96,20 @@ class Management{
   }
 
   //matter
+  int _matterIndex =-1;
+
+  int get getMatterIndex{
+    return _matterIndex;
+  }
+
+  set setMatterIndex(int matterIndex){
+    _matterIndex = matterIndex;
+  }
+
+  MatterModel getMatter(){
+    return _subsciptionList[_matterIndex].getMatter;
+  }
+
   Future<Map<String, dynamic>> createMatterRequest(String rgb){
     Map<String, dynamic> body = {
       "name": streams.matterName,
@@ -108,5 +127,21 @@ class Management{
       "student":getStudent.toJson()
     };
     return SubscriptionRequest().subscribe(host, header, body);
+  }
+
+  //activity
+
+  Future<Map<String, dynamic>> createActivityRequest(){
+    Map<String, dynamic> body = {
+        "name": streams.activityName,
+        "percent": streams.activityPercent,
+        "matter": {
+            "id": _subsciptionList[_matterIndex].getMatter.getId
+        },
+        "noDaysRecordatories": streams.activityNoDaysRecordatories,
+        "submissionDate": streams.activitySubmissionDate,
+        "term": streams.activityTerm
+    };
+    return ActivityRequest().create(host, header, body);
   }
 }
