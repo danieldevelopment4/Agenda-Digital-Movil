@@ -11,13 +11,13 @@ String studentToJson(StudentModel data) => json.encode(data.toJson());
 class StudentModel {
   StudentModel(
     {
-      this.id,
+      required this.id,
       required this.name,
       required this.lastName,
     }
   );
 
-  final String? id;
+  final String id;
   final String name;
   final String lastName;
 
@@ -33,7 +33,7 @@ class StudentModel {
       "lastName": lastName,
   };
 
-  String? get getId{
+  String get getId{
     return id;
   } 
 

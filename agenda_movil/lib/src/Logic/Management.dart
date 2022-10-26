@@ -102,9 +102,14 @@ class Management{
     return ok;
   }
 
-  Future<Map<String, dynamic>> aprobeSubscriptionRequest() async{
+  Future<Map<String, dynamic>> aprobeSubscriptionRequest(String id) async{
     Map<String, dynamic> body = {
-      "student":getStudent.toJson()
+      "matter": {
+        "id": _subsciptionList[_matterIndex].getMatter.getId
+      },
+      "student":{
+        "id": id
+      }
     };
     Map<String, dynamic> ok = await SubscriptionRequest().aprobeSubscriptionRequest(host, header, body);
     if(ok["status"]){
@@ -113,9 +118,14 @@ class Management{
     return ok;
   }
 
-  Future<Map<String, dynamic>> deniedSubscriptionRequest() async{
+  Future<Map<String, dynamic>> deniedSubscriptionRequest(String id) async{
     Map<String, dynamic> body = {
-      "student":getStudent.toJson()
+      "matter": {
+        "id": _subsciptionList[_matterIndex].getMatter.getId
+      },
+      "student":{
+        "id": id
+      }
     };
     Map<String, dynamic> ok = await SubscriptionRequest().deniedSubscriptionRequest(host, header, body);
     if(ok["status"]){

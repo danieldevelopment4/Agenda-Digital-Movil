@@ -359,7 +359,11 @@ class _MatterPageState extends State<MatterPage> {
                 textAlign: TextAlign.center,
               )
             ),
-            _rowContainer("X", Colors.red),
+            _rowContainer(IconButton(
+              icon: const Icon(Icons.not_interested, color: Colors.red),
+              onPressed: _deniedRequest(students[i].getId)
+              )
+            ),
           ]
         )
       );
@@ -394,9 +398,24 @@ class _MatterPageState extends State<MatterPage> {
     for (int i = 0; i < students.length; i++) {
       rows.add(TableRow(
           children: <Widget>[
-            _rowContainer(students[i].getFullName, Colors.black),
-            _rowContainer("✓", Colors.green, ),
-            _rowContainer("X", Colors.red),
+            _rowContainer(Text(
+                students[i].getFullName,
+                style: const TextStyle(
+                  fontSize: 20,
+                ),
+                textAlign: TextAlign.center,
+              )
+            ),
+            _rowContainer(IconButton(
+              icon: const Icon(Icons.check, color: Colors.green),
+              onPressed: _aprobeRequest(students[i].getId)
+              )
+            ),
+            _rowContainer(IconButton(
+              icon: const Icon(Icons.not_interested, color: Colors.red),
+              onPressed: _deniedRequest(students[i].getId)
+              )
+            )
           ]
         )
       );
@@ -418,19 +437,14 @@ class _MatterPageState extends State<MatterPage> {
     );
   }
 
-  Widget _aprobeButton(){
-    
-  }
-
-  _aprobeRequest()async{
-    Map<String, dynamic> response = await _management.aprobeSubscriptionRequest();
+  _aprobeRequest(String id)async{
+    Map<String, dynamic> response = await _management.aprobeSubscriptionRequest(id);
     _notificateRequest(response);
     setState(() {});
   }
 
-  void _deniedRequest()async{
-    
-    Map<String, dynamic> response = await _management.deniedSubscriptionRequest();
+  _deniedRequest(String id)async{
+    Map<String, dynamic> response = await _management.deniedSubscriptionRequest(id);
     _notificateRequest(response);
     setState(() {});
   }
