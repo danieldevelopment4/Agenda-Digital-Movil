@@ -36,6 +36,7 @@ class _HomePageState extends State<HomePage> {
   late TextStyle _appBar;
   late TextStyle _emojiText;
   late TextStyle _dataText;
+  late TextStyle _headerSubTitlle;
   late ButtonStyle _buttonText;
 
   late PageController _pageController;
@@ -55,6 +56,9 @@ class _HomePageState extends State<HomePage> {
     _subscriptionList = _management.getSubscriptionList;
     _appBar = const TextStyle(
       fontSize: 30,
+    );
+    _headerSubTitlle = const TextStyle(
+      fontSize: 20,
     );
     _buttonText = TextButton.styleFrom(
       primary: Colors.white, //color de la letra
@@ -235,18 +239,43 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _matters(){
+    List<Widget> matters = List.empty(growable: true);
+    matters.add(
+      Container(
+        margin: const EdgeInsets.fromLTRB(5, 0, 5, 0),
+        child: Row(
+          children: <Widget>[
+            Text(
+              "MATERIAS",
+              style: _headerSubTitlle
+            ), 
+            const Expanded(child: SizedBox()),
+            IconButton(icon: const Icon(Icons.add), iconSize: 30, color: Colors.blue[700], onPressed: (){
+                Navigator.pushNamed(context, CreateMatterPage.route);
+              }
+            ),
+            
+          ],
+        ),
+      ),
+    );
     if(_subscriptionList.isNotEmpty){
       List<Widget>  mattersList = List.empty(growable: true); 
       for(int i=0; i<_subscriptionList.length; i++){
         mattersList.add(_card(_subscriptionList[i], i));
       }
-      return ListView(
-        children: mattersList
+      matters.add(Expanded(
+          child: ListView(
+            children: mattersList
+          ),
+        )
       );
     }else{
-      return _withOutMatters();
+      matters.add(_withOutMatters());
     }
-    
+    return Column(
+      children: matters,
+    );
   }
 
   Widget _calendar(){

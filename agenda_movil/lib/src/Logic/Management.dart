@@ -7,6 +7,7 @@ import 'package:agenda_movil/src/API/RateRequest.dart';
 import 'package:agenda_movil/src/API/MatterRequest.dart';
 import 'package:agenda_movil/src/API/StudentRequest.dart';
 import 'package:agenda_movil/src/API/SubscriptionRequest.dart';
+import 'package:agenda_movil/src/API/TeacherRequest.dart';
 import 'package:agenda_movil/src/Logic/Streams.dart';
 import 'package:agenda_movil/src/Model/MatterModel.dart';
 import 'package:agenda_movil/src/Model/SubscriptionModel.dart';
@@ -68,13 +69,19 @@ class Management{
   //Student-Login-Register
   Future<Map<String, dynamic>> logingRequest() {
     Map<String, String> body = {
-      "email": streams.email,
-      "password": streams.password
+      "email": streams.studentEmail,
+      "password": streams.studentPassword
     };
     return StudentRequest().loggin(host, header, body);
   }
 
-  Future<Map<String, dynamic>> registerRequest(Map<String, String> body) {
+  Future<Map<String, dynamic>> registerRequest() {
+    Map<String, String> body = {
+      "name": streams.studentName,
+      "lastName": streams.studentLastName,
+      "email": streams.studentEmail,
+      "password": streams.studentPassword
+    };
     return StudentRequest().register(host, header, body);
   }
 
@@ -95,6 +102,28 @@ class Management{
     return ok;
   }
 
+  Future<Map<String, dynamic>> aprobeSubscriptionRequest() async{
+    Map<String, dynamic> body = {
+      "student":getStudent.toJson()
+    };
+    Map<String, dynamic> ok = await SubscriptionRequest().aprobeSubscriptionRequest(host, header, body);
+    if(ok["status"]){
+      setSubscriptionList();  
+    }
+    return ok;
+  }
+
+  Future<Map<String, dynamic>> deniedSubscriptionRequest() async{
+    Map<String, dynamic> body = {
+      "student":getStudent.toJson()
+    };
+    Map<String, dynamic> ok = await SubscriptionRequest().deniedSubscriptionRequest(host, header, body);
+    if(ok["status"]){
+      setSubscriptionList();  
+    }
+    return ok;
+  }
+
   //matter
   int _matterIndex =-1;
 
@@ -110,10 +139,9 @@ class Management{
     return _subsciptionList[_matterIndex].getMatter;
   }
 
-  Future<Map<String, dynamic>> createMatterRequest(String rgb){
+  Future<Map<String, dynamic>> createMatterRequest(){
     Map<String, dynamic> body = {
       "name": streams.matterName,
-      "rgb": rgb,
       "student":getStudent.toJson()
     };
     return MatterRequest().create(host, header, body);
@@ -130,7 +158,6 @@ class Management{
   }
 
   //activity
-
   Future<Map<String, dynamic>> createActivityRequest(){
     Map<String, dynamic> body = {
         "name": streams.activityName,
@@ -144,4 +171,26 @@ class Management{
     };
     return ActivityRequest().create(host, header, body);
   }
+
+  //teacher
+  Future<Map<String, dynamic>> createTeacherRequest(){
+    Map<String, dynamic> body;
+    if(streams.teacherCelphoneHasData){
+      body = {
+          "name": streams.teacherName,
+          "lastName": streams.teacherLastName,
+          "email": streams.teacherEmail,
+          "cellphone": streams.teacherCellphone
+      };
+    }else{
+      body = {
+          "name": streams.teacherName,
+          "lastName": streams.teacherLastName,
+          "email": streams.teacherEmail,
+      };
+    }
+    return TeacherRequest().create(host, header, body);
+  }
+
+
 }

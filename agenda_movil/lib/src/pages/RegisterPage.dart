@@ -121,7 +121,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
                 const SizedBox(height: 30),
                 StreamBuilder(//NOMBRE
-                  stream: _management.streams.nameStream,
+                  stream: _management.streams.studentNameStream,
                   builder:
                       (BuildContext context, AsyncSnapshot<String> snapshot) {
                     return TextField(
@@ -139,13 +139,13 @@ class _RegisterPageState extends State<RegisterPage> {
                           color: Colors.blue[700],
                         ), //icono de la izquierda
                       ),
-                      onChanged: _management.streams.changeName,
+                      onChanged: _management.streams.changeStudentName,
                     );
                   },
                 ),
                 const SizedBox(height: 12),
                 StreamBuilder(//APELLIDO
-                  stream: _management.streams.lastNameStream,
+                  stream: _management.streams.studentLastNameStream,
                   builder:
                       (BuildContext context, AsyncSnapshot<String> snapshot) {
                     return TextField(
@@ -161,13 +161,13 @@ class _RegisterPageState extends State<RegisterPage> {
                           color: Colors.blue[700],
                         ), //icono de la izquierda
                       ),
-                      onChanged: _management.streams.changeLastName,
+                      onChanged: _management.streams.changeStudentLastName,
                     );
                   },
                 ),
                 const SizedBox(height: 12),
                 StreamBuilder(//EMAIL
-                  stream: _management.streams.emailStream,
+                  stream: _management.streams.studentEmailStream,
                   builder:
                       (BuildContext context, AsyncSnapshot<String> snapshot) {
                     return TextField(
@@ -185,13 +185,13 @@ class _RegisterPageState extends State<RegisterPage> {
                           color: Colors.blue[700],
                         ), //icono de la izquierda
                       ),
-                      onChanged: _management.streams.changeEmail,
+                      onChanged: _management.streams.changeStudentEmail,
                     );
                   },
                 ),
                 const SizedBox(height: 12),
                 StreamBuilder(//CONTRASEÑA
-                  stream: _management.streams.passwordStream,
+                  stream: _management.streams.studentPasswordStream,
                   builder:
                       (BuildContext context, AsyncSnapshot<String> snapshot) {
                     return TextField(
@@ -216,7 +216,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           }
                         ), //icono de la izquierda
                       ),
-                      onChanged: _management.streams.changePassword,
+                      onChanged: _management.streams.changeStudentPassword,
                     );
                   },
                 ),
@@ -283,13 +283,8 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   void registerRequest(BuildContext context) async {
-    Map<String, String> body = {
-      "name": _management.streams.name,
-      "lastName": _management.streams.lastName,
-      "email": _management.streams.email,
-      "password": _management.streams.password
-    };
-    Map<String, dynamic> response = await _management.registerRequest(body);
+    
+    Map<String, dynamic> response = await _management.registerRequest();
     // print("STATUS::" + response["status"].toString());
     if (response["status"]) {
       _management.setStudent();

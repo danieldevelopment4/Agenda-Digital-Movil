@@ -4,6 +4,7 @@ import 'package:agenda_movil/src/Logic/Management.dart';
 import 'package:agenda_movil/src/Logic/Provider.dart';
 import 'package:agenda_movil/src/Widget/BottomBarMenu.dart';
 import 'package:agenda_movil/src/Widget/Menu.dart';
+import 'package:elegant_notification/elegant_notification.dart';
 import 'package:flutter/material.dart';
 
 class CreateTeacherPage extends StatefulWidget {
@@ -19,13 +20,19 @@ class _CreateTeacherPageState extends State<CreateTeacherPage> {
 
   late Size _size;
   late Management _management;
+
+  late TextStyle _notificationTitle;
+  late TextStyle _notificationText;
   late TextStyle _appBarTitlle;
   late TextStyle _subTitlle;
   late ButtonStyle _sendButton;
-  final TextEditingController _textEditingController = TextEditingController();
-  
-  String _notes ="";
-  var _error =null;
+
+  final TextEditingController _nameTextField = TextEditingController();
+  final TextEditingController _lastnameTextField = TextEditingController();
+  final TextEditingController _emailTextField = TextEditingController();
+  final TextEditingController _cellphoneTextField = TextEditingController();
+
+  bool _createTeacherLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -33,6 +40,13 @@ class _CreateTeacherPageState extends State<CreateTeacherPage> {
     _management = Provider.of(context);
     _appBarTitlle = const TextStyle(
       fontSize: 30,
+    );
+    _notificationTitle = const TextStyle(
+      fontSize: 15,
+      fontWeight: FontWeight.bold
+    );
+    _notificationText = const TextStyle(
+      fontSize: 15,
     );
      _subTitlle = TextStyle(
       color: Colors.blue[700],
@@ -86,7 +100,7 @@ class _CreateTeacherPageState extends State<CreateTeacherPage> {
       child: Column(
         children: <Widget>[
           StreamBuilder(
-            stream: _management.streams.emailStream, 
+            stream: _management.streams.teacherNameStream, 
             builder: (BuildContext context, AsyncSnapshot<String> snapshot) {  
               return TextField(
                 keyboardType: TextInputType.name,
@@ -96,13 +110,13 @@ class _CreateTeacherPageState extends State<CreateTeacherPage> {
                   errorText: (snapshot.error.toString()!="null")?snapshot.error.toString():null,
                   errorStyle: const TextStyle(color: Colors.red),
                 ),
-                onChanged: _management.streams.changeEmail,
+                onChanged: _management.streams.changeTeacherName,
               );
             },
           ),
           const SizedBox(height: 12),
           StreamBuilder(
-            stream: _management.streams.emailStream, 
+            stream: _management.streams.teacherLastNameStream, 
             builder: (BuildContext context, AsyncSnapshot<String> snapshot) {  
               return TextField(
                 keyboardType: TextInputType.name,
@@ -112,13 +126,13 @@ class _CreateTeacherPageState extends State<CreateTeacherPage> {
                   errorText: (snapshot.error.toString()!="null")?snapshot.error.toString():null,
                   errorStyle: const TextStyle(color: Colors.red),
                 ),
-                onChanged: _management.streams.changeEmail,
+                onChanged: _management.streams.changeTeacherLastName,
               );
             },
           ),
           const SizedBox(height: 12),
           StreamBuilder(
-            stream: _management.streams.emailStream, 
+            stream: _management.streams.teacherEmailStream, 
             builder: (BuildContext context, AsyncSnapshot<String> snapshot) {  
               return TextField(
                 keyboardType: TextInputType.emailAddress,
@@ -128,13 +142,13 @@ class _CreateTeacherPageState extends State<CreateTeacherPage> {
                   errorText: (snapshot.error.toString()!="null")?snapshot.error.toString():null,
                   errorStyle: const TextStyle(color: Colors.red),
                 ),
-                onChanged: _management.streams.changeEmail,
+                onChanged: _management.streams.changeTeacherEmail,
               );
             },
           ),
           const SizedBox(height: 12),
           StreamBuilder(
-            stream: _management.streams.emailStream, 
+            stream: _management.streams.teacherCellphoneStream, 
             builder: (BuildContext context, AsyncSnapshot<String> snapshot) {  
               return TextField(
                 keyboardType: TextInputType.phone,
@@ -144,50 +158,79 @@ class _CreateTeacherPageState extends State<CreateTeacherPage> {
                   errorText: (snapshot.error.toString()!="null")?snapshot.error.toString():null,
                   errorStyle: const TextStyle(color: Colors.red),
                 ),
-                onChanged: _management.streams.changeEmail,
+                onChanged: _management.streams.changeTeachereCellphone,
               );
             },
           ),
           const SizedBox(height: 12),
-          TextField(
-            controller: _textEditingController,
-            keyboardType: TextInputType.multiline,
-            decoration: InputDecoration(
-              hintText: "Horario de atencion, Cubiculo",
-              label: const Text("Anotaciones"), 
-              counter: Text(_notes.length.toString()),
-              errorText: _error,
-              errorStyle: const TextStyle(color: Colors.red),
-            ),
-            onChanged: (String value){
-              
-              if(value.length<140){
-                _error=null;
-                _notes = value;
-              }else{
-                _error="Has llegado al limite de caracteres permitidos";
-                _textEditingController.text=_notes;
-              }
-              
-              setState(() {});
-            },
-          ),
-        ]
+          ]
       ),
     );
   }
 
   Widget _sendRegister(){
     return StreamBuilder(
-      stream: _management.streams.buttonRegisterStream, 
+      stream: _management.streams.buttonCreateTeacherStream, 
       builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {  
         return TextButton(
-          onPressed: (snapshot.hasData)?(){print("Registrar materia");}:null,
-          child: const Text("Registrar Docente",),
+          onPressed: (snapshot.hasData)?(){_createTeacherRequest();}:null,
+          child: (_createTeacherLoading)?_loading():const Text("Registrar Docente",),
           style: _sendButton,
         );
       },
     );
+  }
+
+  void _createTeacherRequest()async{
+    setState(() {
+      _createTeacherLoading=true;
+    });
+
+    Map<String, dynamic> response = await _management.createTeacherRequest();
+    setState(() {
+      _management.streams.resetTeacherName();
+      _nameTextField.text="";
+      _management.streams.resetTeacherLastName();
+      _lastnameTextField.text="";
+      _management.streams.resetTeacherEmail();
+      _emailTextField.text="";
+      _management.streams.resetTeacherCellphone();
+      _cellphoneTextField.text="";
+      _createTeacherLoading=false;
+    });
+    _notificateRequest(response);
+  }
+
+   Widget _loading(){
+    return const CircularProgressIndicator(
+      color: Colors.white,
+      strokeWidth: 4,
+    );
+  }
+
+  void _notificateRequest(Map<String, dynamic> response){
+    if (response["status"]) {
+      _management.subscripciptionRequest();
+      ElegantNotification.success(
+        title: Text("Accion exitosa", style: _notificationTitle,),
+        description:  Text(response["message"], style: _notificationText,),
+        toastDuration: const Duration(seconds: 2, milliseconds: 500)
+      ).show(context);
+    } else {
+      if(response["type"]=="info"){
+        ElegantNotification.info(
+          title: Text("Informacion", style: _notificationTitle,),
+          description:  Text(response["message"], style: _notificationText,),
+          toastDuration: const Duration(seconds: 4),
+        ).show(context);
+      }else{
+        ElegantNotification.error(
+          title: Text("Error", style: _notificationTitle,),
+          description:  Text(response["message"], style: _notificationText,),
+          toastDuration: const Duration(seconds: 3, milliseconds: 500)
+        ).show(context);
+      }
+    }
   }
 
 }

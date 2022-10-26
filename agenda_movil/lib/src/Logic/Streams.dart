@@ -6,10 +6,10 @@ import 'package:rxdart/rxdart.dart';
 class Streams with Validator{
 
   //students-logib-register
-  final _emailStream = BehaviorSubject<String>();
-  final _passwordStream = BehaviorSubject<String>();
-  final _nameStream = BehaviorSubject<String>();
-  final _lastNameStream = BehaviorSubject<String>();
+  final _studentEmailStream = BehaviorSubject<String>();
+  final _studentPasswordStream = BehaviorSubject<String>();
+  final _studentNameStream = BehaviorSubject<String>();
+  final _studentLastNameStream = BehaviorSubject<String>();
   //matter
   final _matterIdStream = BehaviorSubject<String>();
   final _matterNameStream = BehaviorSubject<String>();
@@ -20,15 +20,20 @@ class Streams with Validator{
   final _activityNoDaysRecordatoriesStream = BehaviorSubject<String>();
   final _activitySubmissionDateStream = BehaviorSubject<String>();
   final _activityTermStream = BehaviorSubject<String>();
+  //teacher
+  final _teacherNameStream = BehaviorSubject<String>();
+  final _teacherLastNameStream = BehaviorSubject<String>();
+  final _teacherEmailStream = BehaviorSubject<String>();
+  final _teacherCellphoneStream = BehaviorSubject<String>();
 
   //streams whit validated
   //students-logib-register
-  Stream<String> get emailStream => _emailStream.stream.transform(validateEmail);
-  Stream<String> get passwordStream => _passwordStream.stream.transform(validatePassword);
-  Stream<bool> get buttonLoginStream => CombineLatestStream.combine2(emailStream, passwordStream, (e, p)=>true); //combina 2 streams para el stream del boton cual se habilita o desabilita o desabilita segun el contenido
-  Stream<String> get nameStream => _nameStream.stream.transform(validateName);
-  Stream<String> get lastNameStream => _lastNameStream.stream.transform(validateLastName);
-  Stream<bool> get buttonRegisterStream => CombineLatestStream.combine4(nameStream, lastNameStream, emailStream, passwordStream, (n, l, e, p) =>  true); //combina 4 streams para el stream del boton cual se habilita o desabilita o desabilita segun el contenido
+  Stream<String> get studentEmailStream => _studentEmailStream.stream.transform(validateStudentEmail);
+  Stream<String> get studentPasswordStream => _studentPasswordStream.stream.transform(validateStudentPassword);
+  Stream<bool> get buttonLoginStream => CombineLatestStream.combine2(studentEmailStream, studentPasswordStream, (e, p)=>true); //combina 2 streams para el stream del boton cual se habilita o desabilita o desabilita segun el contenido
+  Stream<String> get studentNameStream => _studentNameStream.stream.transform(validateStudentName);
+  Stream<String> get studentLastNameStream => _studentLastNameStream.stream.transform(validateStudentLastName);
+  Stream<bool> get buttonRegisterStream => CombineLatestStream.combine4(studentNameStream, studentLastNameStream, studentEmailStream, studentPasswordStream, (n, l, e, p) =>  true); //combina 4 streams para el stream del boton cual se habilita o desabilita o desabilita segun el contenido
   //matter
   Stream<String> get matterIdStream => _matterIdStream.stream.transform(validateMatterId);
   Stream<String> get matterNameStream => _matterNameStream.stream.transform(validateMatterName);
@@ -40,14 +45,19 @@ class Streams with Validator{
   Stream<String> get activitySubmissionDateStream => _activitySubmissionDateStream.stream.transform(validateActivitySubmissionDateStream);
   Stream<String> get activityTermStream => _activityTermStream.stream.transform(validateActivityTerm);
   Stream<bool> get buttonCreateActivityStream => CombineLatestStream.combine5(activityNameStream, activityPercentStream, activityNoDaysRecordatoriesStream, activitySubmissionDateStream, activityTermStream, (n, p, nd, sd, t) =>  true);
-
+  //teacher
+  Stream<String> get teacherNameStream => _teacherNameStream.stream.transform(validateTeacherName);
+  Stream<String> get teacherLastNameStream => _teacherLastNameStream.stream.transform(validateTeacherLastName);
+  Stream<String> get teacherEmailStream => _teacherEmailStream.stream.transform(validateTeacherEmail);
+  Stream<String> get teacherCellphoneStream => _teacherCellphoneStream.stream.transform(validateTeacherCellphone);
+  Stream<bool> get buttonCreateTeacherStream => CombineLatestStream.combine3(teacherNameStream, teacherLastNameStream, teacherEmailStream, (n, l, e) =>  true);
 
   //add data to stream
   //students-logib-register
-  Function(String) get changeEmail => _emailStream.sink.add;
-  Function(String) get changePassword => _passwordStream.sink.add;
-  Function(String) get changeName => _nameStream.sink.add;
-  Function(String) get changeLastName => _lastNameStream.sink.add;
+  Function(String) get changeStudentEmail => _studentEmailStream.sink.add;
+  Function(String) get changeStudentPassword => _studentPasswordStream.sink.add;
+  Function(String) get changeStudentName => _studentNameStream.sink.add;
+  Function(String) get changeStudentLastName => _studentLastNameStream.sink.add;
   //matter
   Function(String) get changeMatterId => _matterIdStream.sink.add;
   Function(String) get changeMatterName => _matterNameStream.sink.add;
@@ -58,13 +68,21 @@ class Streams with Validator{
   Function(String) get changeActivityNoDaysRecordatories => _activityNoDaysRecordatoriesStream.sink.add;
   Function(String) get changeActivitySubmissionDate => _activitySubmissionDateStream.sink.add;
   Function(String) get changeActivityTerm => _activityTermStream.sink.add;
+  //teacher
+  Function(String) get changeTeacherName => _teacherNameStream.sink.add;
+  Function(String) get changeTeacherLastName => _teacherLastNameStream.sink.add;
+  Function(String) get changeTeacherEmail => _teacherEmailStream.sink.add;
+  Function(String) get changeTeachereCellphone => _teacherCellphoneStream.sink.add;
+
+  //validateIfHasData
+  bool get teacherCelphoneHasData => _teacherCellphoneStream.hasValue;
 
   //get lasted data on the stream
   //student-register-login
-  String get name => _nameStream.value;
-  String get lastName => _lastNameStream.value;
-  String get email => _emailStream.value;
-  String get password => _passwordStream.value;
+  String get studentName => _studentNameStream.value;
+  String get studentLastName => _studentLastNameStream.value;
+  String get studentEmail => _studentEmailStream.value;
+  String get studentPassword => _studentPasswordStream.value;
   //matter
   String get matterId => _matterIdStream.value;
   String get matterName => _matterNameStream.value;
@@ -75,24 +93,29 @@ class Streams with Validator{
   String get activityNoDaysRecordatories => _activityNoDaysRecordatoriesStream.value;
   String get activitySubmissionDate => _activitySubmissionDateStream.value;
   String get activityTerm => _activityTermStream.value;
+  //teacher
+  String get teacherName => _teacherNameStream.value;
+  String get teacherLastName => _teacherLastNameStream.value;
+  String get teacherEmail => _teacherEmailStream.value;
+  String get teacherCellphone => _teacherCellphoneStream.value;
 
   //reset stream
   //students-logib-register
   void resetName(){
-    _nameStream.sink.add("");
-    _nameStream.sink.addError("null");
+    _studentNameStream.sink.add("");
+    _studentNameStream.sink.addError("null");
   }
   void resetLastName(){
-    _lastNameStream.sink.add("");
-    _lastNameStream.sink.addError("null");
+    _studentLastNameStream.sink.add("");
+    _studentLastNameStream.sink.addError("null");
   }
   void resetEmail(){
-    _emailStream.sink.add("");
-    _emailStream.sink.addError("null");
+    _studentEmailStream.sink.add("");
+    _studentEmailStream.sink.addError("null");
   }
   void resetPassword(){
-    _passwordStream.sink.add("");
-    _passwordStream.sink.addError("null");
+    _studentPasswordStream.sink.add("");
+    _studentPasswordStream.sink.addError("null");
   }
   //matter
   void resetMatterId(){
@@ -128,13 +151,30 @@ class Streams with Validator{
     _activityTermStream.sink.add("");
     _activityTermStream.sink.addError("null");
   }
+  //teacher
+  void resetTeacherName(){
+    _teacherNameStream.sink.add("");
+    _teacherNameStream.sink.addError("null");
+  }
+  void resetTeacherLastName(){
+    _teacherLastNameStream.sink.add("");
+    _teacherLastNameStream.sink.addError("null");
+  }
+  void resetTeacherEmail(){
+    _teacherEmailStream.sink.add("");
+    _teacherEmailStream.sink.addError("null");
+  }
+  void resetTeacherCellphone(){
+    _teacherCellphoneStream.sink.add("");
+    _teacherCellphoneStream.sink.addError("null");
+  }
 
   dispose() {
     //student-login-register
-    _emailStream.close();
-    _passwordStream.close();
-    _nameStream.close();
-    _lastNameStream.close();
+    _studentEmailStream.close();
+    _studentPasswordStream.close();
+    _studentNameStream.close();
+    _studentLastNameStream.close();
     //matter
     _matterNameStream.close();
     _matterIdStream.close();
@@ -145,6 +185,12 @@ class Streams with Validator{
     _activityNoDaysRecordatoriesStream.close();
     _activitySubmissionDateStream.close();
     _activityTermStream.close();
+    //teacher
+    _teacherNameStream.close();
+    _teacherLastNameStream.close();
+    _teacherEmailStream.close();
+    _teacherCellphoneStream.close();
+
   }
 
 }

@@ -1,6 +1,7 @@
 import 'package:agenda_movil/src/Logic/Management.dart';
 import 'package:agenda_movil/src/Logic/Provider.dart';
 import 'package:agenda_movil/src/Persistence/Percistence.dart';
+import 'package:agenda_movil/src/pages/CreateTeacherPage.dart';
 import 'package:agenda_movil/src/pages/LogginPage.dart';
 import 'package:agenda_movil/src/pages/RatePage.dart';
 import 'package:flutter/material.dart';
@@ -71,6 +72,25 @@ class Menu extends StatelessWidget {
               style: _optionsStyle,
             ),
             onTap: (){},
+          ),
+          ListTile(
+            leading: Icon(Icons.hail_outlined, color: Colors.blue[700], size: 42),
+            title: Text(
+              "Agregar Docente",
+              style: _optionsStyle,
+            ),
+            onTap: (){
+              Navigator.pushNamed(context, CreateTeacherPage.route);
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.pending_actions, color: Colors.blue[700], size: 42),
+            title: Text(
+              "Estudio asistido",
+              style: _optionsStyle,
+            ),
+            onTap: (){
+            },
           ),
           ListTile(
             leading: Icon(Icons.rate_review, color: Colors.blue[700], size: 42),

@@ -295,7 +295,7 @@ class _CreateActivityPageState extends State<CreateActivityPage> {
     setState(() {
       _createActivityLoading=true;
     });
-    Map<String, dynamic> response = await _management.createActivityRequest();
+    Map<String, dynamic> response = await _management.createTeacherRequest();
     setState(() {
       reset();
       _createActivityLoading=false;

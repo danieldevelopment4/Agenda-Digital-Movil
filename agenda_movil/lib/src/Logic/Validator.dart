@@ -5,7 +5,7 @@ import 'dart:async';
 class Validator{
 
   //students-logib-register
-  final validateEmail = StreamTransformer<String,String>.fromHandlers(
+  final validateStudentEmail = StreamTransformer<String,String>.fromHandlers(
     handleData: (email, sink){
       String pattern = r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
       RegExp regExp = RegExp(pattern);
@@ -17,7 +17,7 @@ class Validator{
     }
   );
 
-  final validatePassword = StreamTransformer<String,String>.fromHandlers(
+  final validateStudentPassword = StreamTransformer<String,String>.fromHandlers(
     handleData: (password, sink){
       if(password.length>=6){
         sink.add(password);
@@ -27,11 +27,11 @@ class Validator{
     }
   );
 
-  final validateName = StreamTransformer<String,String>.fromHandlers(
+  final validateStudentName = StreamTransformer<String,String>.fromHandlers(
     handleData: (name, sink){
       if(name.length>=3 && name.length<=18){
         sink.add(name);
-      }else if(name.length>18){
+      }else if(name.length>22){
       sink.addError("El nombre es demasiado largo");
       }else{
         sink.addError("Nombre demasiado corto");
@@ -39,7 +39,7 @@ class Validator{
     }
   );
 
-  final validateLastName = StreamTransformer<String,String>.fromHandlers(
+  final validateStudentLastName = StreamTransformer<String,String>.fromHandlers(
     handleData: (name, sink){
       if(name.length>=5){
         sink.add(name);
@@ -138,5 +138,51 @@ class Validator{
       }
     }
   );
+
+  //teacher
+  final validateTeacherName = StreamTransformer<String,String>.fromHandlers(
+    handleData: (name, sink){
+      if(name.length>=3 && name.length<=18){
+        sink.add(name);
+      }else if(name.length>28){
+      sink.addError("El nombre es demasiado largo");
+      }else{
+        sink.addError("El nombre es demasiado corto");
+      }
+    }
+  );
+
+  final validateTeacherLastName = StreamTransformer<String,String>.fromHandlers(
+    handleData: (name, sink){
+      if(name.length>=5){
+        sink.add(name);
+      }else{
+        sink.addError("El Apellido demasiado corto");
+      }
+    }
+  );
+
+  final validateTeacherEmail = StreamTransformer<String,String>.fromHandlers(
+    handleData: (email, sink){
+      String pattern = r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+      RegExp regExp = RegExp(pattern);
+      if(regExp.hasMatch(email)){
+        sink.add(email);
+      }else{
+        sink.addError("Correo no valido");
+      }
+    }
+  );
+
+  final validateTeacherCellphone = StreamTransformer<String,String>.fromHandlers(
+    handleData: (cellphone, sink){
+      if(cellphone.length==10 || cellphone.isEmpty){
+        sink.add(cellphone);
+      }else{
+        sink.addError("Numero celular no valido");
+      }
+    }
+  );
+
 
 }

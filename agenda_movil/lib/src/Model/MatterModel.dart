@@ -14,7 +14,8 @@ class MatterModel {
       this.teacher,
       this.activities,
       this.admin,
-      this.studentList,
+      this.aprobedStudentsList,
+      this.waitingStudentsList,
     } 
   );
 
@@ -24,7 +25,8 @@ class MatterModel {
   final TeacherModel? teacher;
   final List<ActivityModel>? activities;
   final bool? admin;
-  final List<StudentModel>? studentList;
+  final List<StudentModel>? aprobedStudentsList;
+  final List<StudentModel>? waitingStudentsList;
 
   factory MatterModel.fromJson(Map<String, dynamic> json) => MatterModel(
       id: json["id"],
@@ -33,7 +35,8 @@ class MatterModel {
       teacher: ((json["teacher"] == null)?null:TeacherModel.fromJson(json["teacher"])),
       activities: List<ActivityModel>.from(json["activities"].map((x) => ActivityModel.fromJson(x))),
       admin: json["admin"],
-      studentList: List<StudentModel>.from(json["studentList"].map((x) => StudentModel.fromJson(x))),
+      aprobedStudentsList: List<StudentModel>.from(json["aprobedStudentsList"].map((x) => StudentModel.fromJson(x))),
+      waitingStudentsList: List<StudentModel>.from(json["waitingStudentsList"].map((x) => x)),
   );
   
   factory MatterModel.fromHalfJson(Map<String, dynamic> json) => MatterModel(
@@ -65,8 +68,11 @@ class MatterModel {
     return admin!;
   }
 
-  List<StudentModel> get getStudentsList{
-    return studentList!;
+  List<StudentModel> get getAprobedStudentsList{
+    return aprobedStudentsList!;
   }
 
+  List<StudentModel> get getWaitingStudentsList{
+    return waitingStudentsList!;
+  }
 }

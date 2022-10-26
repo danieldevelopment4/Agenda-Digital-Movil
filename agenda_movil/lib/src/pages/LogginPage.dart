@@ -125,7 +125,7 @@ class _LogginPageState extends State<LogginPage> {
                   ),
                   const SizedBox(height: 30),
                   StreamBuilder(
-                    stream: _management.streams.emailStream,
+                    stream: _management.streams.studentEmailStream,
                     builder:
                         (BuildContext context, AsyncSnapshot<String> snapshot) {
                       return TextField(
@@ -141,13 +141,13 @@ class _LogginPageState extends State<LogginPage> {
                             color: Color.fromRGBO(13, 71, 161, 1),
                           ), //icono de la izquierda
                         ),
-                        onChanged: _management.streams.changeEmail,
+                        onChanged: _management.streams.changeStudentEmail,
                       );
                     },
                   ),
                   const SizedBox(height: 12),
                   StreamBuilder(
-                    stream: _management.streams.passwordStream,
+                    stream: _management.streams.studentPasswordStream,
                     builder:
                         (BuildContext context, AsyncSnapshot<String> snapshot) {
                       return TextField(
@@ -170,7 +170,7 @@ class _LogginPageState extends State<LogginPage> {
                             }
                           ),
                         ),
-                        onChanged: _management.streams.changePassword,
+                        onChanged: _management.streams.changeStudentPassword,
                       );
                     },
                   ),

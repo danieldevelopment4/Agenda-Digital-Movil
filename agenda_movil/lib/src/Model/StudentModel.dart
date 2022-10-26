@@ -45,5 +45,8 @@ class StudentModel {
     return lastName;
   }   
 
+  String get getFullName{
+    return name+" "+lastName;
+  }
 
 }

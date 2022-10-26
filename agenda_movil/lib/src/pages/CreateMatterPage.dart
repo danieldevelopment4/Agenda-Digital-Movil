@@ -348,8 +348,7 @@ class _CreateMatterPageState extends State<CreateMatterPage> {
     setState(() {
       _createMatterLoading=true;
     });
-    String rgb = _color.red.toString()+","+_color.green.toString()+","+_color.blue.toString();
-    Map<String, dynamic> response = await _management.createMatterRequest(rgb);
+    Map<String, dynamic> response = await _management.createMatterRequest();
     setState(() {
       _management.streams.resetMatterName();
       _nameTextField.text="";

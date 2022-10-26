@@ -53,5 +53,61 @@ class SubscriptionRequest {
     }
     return null!;
   }
+  
+  Future<Map<String, dynamic>> aprobeSubscriptionRequest(String host, Map<String, String> header, Map<String, dynamic> body) async {
+    try {
+      var url = Uri.parse(host+"/subscription/aprobe");
+      var response = await http.post(url, body: jsonEncode(body), headers: header);
+      // print('Response status: ${response.statusCode}');
+      // print('Response body: ${response.body}');
+      if (response.statusCode == 200) {
+        return {
+          "status": true, // "OK"
+          "message": "Se ha aprobado la peticion del estudiante exitosamente"
+        };
+      }else if(response.statusCode == 400){
+        return {
+          "status": false, // "ERROR"
+          "type":"info",
+          "message": "ERROR de dudosa procedencia::aprobacion"
+        };
+      }
+    }on SocketException catch(e){
+      return {
+        "status": false, // "ERROR"
+        "type":"error",
+        "message": "No pudimos completar la accion, revisa si cuentas con conexion a internet"
+      };
+    }
+    return null!;
+  }
+
+  Future<Map<String, dynamic>> deniedSubscriptionRequest(String host, Map<String, String> header, Map<String, dynamic> body) async {
+    try {
+      var url = Uri.parse(host+"/subscription/denied");
+      var response = await http.post(url, body: jsonEncode(body), headers: header);
+      // print('Response status: ${response.statusCode}');
+      // print('Response body: ${response.body}');
+      if (response.statusCode == 200) {
+        return {
+          "status": true, // "OK"
+          "message": "Se ha denegado el acceso a esta materia para el estudiante"
+        };
+      }else if(response.statusCode == 400){
+        return {
+          "status": false, // "ERROR"
+          "type":"info",
+          "message": "ERROR de dudosa procedencia::rechazo"
+        };
+      }
+    }on SocketException catch(e){
+      return {
+        "status": false, // "ERROR"
+        "type":"error",
+        "message": "No pudimos completar la accion, revisa si cuentas con conexion a internet"
+      };
+    }
+    return null!;
+  }
 
 }

@@ -2,31 +2,36 @@
 
 import 'package:agenda_movil/src/Model/ActivityModel.dart';
 import 'package:agenda_movil/src/Model/MatterModel.dart';
+import 'package:agenda_movil/src/Model/StudentModel.dart';
 import 'package:agenda_movil/src/Widget/BottomBarMenu.dart';
 import 'package:agenda_movil/src/Widget/Menu.dart';
 import 'package:agenda_movil/src/pages/CreateActivityPage.dart';
+import 'package:elegant_notification/elegant_notification.dart';
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
 import '../Logic/Management.dart';
 import '../Logic/Provider.dart';
 
-class MatterPage extends StatelessWidget {
-  MatterPage({Key? key}) : super(key: key);
+class MatterPage extends StatefulWidget {
+  const MatterPage({Key? key}) : super(key: key);
 
   static const String route = "Subject";
 
+  @override
+  State<MatterPage> createState() => _MatterPageState();
+}
+
+class _MatterPageState extends State<MatterPage> {
   late Size _size;
   late Management _management;
-  
+
   late TextStyle _titlle;
+  late TextStyle _notificationTitle;
+  late TextStyle _notificationText;
   late TextStyle _headerSubTitlle;
   late TextStyle _headerSubTitlleApproved;
   late TextStyle _headerSubTitlleDeprecated;
-  late TextStyle _cardTitlle;
-  late TextStyle _cardTitlleApproved;
-  late TextStyle _cardTitlleDeprecated;
-  late TextStyle _cardSubTitlle;
 
   TextEditingController searchTextField = TextEditingController();
 
@@ -37,6 +42,13 @@ class MatterPage extends StatelessWidget {
   Widget build(BuildContext context) {
     _size = MediaQuery.of(context).size;//dimeiones de la pantalla
     _management = Provider.of(context);
+    _notificationTitle = const TextStyle(
+      fontSize: 15,
+      fontWeight: FontWeight.bold
+    );
+    _notificationText = const TextStyle(
+      fontSize: 15,
+    );
      _matter = _management.getMatter();
      _activitiesList = _matter.getActivitiesList;
     _titlle = const TextStyle(
@@ -55,24 +67,6 @@ class MatterPage extends StatelessWidget {
       color: Colors.red,
       fontWeight: FontWeight.bold,
       fontSize: 25,
-    );
-    _cardTitlle = const TextStyle(
-      fontWeight: FontWeight.bold,
-      fontSize: 18,
-    );
-    _cardTitlleApproved = const TextStyle(
-      fontWeight: FontWeight.bold,
-      color: Colors.green,
-      fontSize: 18,
-    );
-    _cardTitlleDeprecated = const TextStyle(
-      fontWeight: FontWeight.bold,
-      color: Colors.red,
-      fontSize: 18,
-    );
-    _cardSubTitlle = const TextStyle(
-      color: Colors.grey,
-      fontSize: 15,
     );
 
     return Scaffold(
@@ -94,7 +88,7 @@ class MatterPage extends StatelessWidget {
            child: PageView(
             children: <Widget>[
               _activitys(context),
-              _teacher(),
+              _extras(),
             ],
            ),
          )
@@ -194,7 +188,6 @@ class MatterPage extends StatelessWidget {
                     borderRadius: BorderRadius.circular(12),
                     borderSide: BorderSide(color: Colors.blue[700]!)
                   )
-
                 ), 
               ),
             ],
@@ -247,7 +240,7 @@ class MatterPage extends StatelessWidget {
       style: subtitleStile,
     ));
     column.add(Divider(color: color, height: 2.8,));
-    row1.add(Text(activity.getSubmissionDate, style: subtitleStile,));
+    row1.add(Text(activity.getSubmissionDate.split(' ')[0], style: subtitleStile,));
     row1.add(const Icon(Icons.calendar_month, color: Colors.grey,));
     row1.add(const Expanded(child: SizedBox()));
     row1.add(Text(activity.getNoDayRecordatories.toString(), style: subtitleStile,));
@@ -283,17 +276,187 @@ class MatterPage extends StatelessWidget {
     );
   }
 
-
-  Widget _teacher(){
-    return Column(
-      children: <Widget>[
-        Text(
-          "DOCENTE",
+  Widget _extras(){
+    List<Widget> extras = List.empty(growable: true);
+    extras.add(Text(
+        "DOCENTE",
+        style: _headerSubTitlle
+      )
+    );
+    extras.add(const Expanded(child: SizedBox(),));
+    extras.add(Text(
+        "Estudiantes registrados",
+        style: _headerSubTitlle
+      )
+    );
+    extras.add(Expanded(child: _aprobedStudents(),));
+    if (_matter.getAdmin) {
+      extras.add(Text(
+          "Estudiantes en espera",
           style: _headerSubTitlle
-        ),
-        Expanded(child: ListView()),
-      ],
+        )
+      );
+      extras.add(const Expanded(child: SizedBox(),));
+    }
+    return Column(
+      children: extras,
     );
   }
 
+  Widget _headerContainer(String text, Color color){
+    return Container(
+      // height: height,
+      margin: const EdgeInsets.all(5),
+      decoration: const BoxDecoration(
+        color: Color.fromRGBO(3, 169, 244, .7),
+        borderRadius: BorderRadius.all(Radius.circular(5)),
+      ),
+      child: Center(
+        child: Text(
+          text,
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: color
+          ),
+          textAlign: TextAlign.center,
+        )
+      ),
+    );
+  }
+
+  Widget _rowContainer(Widget widget){
+    return Container(
+      // height: height,
+      margin: const EdgeInsets.all(5),
+      decoration: const BoxDecoration(
+        color: Color.fromRGBO(33, 150, 243, .3),
+        borderRadius: BorderRadius.all(Radius.circular(10)),
+      ),
+      child:widget
+    );
+  }
+
+  Widget _aprobedStudents(){
+    List<TableRow> rows = List.empty(growable: true);
+    rows.add(TableRow(
+        children: <Widget>[
+          _headerContainer("Nombre", Colors.black),
+          _headerContainer("Explusar", Colors.black),
+        ]
+      )
+    );
+    List<StudentModel> students = _matter.getAprobedStudentsList;
+
+    for (int i = 0; i < students.length; i++) {
+      rows.add(TableRow(
+          children: <Widget>[
+            _rowContainer(Text(
+                students[i].getFullName,
+                style: const TextStyle(
+                  fontSize: 20,
+                ),
+                textAlign: TextAlign.center,
+              )
+            ),
+            _rowContainer("X", Colors.red),
+          ]
+        )
+      );
+    }
+    return Expanded(
+      child: ListView(
+        children: <Widget>[
+          Table(
+            columnWidths: const {
+              0: FlexColumnWidth(70),
+              1: FlexColumnWidth(15),
+            },
+            children: rows,
+            defaultVerticalAlignment: TableCellVerticalAlignment.top,
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _waitingStudents(){
+    List<TableRow> rows = List.empty(growable: true);
+    rows.add(TableRow(
+        children: <Widget>[
+          _headerContainer("Nombre", Colors.black),
+          _headerContainer("Aceptar", Colors.black),
+          _headerContainer("rechazar", Colors.black),
+        ]
+      )
+    );
+    List<StudentModel> students = _matter.getAprobedStudentsList;
+    for (int i = 0; i < students.length; i++) {
+      rows.add(TableRow(
+          children: <Widget>[
+            _rowContainer(students[i].getFullName, Colors.black),
+            _rowContainer("✓", Colors.green, ),
+            _rowContainer("X", Colors.red),
+          ]
+        )
+      );
+    }
+    return Expanded(
+      child: ListView(
+        children: <Widget>[
+          Table(
+            columnWidths: const {
+              0: FlexColumnWidth(70),
+              1: FlexColumnWidth(15),
+              2: FlexColumnWidth(15),
+            },
+            children: rows,
+            defaultVerticalAlignment: TableCellVerticalAlignment.top,
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _aprobeButton(){
+    
+  }
+
+  _aprobeRequest()async{
+    Map<String, dynamic> response = await _management.aprobeSubscriptionRequest();
+    _notificateRequest(response);
+    setState(() {});
+  }
+
+  void _deniedRequest()async{
+    
+    Map<String, dynamic> response = await _management.deniedSubscriptionRequest();
+    _notificateRequest(response);
+    setState(() {});
+  }
+
+  void _notificateRequest(Map<String, dynamic> response){
+    if (response["status"]) {
+      _management.subscripciptionRequest();
+      ElegantNotification.success(
+        title: Text("Accion exitosa", style: _notificationTitle,),
+        description:  Text(response["message"], style: _notificationText,),
+        toastDuration: const Duration(seconds: 2, milliseconds: 500)
+      ).show(context);
+    } else {
+      if(response["type"]=="info"){
+        ElegantNotification.info(
+          title: Text("Informacion", style: _notificationTitle,),
+          description:  Text(response["message"], style: _notificationText,),
+          toastDuration: const Duration(seconds: 4),
+        ).show(context);
+      }else{
+        ElegantNotification.error(
+          title: Text("Error", style: _notificationTitle,),
+          description:  Text(response["message"], style: _notificationText,),
+          toastDuration: const Duration(seconds: 3, milliseconds: 500)
+        ).show(context);
+      }
+    }
+  }
 }
