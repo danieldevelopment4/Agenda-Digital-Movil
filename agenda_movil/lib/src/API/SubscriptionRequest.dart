@@ -56,6 +56,7 @@ class SubscriptionRequest {
   
   Future<Map<String, dynamic>> aprobeSubscriptionRequest(String host, Map<String, String> header, Map<String, dynamic> body) async {
     try {
+      // print('Response body: ${body}');
       var url = Uri.parse(host+"/subscription/aprobe");
       var response = await http.post(url, body: jsonEncode(body), headers: header);
       // print('Response status: ${response.statusCode}');

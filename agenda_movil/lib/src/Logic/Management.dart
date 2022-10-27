@@ -61,6 +61,7 @@ class Management{
     return _subsciptionList;
   }
   void setSubscriptionList(){
+    print("setSubscriptionList");
     _subsciptionList = subscriptionListFromJson(_percistence.subscription);
   }
 

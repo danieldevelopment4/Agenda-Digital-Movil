@@ -21,7 +21,7 @@ class StudentRequest {
         return {
           "status": true, // "OK"
         };
-      }else if (response.statusCode == 400) {
+      }else if (response.statusCode == 401) {
         return {
           "status": false, // "ERROR"
           "message": "Las credenciales ingresadas no han podido ser validadas, por favor rectifica e intenta nuevamente"

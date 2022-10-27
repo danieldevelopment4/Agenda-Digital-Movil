@@ -36,7 +36,7 @@ class MatterModel {
       activities: List<ActivityModel>.from(json["activities"].map((x) => ActivityModel.fromJson(x))),
       admin: json["admin"],
       aprobedStudentsList: List<StudentModel>.from(json["aprobedStudentsList"].map((x) => StudentModel.fromJson(x))),
-      waitingStudentsList: List<StudentModel>.from(json["waitingStudentsList"].map((x) => x)),
+      waitingStudentsList: List<StudentModel>.from(json["waitingStudentsList"].map((x) => StudentModel.fromJson(x))),
   );
   
   factory MatterModel.fromHalfJson(Map<String, dynamic> json) => MatterModel(

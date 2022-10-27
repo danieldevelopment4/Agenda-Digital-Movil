@@ -147,7 +147,7 @@ class _MatterPageState extends State<MatterPage> {
                 percent.toString(),
                 style: _headerSubTitlle,
               ),
-              progressColor: Colors.green[300],
+              progressColor: Colors.blue[300],
             ),
           ],
     );
@@ -283,24 +283,140 @@ class _MatterPageState extends State<MatterPage> {
         style: _headerSubTitlle
       )
     );
-    extras.add(const Expanded(child: SizedBox(),));
+    extras.add(_teacher());
+    extras.add(const Divider(height: 2,));
     extras.add(Text(
         "Estudiantes registrados",
         style: _headerSubTitlle
       )
     );
-    extras.add(Expanded(child: _aprobedStudents(),));
+    extras.add(_aprobedStudents());
     if (_matter.getAdmin) {
       extras.add(Text(
           "Estudiantes en espera",
           style: _headerSubTitlle
         )
       );
-      extras.add(const Expanded(child: SizedBox(),));
+      extras.add(_waitingStudents());
     }
     return Column(
       children: extras,
     );
+  }
+
+  Widget _teacher(){
+    List<Widget> column = List.empty(growable: true);
+    List<Widget> buttons = List.empty(growable: true);
+    List<Widget> contacts = List.empty(growable: true);
+    String name = "No asignado";
+    String email = "No asignado";
+    String cellphone = "No asignado";
+    if(_matter.getTeacher!=null){//hay profesor registrado
+      name = _matter.getTeacher!.getFullName;
+      email = _matter.getTeacher!.getEmail;
+      if(_matter.getTeacher!.getCellPhone!=null){
+        cellphone = _matter.getTeacher!.getCellPhone!.toString();
+      }
+      buttons.add(
+        IconButton(
+          icon:  Icon(Icons.edit, color:Colors.blue[700], size: 35),
+          onPressed: () => _editTeacher, 
+        )
+      );
+      buttons.add(
+        IconButton(
+          icon:  Icon(Icons.delete, color:Colors.blue[700], size: 30),
+          onPressed: () => _removeTeacher, 
+        )
+      );
+      contacts.add(
+      TextButton(
+          child: const Icon(Icons.email, color: Colors.white, size: 30),
+          style: TextButton.styleFrom(
+            backgroundColor: Colors.red,
+            
+          ),
+          onPressed: () => _sendEmail,
+        )
+      );
+      contacts.add(
+        TextButton(
+          child: const Icon(Icons.whatsapp, color: Colors.white, size: 30),
+          style: TextButton.styleFrom(
+            backgroundColor: Colors.green
+          ),
+          onPressed: () => (_matter.getTeacher!.getCellPhone==null)?null:_sendWhatsApp,
+        )
+      );
+      contacts.add(
+        TextButton(
+          child: const Icon(Icons.telegram, color: Colors.white, size: 30),
+          style: TextButton.styleFrom(
+            backgroundColor: Colors.blue
+          ),
+          onPressed: () => (_matter.getTeacher!.getCellPhone==null)?null:_sendTelegram,
+        )
+      );
+    }else{//NO hay profesor
+      buttons.add(
+        IconButton(
+          icon:  Icon(Icons.add, color:Colors.blue[700], size: 30),
+          onPressed: () => _addTeacher, 
+        )
+      );
+    }
+    
+    Row teacherData = Row(
+      children: <Widget>[
+        Icon(Icons.account_circle_rounded, size: 80, color: Colors.blue[700]),
+        const Expanded(child: SizedBox()),
+        Column(
+          children: <Widget>[
+            Text("Nombre: "+name, style: _headerSubTitlle,),
+            Text("Correo: "+email, style: _headerSubTitlle,),
+            Text("Celular: "+cellphone, style: _headerSubTitlle,),
+          ],
+        ),
+        const Expanded(child: SizedBox(),),
+        Column(
+          children: buttons,
+        )
+      ],
+    );
+    column.add(teacherData);
+    column.add(
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: contacts,
+      )
+    );
+    return Column(
+      children: column,
+    );
+  }
+
+  void _addTeacher(){
+
+  }
+  
+  void _editTeacher(){
+    
+  }
+
+  void _removeTeacher(){
+    
+  }
+
+  void _sendEmail(){
+
+  }
+  
+  void _sendWhatsApp(){
+    
+  }
+
+  void _sendTelegram(){
+    
   }
 
   Widget _headerContainer(String text, Color color){
@@ -327,7 +443,7 @@ class _MatterPageState extends State<MatterPage> {
 
   Widget _rowContainer(Widget widget){
     return Container(
-      // height: height,
+      height: 40,
       margin: const EdgeInsets.all(5),
       decoration: const BoxDecoration(
         color: Color.fromRGBO(33, 150, 243, .3),
@@ -339,42 +455,74 @@ class _MatterPageState extends State<MatterPage> {
 
   Widget _aprobedStudents(){
     List<TableRow> rows = List.empty(growable: true);
-    rows.add(TableRow(
+    TableRow header;
+    if(_matter.getAdmin){
+      header = TableRow(
         children: <Widget>[
           _headerContainer("Nombre", Colors.black),
           _headerContainer("Explusar", Colors.black),
         ]
-      )
-    );
+      );
+    }else{
+      header = TableRow(
+        children: <Widget>[
+          _headerContainer("Nombre", Colors.black),
+        ]
+      );
+    }
+    rows.add(header);
     List<StudentModel> students = _matter.getAprobedStudentsList;
-
+  
     for (int i = 0; i < students.length; i++) {
+      if(_matter.getAdmin){
       rows.add(TableRow(
           children: <Widget>[
-            _rowContainer(Text(
-                students[i].getFullName,
-                style: const TextStyle(
-                  fontSize: 20,
+            _rowContainer(
+              Center(
+                child: Text(
+                  students[i].getFullName,
+                  style: const TextStyle(
+                    fontSize: 20,
+                  ),
+                  textAlign: TextAlign.center,
                 ),
-                textAlign: TextAlign.center,
               )
             ),
-            _rowContainer(IconButton(
-              icon: const Icon(Icons.not_interested, color: Colors.red),
-              onPressed: _deniedRequest(students[i].getId)
+            _rowContainer(
+              IconButton(
+                icon: const Icon(Icons.not_interested, color: Colors.red),
+                onPressed: () => _deniedRequest(students[i].getId)
+              )
+            ),
+          ]
+        )
+      );
+    }else{
+      rows.add(TableRow(
+          children: <Widget>[
+            _rowContainer(Center(
+              child: Text(
+                  students[i].getFullName,
+                  style: const TextStyle(
+                    fontSize: 20,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
               )
             ),
           ]
         )
       );
     }
+      
+    }
     return Expanded(
       child: ListView(
         children: <Widget>[
           Table(
             columnWidths: const {
-              0: FlexColumnWidth(70),
-              1: FlexColumnWidth(15),
+              0: FlexColumnWidth(76),
+              1: FlexColumnWidth(24),
             },
             children: rows,
             defaultVerticalAlignment: TableCellVerticalAlignment.top,
@@ -390,30 +538,32 @@ class _MatterPageState extends State<MatterPage> {
         children: <Widget>[
           _headerContainer("Nombre", Colors.black),
           _headerContainer("Aceptar", Colors.black),
-          _headerContainer("rechazar", Colors.black),
+          _headerContainer("Rechazar", Colors.black),
         ]
       )
     );
-    List<StudentModel> students = _matter.getAprobedStudentsList;
+    List<StudentModel> students = _matter.getWaitingStudentsList;
     for (int i = 0; i < students.length; i++) {
       rows.add(TableRow(
           children: <Widget>[
-            _rowContainer(Text(
-                students[i].getFullName,
-                style: const TextStyle(
-                  fontSize: 20,
+            _rowContainer(Center(
+              child: Text(
+                  students[i].getFullName,
+                  style: const TextStyle(
+                    fontSize: 20,
+                  ),
+                  textAlign: TextAlign.center,
                 ),
-                textAlign: TextAlign.center,
               )
             ),
             _rowContainer(IconButton(
               icon: const Icon(Icons.check, color: Colors.green),
-              onPressed: _aprobeRequest(students[i].getId)
+              onPressed: () => _aprobeRequest(students[i].getId)
               )
             ),
             _rowContainer(IconButton(
               icon: const Icon(Icons.not_interested, color: Colors.red),
-              onPressed: _deniedRequest(students[i].getId)
+              onPressed: () => _deniedRequest(students[i].getId)
               )
             )
           ]
@@ -425,9 +575,9 @@ class _MatterPageState extends State<MatterPage> {
         children: <Widget>[
           Table(
             columnWidths: const {
-              0: FlexColumnWidth(70),
-              1: FlexColumnWidth(15),
-              2: FlexColumnWidth(15),
+              0: FlexColumnWidth(53),
+              1: FlexColumnWidth(22),
+              2: FlexColumnWidth(25),
             },
             children: rows,
             defaultVerticalAlignment: TableCellVerticalAlignment.top,
@@ -440,18 +590,17 @@ class _MatterPageState extends State<MatterPage> {
   _aprobeRequest(String id)async{
     Map<String, dynamic> response = await _management.aprobeSubscriptionRequest(id);
     _notificateRequest(response);
-    setState(() {});
   }
 
   _deniedRequest(String id)async{
     Map<String, dynamic> response = await _management.deniedSubscriptionRequest(id);
     _notificateRequest(response);
-    setState(() {});
   }
 
-  void _notificateRequest(Map<String, dynamic> response){
+  void _notificateRequest(Map<String, dynamic> response)async{
     if (response["status"]) {
-      _management.subscripciptionRequest();
+      await _management.subscripciptionRequest();
+      setState(() {});
       ElegantNotification.success(
         title: Text("Accion exitosa", style: _notificationTitle,),
         description:  Text(response["message"], style: _notificationText,),
@@ -472,5 +621,6 @@ class _MatterPageState extends State<MatterPage> {
         ).show(context);
       }
     }
+    setState(() {});
   }
 }

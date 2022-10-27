@@ -71,7 +71,7 @@ class Menu extends StatelessWidget {
               "Configuracion",
               style: _optionsStyle,
             ),
-            onTap: (){},
+            onTap: ()async{await _management.subscripciptionRequest();},
           ),
           ListTile(
             leading: Icon(Icons.hail_outlined, color: Colors.blue[700], size: 42),
