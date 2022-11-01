@@ -1,9 +1,10 @@
 import 'package:agenda_movil/src/Logic/Management.dart';
 import 'package:agenda_movil/src/Logic/Provider.dart';
 import 'package:agenda_movil/src/Persistence/Percistence.dart';
-import 'package:agenda_movil/src/pages/CreateTeacherPage.dart';
+import 'package:agenda_movil/src/pages/TeacherPage.dart';
 import 'package:agenda_movil/src/pages/LogginPage.dart';
 import 'package:agenda_movil/src/pages/RatePage.dart';
+import 'package:agenda_movil/src/pages/SettingsPage.dart';
 import 'package:flutter/material.dart';
 
 
@@ -71,7 +72,11 @@ class Menu extends StatelessWidget {
               "Configuracion",
               style: _optionsStyle,
             ),
-            onTap: ()async{await _management.subscripciptionRequest();},
+            onTap: ()async{
+              await _management.subscripciptionRequest();
+              _management.setIndex=-1;
+              Navigator.pushReplacementNamed(context, SettingsPage.route);
+            },
           ),
           ListTile(
             leading: Icon(Icons.hail_outlined, color: Colors.blue[700], size: 42),
@@ -80,7 +85,8 @@ class Menu extends StatelessWidget {
               style: _optionsStyle,
             ),
             onTap: (){
-              Navigator.pushNamed(context, CreateTeacherPage.route);
+              _management.setIndex=-1;
+              Navigator.pushReplacementNamed(context, TeacherPage.createRoute);
             },
           ),
           ListTile(
@@ -126,7 +132,7 @@ class Menu extends StatelessWidget {
             onPressed: (){
               _percistence.student = "";
               _percistence.subscription = "";
-              Navigator.pushNamed(context, LogginPage.route);
+              Navigator.pushReplacementNamed(context, LogginPage.route);
             },
           )
         ],

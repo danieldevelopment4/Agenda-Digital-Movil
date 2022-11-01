@@ -9,6 +9,7 @@ class MatterRequest {
 
   Future<Map<String, dynamic>> create(String host, Map<String, String> header, Map<String, dynamic> body) async {
     try {
+      print('body: ${body}');
       var url = Uri.parse(host+"/matter/create");
       var response = await http.post(url, body: jsonEncode(body), headers: header);
       print('Response status: ${response.statusCode}');
@@ -35,6 +36,31 @@ class MatterRequest {
     return null!;
   }
 
-  
+  Future<Map<String, dynamic>> updateTeacher(String host, Map<String, String> header, Map<String, dynamic> body) async {
+    try {
+      var url = Uri.parse(host+"/matter/update");
+      var response = await http.post(url, body: jsonEncode(body), headers: header);
+      print('Response body: ${response.body}');
+      if (response.statusCode == 200) {
+        return {
+          "status": true, // "OK"
+          "message": "Se a modificado exitosamente la informacion de la materia"
+        };
+      }else if(response.statusCode == 400){
+        return {
+          "status": false, // "ERROR"
+          "type":"info",
+          "message": "no pudimos realizar esta accion...perdon"
+        };
+      }
+    } on SocketException catch (e) {//si falla la conexion
+      return {
+        "status": false, // "ERROR"
+        "type":"error",
+        "message": "No pudimos completar la accion, revisa si cuentas con conexion a internet"
+      };
+    }
+    return null!;
+  }
 
 }

@@ -6,17 +6,19 @@ import 'package:agenda_movil/src/Model/StudentModel.dart';
 import 'package:agenda_movil/src/Widget/BottomBarMenu.dart';
 import 'package:agenda_movil/src/Widget/Menu.dart';
 import 'package:agenda_movil/src/pages/CreateActivityPage.dart';
+import 'package:agenda_movil/src/pages/TeacherPage.dart';
 import 'package:elegant_notification/elegant_notification.dart';
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
 import '../Logic/Management.dart';
 import '../Logic/Provider.dart';
+import 'AdtivityPage.dart';
 
 class MatterPage extends StatefulWidget {
   const MatterPage({Key? key}) : super(key: key);
 
-  static const String route = "Subject";
+  static const String route = "Matter";
 
   @override
   State<MatterPage> createState() => _MatterPageState();
@@ -32,8 +34,18 @@ class _MatterPageState extends State<MatterPage> {
   late TextStyle _headerSubTitlle;
   late TextStyle _headerSubTitlleApproved;
   late TextStyle _headerSubTitlleDeprecated;
+  late TextStyle _cardSubText;
 
   TextEditingController searchTextField = TextEditingController();
+  bool _searchTeacherLoading = false;
+  bool _addTeacherLoading = false;
+
+  String _teacherId="";
+  String _teacherFullName="";
+  String _teacherEmail="";
+  String _teacherCellphone="";
+
+  TextEditingController _teacherIdTextField = TextEditingController();
 
   late MatterModel _matter;
   late List<ActivityModel> _activitiesList;
@@ -68,7 +80,9 @@ class _MatterPageState extends State<MatterPage> {
       fontWeight: FontWeight.bold,
       fontSize: 25,
     );
-
+    _cardSubText = const TextStyle(
+      fontSize: 18,
+    );
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blue[700],
@@ -88,6 +102,15 @@ class _MatterPageState extends State<MatterPage> {
            child: PageView(
             children: <Widget>[
               _activitys(context),
+              Column(
+                children: <Widget>[
+                  Text(
+                    "DOCENTE",
+                    style: _headerSubTitlle
+                  ),
+                  _teacher(context)
+                ],
+              ),
               _extras(),
             ],
            ),
@@ -173,7 +196,7 @@ class _MatterPageState extends State<MatterPage> {
                   ), 
                   const Expanded(child: SizedBox()),
                   IconButton(icon: const Icon(Icons.add), iconSize: 30, color: Colors.blue[700], onPressed: (){
-                      Navigator.pushNamed(context, CreateActivityPage.route);
+                      Navigator.pushReplacementNamed(context, CreateActivityPage.route);
                     }
                   ),
                   
@@ -253,9 +276,7 @@ class _MatterPageState extends State<MatterPage> {
     return GestureDetector(
       onTap: () {
         print("Activity:"+activity.getId.toString()+"::"+activity.getName);
-        _management.setMatterIndex=matterIndex;
-        _management.setIndex=-1;
-        // Navigator.pushReplacementNamed(context, MatterPage.route);
+        Navigator.pushReplacementNamed(context, ActivityPage.route);
       },
       child: Container(
         margin: const EdgeInsets.all(7),
@@ -275,16 +296,204 @@ class _MatterPageState extends State<MatterPage> {
       ),
     );
   }
+ 
+  Widget _teacher(BuildContext context){
+    
+    if(_matter.getTeacher!=null){//hay profesor registrado
+      _teacherFullName = _matter.getTeacher!.getFullName;
+      _teacherEmail = _matter.getTeacher!.getEmail;
+      if(_matter.getTeacher!.getCellPhone!=null){
+        _teacherCellphone = _matter.getTeacher!.getCellPhone.toString();
+      }else{
+        _teacherCellphone = "NO asignado";
+      }
+      return Column(
+        children: <Widget>[
+          Row(
+            children: <Widget>[
+              Column(
+                children: <Widget>[
+                  Text("Nombre: "+_teacherFullName, style: _headerSubTitlle,),
+                  Text("Correo: "+_teacherEmail, style: _headerSubTitlle,),
+                  Text("Celular: "+_teacherCellphone, style: _headerSubTitlle,),
+                ],
+              ),
+              const Expanded(child: SizedBox(),),
+              Column(
+                children: <Widget>[
+                  IconButton(
+                    icon:  Icon(Icons.edit, color:Colors.blue[700], size: 35),
+                    onPressed: (){_editTeacherRequest(context);}, 
+                  ),
+                  IconButton(
+                    icon:  Icon(Icons.delete, color:Colors.blue[700], size: 30),
+                    onPressed: (){_removeTeacherRequest();}, 
+                  )
+                ],
+              )
+            ],
+          ),
+          const Divider(height: 2,),
+          const Center(child: Text("Plantillas mensajes ;)")),
+          const Divider(height: 2,),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: <Widget>[
+              TextButton(
+                style: TextButton.styleFrom(
+                  backgroundColor: Colors.red,
+                ),
+                child: const Icon(Icons.mail, color: Colors.white, size: 30,),
+                onPressed: (){_sendEmail();},
+              ),
+              TextButton(
+                style: TextButton.styleFrom(
+                  backgroundColor: Colors.green,
+                ),
+                child: const Icon(Icons.whatsapp, color: Colors.white, size: 30,),
+                onPressed: (){((_matter.getTeacher!.getCellPhone!=null)?_sendWhatsApp():null);},
+              ),
+              TextButton(
+                style: TextButton.styleFrom(
+                  backgroundColor: Colors.blue,
+                ),
+                child: const Icon(Icons.telegram, color: Colors.white, size: 30,),
+                onPressed: (){((_matter.getTeacher!.getCellPhone!=null)?_sendTelegram():null);},
+              ),
+            ]
+          )
+        ],
+      );
+    }else{//NO hay profesor
+      return Column(
+        children: <Widget>[
+          Row(
+            children: <Widget>[
+              Expanded(
+                child: StreamBuilder(
+                  stream: _management.streams.teacherIdStream, 
+                  builder: (BuildContext context, AsyncSnapshot<String> snapshot) { 
+                    return TextField(
+                      controller: _teacherIdTextField,
+                      keyboardType: TextInputType.number,
+                      style: _cardSubText,
+                      decoration: InputDecoration(
+                        label: const Text("ID del docente"), 
+                        errorText: (snapshot.error.toString()!="null")?snapshot.error.toString():null,
+                        errorStyle: const TextStyle(color: Colors.red),
+                      ),
+                      onChanged: _management.streams.changeTeacherId,
+                    );
+                  },
+                ),
+              ),
+              StreamBuilder(
+                stream: _management.streams.teacherIdStream, 
+                builder: (BuildContext context, AsyncSnapshot<String> snapshot) { 
+                  return TextButton(
+                    onPressed: (snapshot.hasData)?(){_serachTeacherRequest();}:null,
+                    child: (_searchTeacherLoading)?_loading():const Icon(Icons.search, color: Colors.white, size: 30,),
+                    style: TextButton.styleFrom(
+                      backgroundColor: Colors.blue[700], 
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
+          Text(
+            "Nombre: "+_teacherFullName,
+            style: _cardSubText,
+            textAlign: TextAlign.left,
+          ),
+          Text(
+            "Correo: "+_teacherEmail,
+            style: _cardSubText,
+            textAlign: TextAlign.left,
+          ),
+          Text(
+            "Celular: "+_teacherCellphone,
+            style: _cardSubText,
+            textAlign: TextAlign.left,
+          ),
+          TextButton(
+            onPressed: (_teacherId!="")?(){_addTeacherRequest();}:null,
+            child: (_addTeacherLoading)?_loading():const Text("Confirmar seleccion"),
+            style: TextButton.styleFrom(
+              primary: Colors.white, //color de la letra
+              onSurface: Colors.white, //color de la letra cuando el boton esta DESACTIVADO
+              backgroundColor: Colors.blue[700],
+              minimumSize: Size(_size.width * .55, 40), //tamaño minimo deo boton, con esto todos quedaran iguales
+              maximumSize: Size(_size.width * .55, 40), //tamaño minimo deo boton, con esto todos quedaran iguales
+              textStyle: const TextStyle(
+                fontSize: 18,
+              ),
+            )
+          )
+        ],
+      );
+    }
+  }
 
-  Widget _extras(){
+  void _serachTeacherRequest()async{
+    setState(() {
+      _searchTeacherLoading=true;
+    });
+    Map<String, dynamic> response = await _management.searchTeacherRequest();
+    if (response["status"]) {
+      _teacherId = response["body"]["id"].toString();
+      _teacherFullName = response["body"]["name"]+" "+response["body"]["lastName"];
+      _teacherEmail = response["body"]["email"];
+      _teacherCellphone = (response["body"]["cellphone"]==null)?"NO asignado":response["body"]["email"];
+    }else{
+      _notificateRequest(response);
+    }
+    setState(() {
+      _management.streams.resetMatterId();
+      _teacherIdTextField.text="";
+      _searchTeacherLoading=false;
+    });
+  }
+
+  void _addTeacherRequest()async{
+    setState(() {
+      _addTeacherLoading = true;
+    });
+    Map<String, dynamic> response = await _management.addTeacher(_teacherId);
+    setState(() {
+      _addTeacherLoading = false;
+    });
+    _notificateRequest(response);
+  }
+  
+  void _editTeacherRequest(BuildContext context){
+    _management.streams.changeTeacherId(_matter.getTeacher!.getId.toString());
+    Navigator.pushReplacementNamed(context, TeacherPage.editRroute);
+  }
+
+  void _removeTeacherRequest()async{
+    _teacherId = "";
+    _teacherFullName="";
+    _teacherEmail="";
+    _teacherCellphone="";
+    Map<String, dynamic> response = await _management.removeTeacher();
+    _notificateRequest(response);
+  }
+
+  void _sendEmail(){
+
+  }
+  
+  void _sendWhatsApp(){
+    
+  }
+
+  void _sendTelegram(){
+    
+  }
+
+   Widget _extras(){
     List<Widget> extras = List.empty(growable: true);
-    extras.add(Text(
-        "DOCENTE",
-        style: _headerSubTitlle
-      )
-    );
-    extras.add(_teacher());
-    extras.add(const Divider(height: 2,));
     extras.add(Text(
         "Estudiantes registrados",
         style: _headerSubTitlle
@@ -302,121 +511,6 @@ class _MatterPageState extends State<MatterPage> {
     return Column(
       children: extras,
     );
-  }
-
-  Widget _teacher(){
-    List<Widget> column = List.empty(growable: true);
-    List<Widget> buttons = List.empty(growable: true);
-    List<Widget> contacts = List.empty(growable: true);
-    String name = "No asignado";
-    String email = "No asignado";
-    String cellphone = "No asignado";
-    if(_matter.getTeacher!=null){//hay profesor registrado
-      name = _matter.getTeacher!.getFullName;
-      email = _matter.getTeacher!.getEmail;
-      if(_matter.getTeacher!.getCellPhone!=null){
-        cellphone = _matter.getTeacher!.getCellPhone!.toString();
-      }
-      buttons.add(
-        IconButton(
-          icon:  Icon(Icons.edit, color:Colors.blue[700], size: 35),
-          onPressed: () => _editTeacher, 
-        )
-      );
-      buttons.add(
-        IconButton(
-          icon:  Icon(Icons.delete, color:Colors.blue[700], size: 30),
-          onPressed: () => _removeTeacher, 
-        )
-      );
-      contacts.add(
-      TextButton(
-          child: const Icon(Icons.email, color: Colors.white, size: 30),
-          style: TextButton.styleFrom(
-            backgroundColor: Colors.red,
-            
-          ),
-          onPressed: () => _sendEmail,
-        )
-      );
-      contacts.add(
-        TextButton(
-          child: const Icon(Icons.whatsapp, color: Colors.white, size: 30),
-          style: TextButton.styleFrom(
-            backgroundColor: Colors.green
-          ),
-          onPressed: () => (_matter.getTeacher!.getCellPhone==null)?null:_sendWhatsApp,
-        )
-      );
-      contacts.add(
-        TextButton(
-          child: const Icon(Icons.telegram, color: Colors.white, size: 30),
-          style: TextButton.styleFrom(
-            backgroundColor: Colors.blue
-          ),
-          onPressed: () => (_matter.getTeacher!.getCellPhone==null)?null:_sendTelegram,
-        )
-      );
-    }else{//NO hay profesor
-      buttons.add(
-        IconButton(
-          icon:  Icon(Icons.add, color:Colors.blue[700], size: 30),
-          onPressed: () => _addTeacher, 
-        )
-      );
-    }
-    
-    Row teacherData = Row(
-      children: <Widget>[
-        Icon(Icons.account_circle_rounded, size: 80, color: Colors.blue[700]),
-        const Expanded(child: SizedBox()),
-        Column(
-          children: <Widget>[
-            Text("Nombre: "+name, style: _headerSubTitlle,),
-            Text("Correo: "+email, style: _headerSubTitlle,),
-            Text("Celular: "+cellphone, style: _headerSubTitlle,),
-          ],
-        ),
-        const Expanded(child: SizedBox(),),
-        Column(
-          children: buttons,
-        )
-      ],
-    );
-    column.add(teacherData);
-    column.add(
-      Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: contacts,
-      )
-    );
-    return Column(
-      children: column,
-    );
-  }
-
-  void _addTeacher(){
-
-  }
-  
-  void _editTeacher(){
-    
-  }
-
-  void _removeTeacher(){
-    
-  }
-
-  void _sendEmail(){
-
-  }
-  
-  void _sendWhatsApp(){
-    
-  }
-
-  void _sendTelegram(){
-    
   }
 
   Widget _headerContainer(String text, Color color){
@@ -597,6 +691,13 @@ class _MatterPageState extends State<MatterPage> {
     _notificateRequest(response);
   }
 
+  Widget _loading(){
+    return const CircularProgressIndicator(
+      color: Colors.white,
+      strokeWidth: 4,
+    );
+  }
+
   void _notificateRequest(Map<String, dynamic> response)async{
     if (response["status"]) {
       await _management.subscripciptionRequest();
@@ -623,4 +724,5 @@ class _MatterPageState extends State<MatterPage> {
     }
     setState(() {});
   }
+  
 }

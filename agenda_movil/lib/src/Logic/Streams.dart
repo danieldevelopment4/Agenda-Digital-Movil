@@ -21,6 +21,7 @@ class Streams with Validator{
   final _activitySubmissionDateStream = BehaviorSubject<String>();
   final _activityTermStream = BehaviorSubject<String>();
   //teacher
+  final _teacherIdStream = BehaviorSubject<String>();
   final _teacherNameStream = BehaviorSubject<String>();
   final _teacherLastNameStream = BehaviorSubject<String>();
   final _teacherEmailStream = BehaviorSubject<String>();
@@ -46,6 +47,7 @@ class Streams with Validator{
   Stream<String> get activityTermStream => _activityTermStream.stream.transform(validateActivityTerm);
   Stream<bool> get buttonCreateActivityStream => CombineLatestStream.combine5(activityNameStream, activityPercentStream, activityNoDaysRecordatoriesStream, activitySubmissionDateStream, activityTermStream, (n, p, nd, sd, t) =>  true);
   //teacher
+  Stream<String> get teacherIdStream => _teacherIdStream.stream.transform(validateTeacherId);
   Stream<String> get teacherNameStream => _teacherNameStream.stream.transform(validateTeacherName);
   Stream<String> get teacherLastNameStream => _teacherLastNameStream.stream.transform(validateTeacherLastName);
   Stream<String> get teacherEmailStream => _teacherEmailStream.stream.transform(validateTeacherEmail);
@@ -69,12 +71,14 @@ class Streams with Validator{
   Function(String) get changeActivitySubmissionDate => _activitySubmissionDateStream.sink.add;
   Function(String) get changeActivityTerm => _activityTermStream.sink.add;
   //teacher
+  Function(String) get changeTeacherId => _teacherIdStream.sink.add;
   Function(String) get changeTeacherName => _teacherNameStream.sink.add;
   Function(String) get changeTeacherLastName => _teacherLastNameStream.sink.add;
   Function(String) get changeTeacherEmail => _teacherEmailStream.sink.add;
   Function(String) get changeTeachereCellphone => _teacherCellphoneStream.sink.add;
 
   //validateIfHasData
+  bool get teacherIdHasData => _teacherIdStream.hasValue;
   bool get teacherCelphoneHasData => _teacherCellphoneStream.hasValue;
 
   //get lasted data on the stream
@@ -94,6 +98,7 @@ class Streams with Validator{
   String get activitySubmissionDate => _activitySubmissionDateStream.value;
   String get activityTerm => _activityTermStream.value;
   //teacher
+  String get teacherId => _teacherIdStream.value;
   String get teacherName => _teacherNameStream.value;
   String get teacherLastName => _teacherLastNameStream.value;
   String get teacherEmail => _teacherEmailStream.value;
@@ -152,6 +157,10 @@ class Streams with Validator{
     _activityTermStream.sink.addError("null");
   }
   //teacher
+  void resetTeacherId(){
+    _teacherIdStream.sink.add("");
+    _teacherIdStream.sink.addError("null");
+  }
   void resetTeacherName(){
     _teacherNameStream.sink.add("");
     _teacherNameStream.sink.addError("null");
@@ -186,6 +195,7 @@ class Streams with Validator{
     _activitySubmissionDateStream.close();
     _activityTermStream.close();
     //teacher
+    _teacherIdStream.close();
     _teacherNameStream.close();
     _teacherLastNameStream.close();
     _teacherEmailStream.close();

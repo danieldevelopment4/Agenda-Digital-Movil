@@ -150,14 +150,25 @@ class Management{
     return _subsciptionList[_matterIndex].getMatter;
   }
 
-  Future<Map<String, dynamic>> createMatterRequest(){
-    Map<String, dynamic> body = {
-      "name": streams.matterName,
-      "student":getStudent.toJson()
-    };
+  Future<Map<String, dynamic>> createMatterRequest(String? teacherId){
+    Map<String, dynamic> body;
+    if (teacherId!=null) {
+      body = {
+        "name": streams.matterName,
+        "student":getStudent.toJson(),
+        "teacher": {
+          "id": teacherId
+        }
+      };
+    }else{
+      body = {
+        "name": streams.matterName,
+        "student":getStudent.toJson()
+      };
+    }
     return MatterRequest().create(host, header, body);
   }
-  
+
   Future<Map<String, dynamic>> searchMatterRequest(){
     Map<String, dynamic> body = {
       "matter":{
@@ -183,7 +194,34 @@ class Management{
     return ActivityRequest().create(host, header, body);
   }
 
+  Future<Map<String, dynamic>> addTeacher(String teacherId){
+    Map<String, dynamic> body = {
+        "id": _subsciptionList[_matterIndex].getMatter.getId,
+        "name": _subsciptionList[_matterIndex].getMatter.getName,
+        "teacher": {
+            "id": teacherId
+        }
+    };
+    return MatterRequest().updateTeacher(host, header, body);
+  }
+
+  Future<Map<String, dynamic>> removeTeacher(){
+    Map<String, dynamic> body = {
+        "id": _subsciptionList[_matterIndex].getMatter.getId,
+        "name": _subsciptionList[_matterIndex].getMatter.getName,
+        "teacher": null
+    };
+    return MatterRequest().updateTeacher(host, header, body);
+  }
+
   //teacher
+  Future<Map<String, dynamic>> searchTeacherRequest(){
+    Map<String, dynamic> body = {
+        "id": streams.teacherId
+    };
+    return TeacherRequest().searchTeacherRequest(host, header, body);
+  }
+
   Future<Map<String, dynamic>> createTeacherRequest(){
     Map<String, dynamic> body;
     if(streams.teacherCelphoneHasData){
@@ -202,6 +240,27 @@ class Management{
     }
     return TeacherRequest().create(host, header, body);
   }
+
+  Future<Map<String, dynamic>> updateTeacher(){
+    Map<String, dynamic> body;
+    if(streams.teacherCelphoneHasData){
+      body = {
+          "name": streams.teacherName,
+          "lastName": streams.teacherLastName,
+          "email": streams.teacherEmail,
+          "cellphone": streams.teacherCellphone
+      };
+    }else{
+      body = {
+          "name": streams.teacherName,
+          "lastName": streams.teacherLastName,
+          "email": streams.teacherEmail,
+      };
+    }
+    return TeacherRequest().update(host, header, body);
+  }
+
+  
 
 
 }

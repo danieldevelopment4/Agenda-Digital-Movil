@@ -140,6 +140,16 @@ class Validator{
   );
 
   //teacher
+  final validateTeacherId = StreamTransformer<String,String>.fromHandlers(
+    handleData: (teacherID, sink){
+      if(teacherID.isNotEmpty){
+        sink.add(teacherID);
+      }else{
+        sink.addError("Debe ingresar un ID para consultar");
+      }
+    }
+  );
+
   final validateTeacherName = StreamTransformer<String,String>.fromHandlers(
     handleData: (name, sink){
       if(name.length>=3 && name.length<=18){

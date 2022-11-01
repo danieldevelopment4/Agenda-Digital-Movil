@@ -46,7 +46,6 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     _pageController = PageController(initialPage: widget._route);
-    
   }
 
   @override
@@ -251,7 +250,7 @@ class _HomePageState extends State<HomePage> {
             ), 
             const Expanded(child: SizedBox()),
             IconButton(icon: const Icon(Icons.add), iconSize: 30, color: Colors.blue[700], onPressed: (){
-                Navigator.pushNamed(context, CreateMatterPage.route);
+                Navigator.pushReplacementNamed(context, CreateMatterPage.route);
               }
             ),
             

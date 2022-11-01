@@ -33,16 +33,25 @@ class _CreateMatterPageState extends State<CreateMatterPage> {
   late ButtonStyle _colorButton;
   late ButtonStyle _sendButton;
 
-  late Color _color;
+  // late Color _color;
   bool _searchMatterLoading = false;
   bool _createMatterLoading = false;
+  bool _searchTeacherLoading = false;
+  bool _teacherIdConfirmed = false;
 
-  TextEditingController _nameTextField = TextEditingController();
+  String _teacherId="";
+  String _teacherFullName="";
+  String _teacherEmail="";
+  String _teacherCellphone="";
+
   TextEditingController _idTextField = TextEditingController();
+  TextEditingController _nameTextField = TextEditingController();
+  TextEditingController _teacherIdTextField = TextEditingController();
+  ExpandableController _teacherExpandable = ExpandableController();
 
   @override
   void initState() {
-    _color = Colors.deepPurple;
+    // _color = Colors.deepPurple;
   }
   
   @override
@@ -75,7 +84,7 @@ class _CreateMatterPageState extends State<CreateMatterPage> {
       fontSize: 18,
     );
     _colorButton = TextButton.styleFrom(
-      backgroundColor: _color, 
+      // backgroundColor: _color, 
       minimumSize: const Size(65, 38), //tamaño minimo deo boton, con esto todos quedaran iguales
       maximumSize: const Size(65, 38), //tamaño minimo deo boton, con esto todos quedaran iguales
       shape: const StadiumBorder()
@@ -223,10 +232,10 @@ class _CreateMatterPageState extends State<CreateMatterPage> {
       title: const Text("Elije un color"),
       content: SingleChildScrollView(
         child: ColorPicker(
-          pickerColor: _color, //default color
+          pickerColor: Colors.purple, //default color
           onColorChanged: (Color color){ //on color picked
               setState(() {
-                _color = color;
+                // _color = color;
               });
           }, 
         ),
@@ -253,26 +262,28 @@ class _CreateMatterPageState extends State<CreateMatterPage> {
             children: [
               Expanded(
                 child: StreamBuilder(
-                  stream: _management.streams.matterNameStream, 
+                  stream: _management.streams.teacherIdStream, 
                   builder: (BuildContext context, AsyncSnapshot<String> snapshot) { 
                     return TextField(
+                      controller: _teacherIdTextField,
+                      keyboardType: TextInputType.number,
                       style: _cardSubText,
                       decoration: InputDecoration(
                         label: const Text("ID del docente"), 
                         errorText: (snapshot.error.toString()!="null")?snapshot.error.toString():null,
                         errorStyle: const TextStyle(color: Colors.red),
                       ),
-                      onChanged: _management.streams.changeMatterName,
+                      onChanged: _management.streams.changeTeacherId,
                     );
                   },
                 ),
               ),
               StreamBuilder(
-                stream: _management.streams.matterIdStream, 
+                stream: _management.streams.teacherIdStream, 
                 builder: (BuildContext context, AsyncSnapshot<String> snapshot) { 
                   return TextButton(
-                    onPressed: (snapshot.hasData)?(){print("ID docente");}:null,
-                    child: const Icon(Icons.search, color: Colors.white, size: 30,),
+                    onPressed: (snapshot.hasData)?(){_serachTeacherRequest();}:null,
+                    child: (_searchTeacherLoading)?_loading():const Icon(Icons.search, color: Colors.white, size: 30,),
                     style: TextButton.styleFrom(
                       backgroundColor: Colors.blue[700], 
                     ),
@@ -282,16 +293,34 @@ class _CreateMatterPageState extends State<CreateMatterPage> {
             ],
           ),
           Text(
-            "Nombre:",
+            "Nombre: "+_teacherFullName,
             style: _cardSubText
           ),
           Text(
-            "Correo:",
+            "Correo: "+_teacherEmail,
             style: _cardSubText
           ),
           Text(
-            "Celular:",
+            "Celular: "+_teacherCellphone,
             style: _cardSubText
+          ),
+          TextButton(
+            onPressed: (_teacherId!="")?(){
+              _teacherIdConfirmed=true;
+              _teacherExpandable.value = false;
+              setState((){});
+            }:null,
+            child: const Text("Confirmar seleccion"),
+            style: TextButton.styleFrom(
+              primary: Colors.white, //color de la letra
+              onSurface: Colors.white, //color de la letra cuando el boton esta DESACTIVADO
+              backgroundColor: Colors.blue[700],
+              minimumSize: Size(_size.width * .55, 40), //tamaño minimo deo boton, con esto todos quedaran iguales
+              maximumSize: Size(_size.width * .55, 40), //tamaño minimo deo boton, con esto todos quedaran iguales
+              textStyle: const TextStyle(
+                fontSize: 18,
+              ),
+            )
           )
         ],
       ),
@@ -299,12 +328,13 @@ class _CreateMatterPageState extends State<CreateMatterPage> {
 
     return Card(
       child: ExpandablePanel(
+        controller: _teacherExpandable,
         header: Text(
           "Docente",
           style: _cardText
         ),
         collapsed: Text(
-          "NO asignado",
+          (_teacherIdConfirmed)?_teacherFullName:"NO asignado",
           style: _cardSubText
         ),
         expanded: expandable
@@ -348,7 +378,7 @@ class _CreateMatterPageState extends State<CreateMatterPage> {
     setState(() {
       _createMatterLoading=true;
     });
-    Map<String, dynamic> response = await _management.createMatterRequest();
+    Map<String, dynamic> response = await _management.createMatterRequest(((_teacherIdConfirmed)?_teacherId:null));
     setState(() {
       _management.streams.resetMatterName();
       _nameTextField.text="";
@@ -368,6 +398,27 @@ class _CreateMatterPageState extends State<CreateMatterPage> {
       _searchMatterLoading=false;
     });
     _notificateRequest(response);
+  }
+
+  void _serachTeacherRequest()async{
+    setState(() {
+      _searchTeacherLoading=true;
+    });
+    Map<String, dynamic> response = await _management.searchTeacherRequest();
+    setState(() {
+      _management.streams.resetMatterId();
+      _teacherIdTextField.text="";
+      _searchTeacherLoading=false;
+    });
+    if (response["status"]) {
+      _teacherIdConfirmed = false;
+      _teacherId = response["body"]["id"].toString();
+      _teacherFullName = response["body"]["name"]+" "+response["body"]["lastName"];
+      _teacherEmail = response["body"]["email"];
+      _teacherCellphone = (response["body"]["cellphone"]==null)?"NO asignado":response["body"]["email"];
+    }else{
+      _notificateRequest(response);
+    }
   }
 
   void _notificateRequest(Map<String, dynamic> response){

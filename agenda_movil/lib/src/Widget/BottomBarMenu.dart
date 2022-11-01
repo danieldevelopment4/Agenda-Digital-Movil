@@ -5,7 +5,7 @@ import 'package:agenda_movil/src/Logic/Provider.dart';
 import 'package:agenda_movil/src/pages/HomePage.dart';
 import 'package:agenda_movil/src/pages/CreateActivityPage.dart';
 import 'package:agenda_movil/src/pages/CreateMatterPage.dart';
-import 'package:agenda_movil/src/pages/CreateTeacherPage.dart';
+import 'package:agenda_movil/src/pages/TeacherPage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 

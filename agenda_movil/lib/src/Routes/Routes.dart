@@ -1,6 +1,8 @@
 // ignore_for_file: file_names
 
+import 'package:agenda_movil/src/pages/AdtivityPage.dart';
 import 'package:agenda_movil/src/pages/RatePage.dart';
+import 'package:agenda_movil/src/pages/SettingsPage.dart';
 import 'package:flutter/material.dart';
 
 import 'package:agenda_movil/src/pages/Error404.dart';
@@ -10,7 +12,7 @@ import 'package:agenda_movil/src/pages/RegisterPage.dart';
 import 'package:agenda_movil/src/pages/MatterPage.dart';
 import 'package:agenda_movil/src/pages/CreateActivityPage.dart';
 import 'package:agenda_movil/src/pages/CreateMatterPage.dart';
-import 'package:agenda_movil/src/pages/CreateTeacherPage.dart';
+import 'package:agenda_movil/src/pages/TeacherPage.dart';
 
 Map<String, WidgetBuilder>getRoutes(){
   return <String,WidgetBuilder>{
@@ -21,8 +23,11 @@ Map<String, WidgetBuilder>getRoutes(){
     RegisterPage.route : (BuildContext context) => const RegisterPage(),
     CreateActivityPage.route : (BuildContext context) => const CreateActivityPage(),
     CreateMatterPage.route : (BuildContext context) => const CreateMatterPage(),
-    CreateTeacherPage.route : (BuildContext context) => const CreateTeacherPage(),
-    MatterPage.route : (BuildContext context) => MatterPage(),
+    TeacherPage.createRoute : (BuildContext context) => TeacherPage(true),
+    TeacherPage.editRroute : (BuildContext context) => TeacherPage(false),
+    MatterPage.route : (BuildContext context) => const MatterPage(),
+    ActivityPage.route: (BuildContext context) => const ActivityPage(),
+    SettingsPage.route: (BuildContext context) => const SettingsPage(),
     RatePage.route : (BuildContext context) => const RatePage(),
   };
 }

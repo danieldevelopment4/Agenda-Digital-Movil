@@ -7,16 +7,20 @@ import 'package:agenda_movil/src/Widget/Menu.dart';
 import 'package:elegant_notification/elegant_notification.dart';
 import 'package:flutter/material.dart';
 
-class CreateTeacherPage extends StatefulWidget {
-  const CreateTeacherPage({Key? key}) : super(key: key);
+class TeacherPage extends StatefulWidget {
+  TeacherPage(bool create, {Key? key}) : super(key: key){
+    _create = create;
+  }
 
-  static const String route = "CreateTeacher";
+  late final bool _create;
+  static const String createRoute = "CreateTeacher";
+  static const String editRroute = "EditTeacher";
 
   @override
-  State<CreateTeacherPage> createState() => _CreateTeacherPageState();
+  State<TeacherPage> createState() => _TeacherPageState();
 }
 
-class _CreateTeacherPageState extends State<CreateTeacherPage> {
+class _TeacherPageState extends State<TeacherPage> {
 
   late Size _size;
   late Management _management;
@@ -33,6 +37,9 @@ class _CreateTeacherPageState extends State<CreateTeacherPage> {
   final TextEditingController _cellphoneTextField = TextEditingController();
 
   bool _createTeacherLoading = false;
+  bool _updateTeacherLoading = false;
+
+  bool _create = true;
 
   @override
   Widget build(BuildContext context) {
@@ -76,7 +83,7 @@ class _CreateTeacherPageState extends State<CreateTeacherPage> {
      body: Column(
       children: <Widget>[
         Text(
-          "Registrar nuevo docente",
+          (_create)?"Registrar nuevo docente":"Actualizar Docente",
           style: _subTitlle,
         ),
         Expanded(
@@ -95,7 +102,7 @@ class _CreateTeacherPageState extends State<CreateTeacherPage> {
   }
 
   Widget _textFields(){
-    return Container(
+    Container textFields = Container(
       padding: const EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
       child: Column(
         children: <Widget>[
@@ -103,6 +110,7 @@ class _CreateTeacherPageState extends State<CreateTeacherPage> {
             stream: _management.streams.teacherNameStream, 
             builder: (BuildContext context, AsyncSnapshot<String> snapshot) {  
               return TextField(
+                controller: _nameTextField,
                 keyboardType: TextInputType.name,
                 decoration: InputDecoration(
                   hintText: "Daniel Alejandro",
@@ -119,6 +127,7 @@ class _CreateTeacherPageState extends State<CreateTeacherPage> {
             stream: _management.streams.teacherLastNameStream, 
             builder: (BuildContext context, AsyncSnapshot<String> snapshot) {  
               return TextField(
+                controller: _lastnameTextField,
                 keyboardType: TextInputType.name,
                 decoration: InputDecoration(
                   hintText: "Gómez Acero",
@@ -135,6 +144,7 @@ class _CreateTeacherPageState extends State<CreateTeacherPage> {
             stream: _management.streams.teacherEmailStream, 
             builder: (BuildContext context, AsyncSnapshot<String> snapshot) {  
               return TextField(
+                controller: _emailTextField,
                 keyboardType: TextInputType.emailAddress,
                 decoration: InputDecoration(
                   hintText: "daga70414@gmail.com",
@@ -151,6 +161,7 @@ class _CreateTeacherPageState extends State<CreateTeacherPage> {
             stream: _management.streams.teacherCellphoneStream, 
             builder: (BuildContext context, AsyncSnapshot<String> snapshot) {  
               return TextField(
+                controller: _cellphoneTextField,
                 keyboardType: TextInputType.phone,
                 decoration: InputDecoration(
                   hintText: "3007798350",
@@ -163,9 +174,14 @@ class _CreateTeacherPageState extends State<CreateTeacherPage> {
             },
           ),
           const SizedBox(height: 12),
-          ]
+        ]
       ),
     );
+    if(!widget._create){//create es falso, es decir, vamos a editar
+      _create = false;
+      _serachTeacherRequest();
+    }
+    return textFields;
   }
 
   Widget _sendRegister(){
@@ -173,8 +189,10 @@ class _CreateTeacherPageState extends State<CreateTeacherPage> {
       stream: _management.streams.buttonCreateTeacherStream, 
       builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {  
         return TextButton(
-          onPressed: (snapshot.hasData)?(){_createTeacherRequest();}:null,
-          child: (_createTeacherLoading)?_loading():const Text("Registrar Docente",),
+          onPressed: (snapshot.hasData)?(){
+            (_create)?_createTeacherRequest():_updateTeacherRequest();
+          }:null,
+          child: (_createTeacherLoading)?_loading():Text((_create)?"Registrar Docente":"Actualizar Docente",),
           style: _sendButton,
         );
       },
@@ -187,18 +205,37 @@ class _CreateTeacherPageState extends State<CreateTeacherPage> {
     });
 
     Map<String, dynamic> response = await _management.createTeacherRequest();
-    setState(() {
-      _management.streams.resetTeacherName();
-      _nameTextField.text="";
-      _management.streams.resetTeacherLastName();
-      _lastnameTextField.text="";
-      _management.streams.resetTeacherEmail();
-      _emailTextField.text="";
-      _management.streams.resetTeacherCellphone();
-      _cellphoneTextField.text="";
-      _createTeacherLoading=false;
-    });
+    _createTeacherLoading=false;
+    reset();
     _notificateRequest(response);
+  }
+
+  void _updateTeacherRequest()async{
+    setState(() {
+      _updateTeacherLoading=true;
+    });
+
+    Map<String, dynamic> response = await _management.createTeacherRequest();
+    _updateTeacherLoading=false;
+    _notificateRequest(response);
+    Navigator.pop(context);
+  }
+
+  void _serachTeacherRequest()async{
+    Map<String, dynamic> response = await _management.searchTeacherRequest();
+    if (response["status"]) {
+      _nameTextField.text = response["body"]["name"];
+      _management.streams.changeTeacherName(response["body"]["name"]);
+      _lastnameTextField.text = response["body"]["lastName"];
+      _management.streams.changeTeacherLastName(response["body"]["lastName"]);
+      _emailTextField.text = response["body"]["email"];
+      _management.streams.changeTeacherEmail(response["body"]["email"]);
+      _cellphoneTextField.text = (response["body"]["cellphone"]==null)?"":response["body"]["email"];
+      _management.streams.changeTeachereCellphone((response["body"]["cellphone"]==null)?"":response["body"]["email"]);
+    }else{
+      _notificateRequest(response);
+    }
+    setState(() {});
   }
 
    Widget _loading(){
@@ -211,6 +248,7 @@ class _CreateTeacherPageState extends State<CreateTeacherPage> {
   void _notificateRequest(Map<String, dynamic> response){
     if (response["status"]) {
       _management.subscripciptionRequest();
+      setState((){});
       ElegantNotification.success(
         title: Text("Accion exitosa", style: _notificationTitle,),
         description:  Text(response["message"], style: _notificationText,),
@@ -231,6 +269,19 @@ class _CreateTeacherPageState extends State<CreateTeacherPage> {
         ).show(context);
       }
     }
+  }
+
+  void reset(){
+    setState(() {
+      _management.streams.resetTeacherName();
+      _nameTextField.text="";
+      _management.streams.resetTeacherLastName();
+      _lastnameTextField.text="";
+      _management.streams.resetTeacherEmail();
+      _emailTextField.text="";
+      _management.streams.resetTeacherCellphone();
+      _cellphoneTextField.text="";
+    });
   }
 
 }
