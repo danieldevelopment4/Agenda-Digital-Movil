@@ -36,10 +36,16 @@ class _TeacherPageState extends State<TeacherPage> {
   final TextEditingController _emailTextField = TextEditingController();
   final TextEditingController _cellphoneTextField = TextEditingController();
 
-  bool _createTeacherLoading = false;
+  bool _teacherLoading = false;
   bool _updateTeacherLoading = false;
 
   bool _create = true;
+  bool _setData = true;
+
+  @override
+  void initState() {
+    _create = widget._create;    
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -177,8 +183,8 @@ class _TeacherPageState extends State<TeacherPage> {
         ]
       ),
     );
-    if(!widget._create){//create es falso, es decir, vamos a editar
-      _create = false;
+    if(!_create && _setData){//create es falso, es decir, vamos a editar
+      _setData = false;
       _serachTeacherRequest();
     }
     return textFields;
@@ -186,13 +192,13 @@ class _TeacherPageState extends State<TeacherPage> {
 
   Widget _sendRegister(){
     return StreamBuilder(
-      stream: _management.streams.buttonCreateTeacherStream, 
+      stream: _management.streams.buttonTeacherStream, 
       builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {  
         return TextButton(
           onPressed: (snapshot.hasData)?(){
             (_create)?_createTeacherRequest():_updateTeacherRequest();
           }:null,
-          child: (_createTeacherLoading)?_loading():Text((_create)?"Registrar Docente":"Actualizar Docente",),
+          child: (_teacherLoading)?_loading():Text((_create)?"Registrar Docente":"Actualizar Docente",),
           style: _sendButton,
         );
       },
@@ -201,24 +207,25 @@ class _TeacherPageState extends State<TeacherPage> {
 
   void _createTeacherRequest()async{
     setState(() {
-      _createTeacherLoading=true;
+      _teacherLoading=true;
     });
 
     Map<String, dynamic> response = await _management.createTeacherRequest();
-    _createTeacherLoading=false;
+    _teacherLoading=false;
     reset();
     _notificateRequest(response);
   }
 
   void _updateTeacherRequest()async{
     setState(() {
-      _updateTeacherLoading=true;
+      _teacherLoading=true;
     });
 
-    Map<String, dynamic> response = await _management.createTeacherRequest();
-    _updateTeacherLoading=false;
+    Map<String, dynamic> response = await _management.updateTeacherRequest();
+    _teacherLoading=false;
+    reset();
+    _create=true;
     _notificateRequest(response);
-    Navigator.pop(context);
   }
 
   void _serachTeacherRequest()async{
@@ -231,11 +238,9 @@ class _TeacherPageState extends State<TeacherPage> {
       _emailTextField.text = response["body"]["email"];
       _management.streams.changeTeacherEmail(response["body"]["email"]);
       _cellphoneTextField.text = (response["body"]["cellphone"]==null)?"":response["body"]["email"];
-      _management.streams.changeTeachereCellphone((response["body"]["cellphone"]==null)?"":response["body"]["email"]);
     }else{
       _notificateRequest(response);
     }
-    setState(() {});
   }
 
    Widget _loading(){

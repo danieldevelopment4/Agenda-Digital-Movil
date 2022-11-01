@@ -52,7 +52,7 @@ class Streams with Validator{
   Stream<String> get teacherLastNameStream => _teacherLastNameStream.stream.transform(validateTeacherLastName);
   Stream<String> get teacherEmailStream => _teacherEmailStream.stream.transform(validateTeacherEmail);
   Stream<String> get teacherCellphoneStream => _teacherCellphoneStream.stream.transform(validateTeacherCellphone);
-  Stream<bool> get buttonCreateTeacherStream => CombineLatestStream.combine3(teacherNameStream, teacherLastNameStream, teacherEmailStream, (n, l, e) =>  true);
+  Stream<bool> get buttonTeacherStream => CombineLatestStream.combine3(teacherNameStream, teacherLastNameStream, teacherEmailStream, (n, l, e) =>  true);
 
   //add data to stream
   //students-logib-register

@@ -241,20 +241,22 @@ class Management{
     return TeacherRequest().create(host, header, body);
   }
 
-  Future<Map<String, dynamic>> updateTeacher(){
+  Future<Map<String, dynamic>> updateTeacherRequest(){
     Map<String, dynamic> body;
     if(streams.teacherCelphoneHasData){
       body = {
-          "name": streams.teacherName,
-          "lastName": streams.teacherLastName,
-          "email": streams.teacherEmail,
-          "cellphone": streams.teacherCellphone
+        "id": streams.teacherId,
+        "name": streams.teacherName,
+        "lastName": streams.teacherLastName,
+        "email": streams.teacherEmail,
+        "cellphone": streams.teacherCellphone
       };
     }else{
       body = {
-          "name": streams.teacherName,
-          "lastName": streams.teacherLastName,
-          "email": streams.teacherEmail,
+        "id": streams.teacherId,
+        "name": streams.teacherName,
+        "lastName": streams.teacherLastName,
+        "email": streams.teacherEmail,
       };
     }
     return TeacherRequest().update(host, header, body);

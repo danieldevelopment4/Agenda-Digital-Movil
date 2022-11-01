@@ -80,7 +80,7 @@ class TeacherRequest {
     } on SocketException catch (e) {
       return {
         "status": false, // "ERROR"
-        "message": "Eror en la conexion"
+        "message": "Error en la conexion"
       };
     }
     return null!;

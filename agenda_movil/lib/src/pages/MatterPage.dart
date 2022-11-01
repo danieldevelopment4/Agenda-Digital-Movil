@@ -468,7 +468,7 @@ class _MatterPageState extends State<MatterPage> {
   
   void _editTeacherRequest(BuildContext context){
     _management.streams.changeTeacherId(_matter.getTeacher!.getId.toString());
-    Navigator.pushReplacementNamed(context, TeacherPage.editRroute);
+    Navigator.pushNamed(context, TeacherPage.editRroute);
   }
 
   void _removeTeacherRequest()async{
