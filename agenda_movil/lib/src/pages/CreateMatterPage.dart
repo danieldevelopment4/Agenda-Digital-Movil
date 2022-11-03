@@ -44,15 +44,10 @@ class _CreateMatterPageState extends State<CreateMatterPage> {
   String _teacherEmail="";
   String _teacherCellphone="";
 
-  TextEditingController _idTextField = TextEditingController();
-  TextEditingController _nameTextField = TextEditingController();
-  TextEditingController _teacherIdTextField = TextEditingController();
-  ExpandableController _teacherExpandable = ExpandableController();
-
-  @override
-  void initState() {
-    // _color = Colors.deepPurple;
-  }
+  final TextEditingController _idTextField = TextEditingController();
+  final TextEditingController _nameTextField = TextEditingController();
+  final TextEditingController _teacherIdTextField = TextEditingController();
+  final ExpandableController _teacherExpandable = ExpandableController();
   
   @override
   Widget build(BuildContext context) {
@@ -423,7 +418,7 @@ class _CreateMatterPageState extends State<CreateMatterPage> {
 
   void _notificateRequest(Map<String, dynamic> response){
     if (response["status"]) {
-      _management.subscripciptionRequest();
+      _management.viewSubscripciptionsRequest();
       ElegantNotification.success(
         title: Text("Accion exitosa", style: _notificationTitle,),
         description:  Text(response["message"], style: _notificationText,),

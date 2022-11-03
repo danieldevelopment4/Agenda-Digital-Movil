@@ -92,7 +92,7 @@ class Management{
   }
 
   //subscripciption
-  Future<bool> subscripciptionRequest() async{
+  Future<bool> viewSubscripciptionsRequest() async{
     Map<String, dynamic> body = {
       "student":getStudent.toJson()
     };
@@ -148,6 +148,20 @@ class Management{
 
   MatterModel getMatter(){
     return _subsciptionList[_matterIndex].getMatter;
+  }
+
+  Future<Map<String, dynamic>> exitMatterRequest() async{
+    Map<String, dynamic> body = {
+      "matter":{
+        "id":_subsciptionList[_matterIndex].getMatter.getId
+      },
+      "student":getStudent.toJson()
+    };
+    Map<String, dynamic> ok = await SubscriptionRequest().unsubscribe(host, header, body);
+    if(ok["status"]){
+      setSubscriptionList();  
+    }
+    return ok;
   }
 
   Future<Map<String, dynamic>> createMatterRequest(String? teacherId){
@@ -223,19 +237,34 @@ class Management{
   }
 
   Future<Map<String, dynamic>> createTeacherRequest(){
-    Map<String, dynamic> body;
-    if(streams.teacherCelphoneHasData){
+    Map<String, dynamic> body = {};
+    if(streams.teacherEmail!="" && streams.teacherCellphone!=""){
       body = {
-          "name": streams.teacherName,
-          "lastName": streams.teacherLastName,
-          "email": streams.teacherEmail,
-          "cellphone": streams.teacherCellphone
+        "name": streams.teacherName,
+        "lastName": streams.teacherLastName,
+        "email": streams.teacherEmail,
+        "cellphone": streams.teacherCellphone
+      };
+    }else if(streams.teacherEmail!="" && streams.teacherCellphone==""){
+      body = {
+        "name": streams.teacherName,
+        "lastName": streams.teacherLastName,
+        "email": streams.teacherEmail,
+        "cellphone": null
+      };
+    }else if(streams.teacherEmail=="" && streams.teacherCellphone!=""){
+      body = {
+        "name": streams.teacherName,
+        "lastName": streams.teacherLastName,
+        "email": null,
+        "cellphone": streams.teacherCellphone
       };
     }else{
       body = {
-          "name": streams.teacherName,
-          "lastName": streams.teacherLastName,
-          "email": streams.teacherEmail,
+        "name": streams.teacherName,
+        "lastName": streams.teacherLastName,
+        "email": null,
+        "cellphone": null
       };
     }
     return TeacherRequest().create(host, header, body);
@@ -243,7 +272,7 @@ class Management{
 
   Future<Map<String, dynamic>> updateTeacherRequest(){
     Map<String, dynamic> body;
-    if(streams.teacherCelphoneHasData){
+    if(streams.teacherEmail!="" && streams.teacherCellphone!=""){
       body = {
         "id": streams.teacherId,
         "name": streams.teacherName,
@@ -251,12 +280,29 @@ class Management{
         "email": streams.teacherEmail,
         "cellphone": streams.teacherCellphone
       };
-    }else{
+    }else if(streams.teacherEmail!="" && streams.teacherCellphone==""){
       body = {
         "id": streams.teacherId,
         "name": streams.teacherName,
         "lastName": streams.teacherLastName,
         "email": streams.teacherEmail,
+        "cellphone": null
+      };
+    }else if(streams.teacherEmail=="" && streams.teacherCellphone!=""){
+      body = {
+        "id": streams.teacherId,
+        "name": streams.teacherName,
+        "lastName": streams.teacherLastName,
+        "email": null,
+        "cellphone": streams.teacherCellphone
+      };
+    }else{
+      body = {
+        "id": streams.teacherId,
+        "name": streams.teacherName,
+        "lastName": streams.teacherLastName,
+        "email": null,
+        "cellphone": null
       };
     }
     return TeacherRequest().update(host, header, body);

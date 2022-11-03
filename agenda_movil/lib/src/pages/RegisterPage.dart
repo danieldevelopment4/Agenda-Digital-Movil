@@ -26,10 +26,10 @@ class _RegisterPageState extends State<RegisterPage> {
   late ButtonStyle _buttonText;
   late TextStyle _dialogText;
 
-  TextEditingController _nameTextField = TextEditingController();
-  TextEditingController _lastNameTextField = TextEditingController();
-  TextEditingController _emailTextField = TextEditingController();
-  TextEditingController _passwordTextField = TextEditingController();
+  final TextEditingController _nameTextField = TextEditingController();
+  final TextEditingController _lastNameTextField = TextEditingController();
+  final TextEditingController _emailTextField = TextEditingController();
+  final TextEditingController _passwordTextField = TextEditingController();
 
   bool _passwordVisible= false;
   bool _load = false;
@@ -288,7 +288,7 @@ class _RegisterPageState extends State<RegisterPage> {
     // print("STATUS::" + response["status"].toString());
     if (response["status"]) {
       _management.setStudent();
-      _management.subscripciptionRequest();
+      _management.viewSubscripciptionsRequest();
       _showAlert( context, Icons.verified,  const Color.fromARGB(255, 133, 213, 42), const Color.fromRGBO(3, 133, 14, 1), response["message"], "Continuar", _logginSuccessful);
       // print(response["message"]);
       //

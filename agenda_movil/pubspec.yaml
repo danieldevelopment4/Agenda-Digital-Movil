@@ -46,6 +46,7 @@ dependencies: #dependencias que seran usadas en tiempo de ejecucion
   http: ^0.13.4 #consumo de api rest
   shared_preferences: ^2.0.15 #persistencia
   elegant_notification: ^1.6.4 #Despliegua una notificacion elegante para informar al usuario
+  flutter_pdfview: ^1.2.5 #permite visualizar archivos pdf
 
 dev_dependencies: #dependencias que seran usadas unicamente en tiempo de compilacion
 

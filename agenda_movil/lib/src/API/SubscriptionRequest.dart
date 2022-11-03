@@ -20,10 +20,10 @@ class SubscriptionRequest {
         _percistence.subscription = response.body;
         return true; 
       }
-    } on SocketException catch (e) {
+    } on SocketException{
       return false;
     }
-    return null!;
+    throw Exception;
   }
 
   Future<Map<String, dynamic>> subscribe(String host, Map<String, String> header, Map<String, dynamic> body) async {
@@ -44,14 +44,43 @@ class SubscriptionRequest {
           "message": "Ya te encuentras registrado en esta materia"
         };
       }
-    }on SocketException catch(e){
+    }on SocketException{
       return {
         "status": false, // "ERROR"
         "type":"error",
         "message": "No pudimos completar la accion, revisa si cuentas con conexion a internet"
       };
     }
-    return null!;
+    throw Exception;
+  }
+
+  Future<Map<String, dynamic>> unsubscribe(String host, Map<String, String> header, Map<String, dynamic> body) async {
+    try {
+      print('body: ${body}');
+      var url = Uri.parse(host+"/subscription/unsubscribe");
+      var response = await http.post(url, body: jsonEncode(body), headers: header);
+      // print('Response status: ${response.statusCode}');
+      // print('Response body: ${response.body}');
+      if (response.statusCode == 200) {
+        return {
+          "status": true, // "OK"
+          "message": "Has salido del grupo de manera exitosa"
+        };
+      }else if(response.statusCode == 400){
+        return {
+          "status": false, // "ERROR"
+          "type":"info",
+          "message": "ERROR...http400"
+        };
+      }
+    }on SocketException{
+      return {
+        "status": false, // "ERROR"
+        "type":"error",
+        "message": "No pudimos completar la accion, revisa si cuentas con conexion a internet"
+      };
+    }
+    throw Exception;
   }
   
   Future<Map<String, dynamic>> aprobeSubscriptionRequest(String host, Map<String, String> header, Map<String, dynamic> body) async {
@@ -73,14 +102,14 @@ class SubscriptionRequest {
           "message": "ERROR de dudosa procedencia::aprobacion"
         };
       }
-    }on SocketException catch(e){
+    }on SocketException{
       return {
         "status": false, // "ERROR"
         "type":"error",
         "message": "No pudimos completar la accion, revisa si cuentas con conexion a internet"
       };
     }
-    return null!;
+    throw Exception;
   }
 
   Future<Map<String, dynamic>> deniedSubscriptionRequest(String host, Map<String, String> header, Map<String, dynamic> body) async {
@@ -101,14 +130,14 @@ class SubscriptionRequest {
           "message": "ERROR de dudosa procedencia::rechazo"
         };
       }
-    }on SocketException catch(e){
+    }on SocketException{
       return {
         "status": false, // "ERROR"
         "type":"error",
         "message": "No pudimos completar la accion, revisa si cuentas con conexion a internet"
       };
     }
-    return null!;
+    throw Exception;
   }
 
 }

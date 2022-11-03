@@ -242,7 +242,7 @@ class _LogginPageState extends State<LogginPage> {
     Map<String, dynamic> response = await _management.logingRequest();
     if (response["status"]) {
       _management.setStudent();
-      await _management.subscripciptionRequest();
+      await _management.viewSubscripciptionsRequest();
       Navigator.pushReplacementNamed(context, HomePage.HomeRoute);
     } else {
       setState(() {

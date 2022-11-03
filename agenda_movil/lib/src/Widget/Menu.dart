@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 import 'package:agenda_movil/src/Logic/Management.dart';
 import 'package:agenda_movil/src/Logic/Provider.dart';
 import 'package:agenda_movil/src/Persistence/Percistence.dart';
@@ -73,7 +75,7 @@ class Menu extends StatelessWidget {
               style: _optionsStyle,
             ),
             onTap: ()async{
-              await _management.subscripciptionRequest();
+              await _management.viewSubscripciptionsRequest();
               _management.setIndex=-1;
               Navigator.pushReplacementNamed(context, SettingsPage.route);
             },

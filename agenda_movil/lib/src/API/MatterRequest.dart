@@ -9,11 +9,11 @@ class MatterRequest {
 
   Future<Map<String, dynamic>> create(String host, Map<String, String> header, Map<String, dynamic> body) async {
     try {
-      print('body: ${body}');
+      // print('body: ${body}');
       var url = Uri.parse(host+"/matter/create");
       var response = await http.post(url, body: jsonEncode(body), headers: header);
-      print('Response status: ${response.statusCode}');
-      print('Response body: ${response.body}');
+      // print('Response status: ${response.statusCode}');
+      // print('Response body: ${response.body}');
       if (response.statusCode == 200) {
         return {
           "status": true, // "OK"
@@ -26,21 +26,21 @@ class MatterRequest {
           "message": "Ya te encuentras registrado en una materia con este mismo nombre"
         };
       }
-    } on SocketException catch (e) {//si falla la conexion
+    } on SocketException{//si falla la conexion
       return {
         "status": false, // "ERROR"
         "type":"error",
         "message": "No pudimos completar la accion, revisa si cuentas con conexion a internet"
       };
     }
-    return null!;
+    throw Exception;
   }
 
   Future<Map<String, dynamic>> updateTeacher(String host, Map<String, String> header, Map<String, dynamic> body) async {
     try {
       var url = Uri.parse(host+"/matter/update");
       var response = await http.post(url, body: jsonEncode(body), headers: header);
-      print('Response body: ${response.body}');
+      // print('Response body: ${response.body}');
       if (response.statusCode == 200) {
         return {
           "status": true, // "OK"
@@ -53,14 +53,14 @@ class MatterRequest {
           "message": "no pudimos realizar esta accion...perdon"
         };
       }
-    } on SocketException catch (e) {//si falla la conexion
+    } on SocketException{//si falla la conexion
       return {
         "status": false, // "ERROR"
         "type":"error",
         "message": "No pudimos completar la accion, revisa si cuentas con conexion a internet"
       };
     }
-    return null!;
+    throw Exception;
   }
 
 }

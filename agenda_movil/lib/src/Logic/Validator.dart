@@ -176,7 +176,7 @@ class Validator{
     handleData: (email, sink){
       String pattern = r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
       RegExp regExp = RegExp(pattern);
-      if(regExp.hasMatch(email)){
+      if(regExp.hasMatch(email) || email.isEmpty){
         sink.add(email);
       }else{
         sink.addError("Correo no valido");

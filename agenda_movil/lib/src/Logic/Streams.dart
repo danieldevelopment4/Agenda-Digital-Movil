@@ -52,7 +52,7 @@ class Streams with Validator{
   Stream<String> get teacherLastNameStream => _teacherLastNameStream.stream.transform(validateTeacherLastName);
   Stream<String> get teacherEmailStream => _teacherEmailStream.stream.transform(validateTeacherEmail);
   Stream<String> get teacherCellphoneStream => _teacherCellphoneStream.stream.transform(validateTeacherCellphone);
-  Stream<bool> get buttonTeacherStream => CombineLatestStream.combine3(teacherNameStream, teacherLastNameStream, teacherEmailStream, (n, l, e) =>  true);
+  Stream<bool> get buttonTeacherStream => CombineLatestStream.combine4(teacherNameStream, teacherLastNameStream, teacherEmailStream, teacherCellphoneStream, (n, l, t, c) =>  true);
 
   //add data to stream
   //students-logib-register
@@ -79,7 +79,8 @@ class Streams with Validator{
 
   //validateIfHasData
   bool get teacherIdHasData => _teacherIdStream.hasValue;
-  bool get teacherCelphoneHasData => _teacherCellphoneStream.hasValue;
+  bool get teacherEmailHasData => _teacherEmailStream.hasValue;
+  bool get teacherCellphoneHasData => _teacherCellphoneStream.hasValue;
 
   //get lasted data on the stream
   //student-register-login

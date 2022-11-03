@@ -6,6 +6,7 @@ import 'package:agenda_movil/src/Model/StudentModel.dart';
 import 'package:agenda_movil/src/Widget/BottomBarMenu.dart';
 import 'package:agenda_movil/src/Widget/Menu.dart';
 import 'package:agenda_movil/src/pages/CreateActivityPage.dart';
+import 'package:agenda_movil/src/pages/HomePage.dart';
 import 'package:agenda_movil/src/pages/TeacherPage.dart';
 import 'package:elegant_notification/elegant_notification.dart';
 import 'package:flutter/material.dart';
@@ -35,6 +36,7 @@ class _MatterPageState extends State<MatterPage> {
   late TextStyle _headerSubTitlleApproved;
   late TextStyle _headerSubTitlleDeprecated;
   late TextStyle _cardSubText;
+  late ButtonStyle _buttonStyle;
 
   TextEditingController searchTextField = TextEditingController();
   bool _searchTeacherLoading = false;
@@ -83,6 +85,15 @@ class _MatterPageState extends State<MatterPage> {
     _cardSubText = const TextStyle(
       fontSize: 18,
     );
+    _buttonStyle = TextButton.styleFrom(
+      primary: Colors.white, //color de la letra 
+      onSurface: Colors.white, //color de la letra cuando el boton esta DESACTIVADO
+      minimumSize: Size(_size.width*.9, 40),
+      backgroundColor: Colors.blue[700], 
+      textStyle: const TextStyle(
+        fontSize: 20,
+      ),
+    );
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blue[700],
@@ -94,33 +105,20 @@ class _MatterPageState extends State<MatterPage> {
       ),
       drawer: Menu(),
       bottomNavigationBar: BottomBarMenu(),
-      body: Column(
-        children: <Widget>[
-          _header(),
-         const Divider(),
-         Expanded(
-           child: PageView(
-            children: <Widget>[
-              _activitys(context),
-              Column(
-                children: <Widget>[
-                  Text(
-                    "DOCENTE",
-                    style: _headerSubTitlle
-                  ),
-                  _teacher(context)
-                ],
-              ),
-              _extras(),
-            ],
-           ),
-         )
-        ],
+      body: PageView(
+      controller: PageController(initialPage: 1),
+      children: <Widget>[
+        _principal(),
+        _activitys(context),
+        _teacher(context),
+        _extras(),
+      ],
       ),
+         
     );
   }
 
-  Widget _header(){
+  Widget _principal(){
 
     int percent = 0;
     double note = 0;
@@ -141,38 +139,50 @@ class _MatterPageState extends State<MatterPage> {
       }
     }
     return Column(
-          children: <Widget>[
-            const SizedBox(width: double.infinity),
+      children: <Widget>[
+        const SizedBox(width: double.infinity),
+        Text(
+          _matter.getName,
+          style: _titlle,
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
             Text(
-              _matter.getName,
-              style: _titlle,
+              "Definitiva actual: ",
+              style: _headerSubTitlle,
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  "Definitiva actual: ",
-                  style: _headerSubTitlle,
-                ),
-                Text(
-                  note.toString(),
-                  style: (note>=3)?_headerSubTitlleApproved:_headerSubTitlleDeprecated,
-                ),
-              ],
-            ),
-            LinearPercentIndicator(
-              width: _size.width*.95,
-              animation: true,
-              animationDuration: 1200,
-              lineHeight: 20.0,
-              percent: percent/100,
-              center: Text(
-                percent.toString(),
-                style: _headerSubTitlle,
-              ),
-              progressColor: Colors.blue[300],
+            Text(
+              note.toString(),
+              style: (note>=3)?_headerSubTitlleApproved:_headerSubTitlleDeprecated,
             ),
           ],
+        ),
+        LinearPercentIndicator(
+          width: _size.width*.95,
+          animation: true,
+          animationDuration: 1200,
+          lineHeight: 20.0,
+          percent: percent/100,
+          center: Text(
+            percent.toString(),
+            style: _headerSubTitlle,
+          ),
+          progressColor: Colors.blue[300],
+        ),
+        Divider(height: 8, color: Colors.blue[700]),
+        const Expanded(child: SizedBox()),
+        Divider(height: 8, color: Colors.blue[700]),
+        TextButton(
+          child: const Text("Salir del grupo"),
+          style: _buttonStyle,
+          onPressed: ()async{
+            Map<String, dynamic> response = await _management.exitMatterRequest();
+            _notificateRequest(response);
+            Navigator.pushReplacementNamed(context, HomePage.HomeRoute);
+          },
+        )
+      ],
     );
   }
 
@@ -301,14 +311,24 @@ class _MatterPageState extends State<MatterPage> {
     
     if(_matter.getTeacher!=null){//hay profesor registrado
       _teacherFullName = _matter.getTeacher!.getFullName;
-      _teacherEmail = _matter.getTeacher!.getEmail;
+      if(_matter.getTeacher!.getEmail!=null){
+        print(_matter.getTeacher!.getEmail!);
+        _teacherEmail = _matter.getTeacher!.getEmail!;
+      }else{
+        _teacherEmail = "NO asignado";
+      }
       if(_matter.getTeacher!.getCellPhone!=null){
+        print(_matter.getTeacher!.getCellPhone.toString());
         _teacherCellphone = _matter.getTeacher!.getCellPhone.toString();
       }else{
         _teacherCellphone = "NO asignado";
       }
       return Column(
         children: <Widget>[
+          Text(
+            "DOCENTE",
+            style: _headerSubTitlle
+          ),
           Row(
             children: <Widget>[
               Column(
@@ -367,6 +387,10 @@ class _MatterPageState extends State<MatterPage> {
     }else{//NO hay profesor
       return Column(
         children: <Widget>[
+          Text(
+            "DOCENTE",
+            style: _headerSubTitlle
+          ),
           Row(
             children: <Widget>[
               Expanded(
@@ -443,8 +467,8 @@ class _MatterPageState extends State<MatterPage> {
     if (response["status"]) {
       _teacherId = response["body"]["id"].toString();
       _teacherFullName = response["body"]["name"]+" "+response["body"]["lastName"];
-      _teacherEmail = response["body"]["email"];
-      _teacherCellphone = (response["body"]["cellphone"]==null)?"NO asignado":response["body"]["email"];
+      _teacherEmail = (response["body"]["email"]==null)?"NO asignado":response["body"]["email"];
+      _teacherCellphone = (response["body"]["cellphone"]==null)?"NO asignado":response["body"]["cellphone"];
     }else{
       _notificateRequest(response);
     }
@@ -700,7 +724,7 @@ class _MatterPageState extends State<MatterPage> {
 
   void _notificateRequest(Map<String, dynamic> response)async{
     if (response["status"]) {
-      await _management.subscripciptionRequest();
+      await _management.viewSubscripciptionsRequest();
       setState(() {});
       ElegantNotification.success(
         title: Text("Accion exitosa", style: _notificationTitle,),

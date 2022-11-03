@@ -26,14 +26,14 @@ class ActivityRequest{
           "message": "Hubo un fallo inesperado, http::400"
         };
       }
-    } on SocketException catch (e) {//si falla la conexion
+    } on SocketException{//si falla la conexion
       return {
         "status": false, // "ERROR"
         "type":"error",
         "message": "No pudimos completar la accion, revisa si cuentas con conexion a internet"
       };
     }
-    return null!;
+    throw Exception;
   }
 
 }

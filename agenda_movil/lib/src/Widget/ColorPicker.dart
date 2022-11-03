@@ -10,7 +10,6 @@ class MyColorPicker extends StatefulWidget {
   final _MyColorPickerState _myColorPickerState = _MyColorPickerState();
 
   Color get getColor{
-    print("color");
     return _myColorPickerState.getColor;
   }
 
@@ -50,7 +49,6 @@ class _MyColorPickerState extends State<MyColorPicker> {
   }
 
   Color get getColor{
-    print("state");
     return _myColor;
   }
 }

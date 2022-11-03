@@ -27,13 +27,13 @@ class StudentRequest {
           "message": "Las credenciales ingresadas no han podido ser validadas, por favor rectifica e intenta nuevamente"
         };
       }
-    } on SocketException catch (e) {
+    } on SocketException{
       return {
         "status": false, // "ERROR"
-        "message": "Eror en la conexion"
+        "message": "Error en la conexion"
       };
     }
-    return null!;
+    throw Exception;
   }
 
   Future<Map<String, dynamic>> register(String host, Map<String, String> header, Map<String, String> body) async {
@@ -41,7 +41,7 @@ class StudentRequest {
       var url = Uri.parse(host+"/student/register");
       var response = await http.post(url, body: jsonEncode(body), headers: header);
       // print('Response status: ${response.statusCode}');
-      print('Response body: ${response.body}');
+      // print('Response body: ${response.body}');
       if (response.statusCode == 200) {
         _percistence.student = response.body;
         return {
@@ -54,13 +54,13 @@ class StudentRequest {
           "message": "Las credenciales ingresadas no han podido ser validadas, por favor rectifica e intenta nuevamente"
         };
       }
-    } on SocketException catch (e) {
+    } on SocketException{
       return {
         "status": false, // "ERROR"
         "message": "Eror en la conexion"
       };
     }
-    return null!;
+    throw Exception;
   }
 
 }

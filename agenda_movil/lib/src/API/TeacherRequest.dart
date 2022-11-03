@@ -24,14 +24,14 @@ class TeacherRequest {
           "message": "El id del docente ingresdao no existe"
         };
       }
-    } on SocketException catch (e) {
+    } on SocketException{
       return {
         "status": false, // "ERROR"
         "type":"error", 
         "message": "Eror en la conexion"
       };
     }
-    return null!;
+    throw Exception;
   }
 
   Future<Map<String, dynamic>> create(String host, Map<String, String> header, Map<String, dynamic> body) async {
@@ -51,13 +51,13 @@ class TeacherRequest {
           "message": "Hubo un error en el registro... mas raro"
         };
       }
-    } on SocketException catch (e) {
+    } on SocketException{
       return {
         "status": false, // "ERROR"
         "message": "Eror en la conexion"
       };
     }
-    return null!;
+    throw Exception;
   }
 
   Future<Map<String, dynamic>> update(String host, Map<String, String> header, Map<String, dynamic> body) async {
@@ -77,12 +77,12 @@ class TeacherRequest {
           "message": "Hubo un error en el registro... mas raro"
         };
       }
-    } on SocketException catch (e) {
+    } on SocketException{
       return {
         "status": false, // "ERROR"
         "message": "Error en la conexion"
       };
     }
-    return null!;
+    throw Exception;
   }
 }

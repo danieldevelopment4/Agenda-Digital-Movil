@@ -305,7 +305,7 @@ class _CreateActivityPageState extends State<CreateActivityPage> {
 
     void _notificateRequest(Map<String, dynamic> response){
     if (response["status"]) {
-      _management.subscripciptionRequest();
+      _management.viewSubscripciptionsRequest();
       ElegantNotification.success(
         title: Text("Accion exitosa", style: _notificationTitle,),
         description:  Text(response["message"], style: _notificationText,),

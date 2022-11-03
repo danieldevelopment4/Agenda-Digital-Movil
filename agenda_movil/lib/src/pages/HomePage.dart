@@ -46,6 +46,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     _pageController = PageController(initialPage: widget._route);
+    super.initState();
   }
 
   @override
@@ -212,7 +213,7 @@ class _HomePageState extends State<HomePage> {
   Widget _withOutMatters(){
     return Column(
       children: <Widget>[
-        const Expanded(child: SizedBox()),
+        SizedBox(height: _size.height*.1,),
         Text(
           "(⊙_⊙)？",
           textAlign: TextAlign.center,
@@ -232,7 +233,21 @@ class _HomePageState extends State<HomePage> {
           child: const Text("Agregar materia"),
           style: _buttonText,
         ),
-        const Expanded(child: SizedBox()),
+         SizedBox(height: _size.height*.13,),
+         Text(
+          "O puedes revisar el tutorial que hicimos preparado para ti",
+          textAlign: TextAlign.center,
+          style: _dataText
+        ),
+        TextButton(
+          onPressed: () => {
+            Navigator.pushReplacementNamed(context, CreateMatterPage.route),
+            _management.setIndex = -1
+          },
+          child: const Text("Ver tutorial"),
+          style: _buttonText,
+        ),
+        // const Expanded(child: SizedBox()),
       ],
     );
   }
@@ -339,7 +354,6 @@ class _HomePageState extends State<HomePage> {
 
     return GestureDetector(
       onTap: (!subscription.getRequest)?() {
-        print("Matter:"+subscription.getId.toString()+"::"+matter.getName);
         _management.setMatterIndex=matterIndex;
         _management.setIndex=-1;
         Navigator.pushReplacementNamed(context, MatterPage.route);

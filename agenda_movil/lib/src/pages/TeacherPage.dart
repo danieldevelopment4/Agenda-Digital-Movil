@@ -2,6 +2,7 @@
 
 import 'package:agenda_movil/src/Logic/Management.dart';
 import 'package:agenda_movil/src/Logic/Provider.dart';
+import 'package:agenda_movil/src/Model/TeacherModel.dart';
 import 'package:agenda_movil/src/Widget/BottomBarMenu.dart';
 import 'package:agenda_movil/src/Widget/Menu.dart';
 import 'package:elegant_notification/elegant_notification.dart';
@@ -183,9 +184,24 @@ class _TeacherPageState extends State<TeacherPage> {
         ]
       ),
     );
+    _management.streams.changeTeacherEmail("");
+    _management.streams.changeTeachereCellphone("");
     if(!_create && _setData){//create es falso, es decir, vamos a editar
       _setData = false;
-      _serachTeacherRequest();
+      TeacherModel teacher = _management.getSubscriptionList[_management.getMatterIndex].getMatter.getTeacher!;
+      _nameTextField.text = teacher.getName;
+      _management.streams.changeTeacherName(teacher.getName);
+      _lastnameTextField.text = teacher.getLastName;
+      _management.streams.changeTeacherLastName(teacher.getLastName);
+      if(teacher.getEmail!=null){
+        _emailTextField.text = teacher.getEmail!;
+        _management.streams.changeTeacherEmail(teacher.getEmail!);
+      }
+      if(teacher.getCellPhone!=null){
+        _cellphoneTextField.text = teacher.getCellPhone!;
+        _management.streams.changeTeachereCellphone(teacher.getCellPhone!);
+      }
+
     }
     return textFields;
   }
@@ -228,22 +244,7 @@ class _TeacherPageState extends State<TeacherPage> {
     _notificateRequest(response);
   }
 
-  void _serachTeacherRequest()async{
-    Map<String, dynamic> response = await _management.searchTeacherRequest();
-    if (response["status"]) {
-      _nameTextField.text = response["body"]["name"];
-      _management.streams.changeTeacherName(response["body"]["name"]);
-      _lastnameTextField.text = response["body"]["lastName"];
-      _management.streams.changeTeacherLastName(response["body"]["lastName"]);
-      _emailTextField.text = response["body"]["email"];
-      _management.streams.changeTeacherEmail(response["body"]["email"]);
-      _cellphoneTextField.text = (response["body"]["cellphone"]==null)?"":response["body"]["email"];
-    }else{
-      _notificateRequest(response);
-    }
-  }
-
-   Widget _loading(){
+  Widget _loading(){
     return const CircularProgressIndicator(
       color: Colors.white,
       strokeWidth: 4,
@@ -252,7 +253,7 @@ class _TeacherPageState extends State<TeacherPage> {
 
   void _notificateRequest(Map<String, dynamic> response){
     if (response["status"]) {
-      _management.subscripciptionRequest();
+      _management.viewSubscripciptionsRequest();
       setState((){});
       ElegantNotification.success(
         title: Text("Accion exitosa", style: _notificationTitle,),

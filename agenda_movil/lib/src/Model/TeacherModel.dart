@@ -6,7 +6,7 @@ class TeacherModel {
       required this.id,
       required this.name,
       required this.lastName,
-      required this.email,
+      this.email,
       this.cellphone,
     }
   );
@@ -14,8 +14,8 @@ class TeacherModel {
   final int id;
   final String name;
   final String lastName;
-  final String email;
-  final int? cellphone;
+  final String? email;
+  final String? cellphone;
 
   factory TeacherModel.fromJson(Map<String, dynamic> json) => TeacherModel(
     id: json["id"],
@@ -41,11 +41,11 @@ class TeacherModel {
     return name+" "+lastName;
   }
 
-  String get getEmail{
+  String? get getEmail{
     return email;
   }
 
-  int? get getCellPhone{
+  String? get getCellPhone{
     return cellphone;
   }
 
