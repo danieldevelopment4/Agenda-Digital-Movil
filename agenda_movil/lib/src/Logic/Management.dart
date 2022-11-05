@@ -1,6 +1,9 @@
 // ignore_for_file: file_names
 
 import 'dart:async';
+import 'dart:io';
+
+import 'package:path/path.dart';
 
 import 'package:agenda_movil/src/API/ActivityRequest.dart';
 import 'package:agenda_movil/src/API/RateRequest.dart';
@@ -11,10 +14,11 @@ import 'package:agenda_movil/src/API/TeacherRequest.dart';
 import 'package:agenda_movil/src/Logic/Streams.dart';
 import 'package:agenda_movil/src/Model/MatterModel.dart';
 import 'package:agenda_movil/src/Model/SubscriptionModel.dart';
+import 'package:flutter/services.dart';
+import 'package:path_provider/path_provider.dart';
 
 import '../Model/StudentModel.dart';
 import '../Persistence/Percistence.dart';
-
 
 class Management{
 
@@ -25,6 +29,7 @@ class Management{
     if(_percistence.subscription!=""){
       setSubscriptionList();
     }
+    _loadTutorialFromAsset();
   }
 
   final Percistence _percistence = Percistence();
@@ -36,8 +41,24 @@ class Management{
 
   var streams = Streams();
 
-//
+//tutorial
+  final _path = "Files/Tutorial/Tutorial.pdf";
+  late File _file;
+  File get getFile{
+    return _file;
+  }
+  void _loadTutorialFromAsset() async {
+    final data = await rootBundle.load(_path);
+    final bytes = data.buffer.asUint8List();
 
+    final filename = basename(_path);
+    final dir = await getApplicationDocumentsDirectory();
+
+    final file = File('${dir.path}/$filename');
+    await file.writeAsBytes(bytes, flush: true);
+
+    _file = file;
+  }
 
 //BottonMenuBar
   int _currentIndex = 1;

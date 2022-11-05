@@ -9,6 +9,8 @@ import 'package:agenda_movil/src/pages/RatePage.dart';
 import 'package:agenda_movil/src/pages/SettingsPage.dart';
 import 'package:flutter/material.dart';
 
+import '../pages/TutorialPage.dart';
+
 
 class Menu extends StatelessWidget {
   Menu({Key? key}) : super(key: key);
@@ -77,7 +79,7 @@ class Menu extends StatelessWidget {
             onTap: ()async{
               await _management.viewSubscripciptionsRequest();
               _management.setIndex=-1;
-              Navigator.pushReplacementNamed(context, SettingsPage.route);
+              Navigator.pushNamed(context, SettingsPage.route);
             },
           ),
           ListTile(
@@ -88,7 +90,7 @@ class Menu extends StatelessWidget {
             ),
             onTap: (){
               _management.setIndex=-1;
-              Navigator.pushReplacementNamed(context, TeacherPage.createRoute);
+              Navigator.pushNamed(context, TeacherPage.createRoute);
             },
           ),
           ListTile(
@@ -107,7 +109,7 @@ class Menu extends StatelessWidget {
               style: _optionsStyle,
             ),
             onTap: (){
-              Navigator.pushReplacementNamed(context, RatePage.route);
+              Navigator.pushNamed(context, RatePage.route);
               _management.setIndex=-1;
             },
           ),
@@ -117,7 +119,10 @@ class Menu extends StatelessWidget {
               "Tutorial",
               style: _optionsStyle,
             ),
-            onTap: (){},
+            onTap: (){
+              Navigator.pushNamed(context, TutorialPage.route);
+              _management.setIndex = -1;
+            },
           ),
           const Expanded(child: SizedBox(),),
           const Divider(),

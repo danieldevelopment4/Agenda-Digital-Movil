@@ -9,6 +9,7 @@ import 'package:agenda_movil/src/Widget/BottomBarMenu.dart';
 import 'package:agenda_movil/src/Widget/Calendar.dart';
 import 'package:agenda_movil/src/Widget/Menu.dart';
 import 'package:agenda_movil/src/pages/MatterPage.dart';
+import 'package:agenda_movil/src/pages/TutorialPage.dart';
 import 'package:flutter/material.dart';
 
 import 'CreateMatterPage.dart';
@@ -227,7 +228,7 @@ class _HomePageState extends State<HomePage> {
         ),
         TextButton(
           onPressed: () => {
-            Navigator.pushReplacementNamed(context, CreateMatterPage.route),
+            Navigator.pushNamed(context, CreateMatterPage.route),
             _management.setIndex = -1
           },
           child: const Text("Agregar materia"),
@@ -241,7 +242,7 @@ class _HomePageState extends State<HomePage> {
         ),
         TextButton(
           onPressed: () => {
-            Navigator.pushReplacementNamed(context, CreateMatterPage.route),
+            Navigator.pushNamed(context, TutorialPage.route),
             _management.setIndex = -1
           },
           child: const Text("Ver tutorial"),
@@ -265,7 +266,7 @@ class _HomePageState extends State<HomePage> {
             ), 
             const Expanded(child: SizedBox()),
             IconButton(icon: const Icon(Icons.add), iconSize: 30, color: Colors.blue[700], onPressed: (){
-                Navigator.pushReplacementNamed(context, CreateMatterPage.route);
+                Navigator.pushNamed(context, CreateMatterPage.route);
               }
             ),
             
@@ -356,7 +357,7 @@ class _HomePageState extends State<HomePage> {
       onTap: (!subscription.getRequest)?() {
         _management.setMatterIndex=matterIndex;
         _management.setIndex=-1;
-        Navigator.pushReplacementNamed(context, MatterPage.route);
+        Navigator.pushNamed(context, MatterPage.route);
       }:(){},
       child: Container(
         margin: const EdgeInsets.all(7),

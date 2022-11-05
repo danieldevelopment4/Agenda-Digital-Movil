@@ -47,7 +47,7 @@ class _MatterPageState extends State<MatterPage> {
   String _teacherEmail="";
   String _teacherCellphone="";
 
-  TextEditingController _teacherIdTextField = TextEditingController();
+  final TextEditingController _teacherIdTextField = TextEditingController();
 
   late MatterModel _matter;
   late List<ActivityModel> _activitiesList;
@@ -180,6 +180,7 @@ class _MatterPageState extends State<MatterPage> {
             Map<String, dynamic> response = await _management.exitMatterRequest();
             _notificateRequest(response);
             Navigator.pushReplacementNamed(context, HomePage.HomeRoute);
+            setState(() {});
           },
         )
       ],
@@ -206,7 +207,7 @@ class _MatterPageState extends State<MatterPage> {
                   ), 
                   const Expanded(child: SizedBox()),
                   IconButton(icon: const Icon(Icons.add), iconSize: 30, color: Colors.blue[700], onPressed: (){
-                      Navigator.pushReplacementNamed(context, CreateActivityPage.route);
+                      Navigator.pushNamed(context, CreateActivityPage.route);
                     }
                   ),
                   
@@ -285,8 +286,8 @@ class _MatterPageState extends State<MatterPage> {
 
     return GestureDetector(
       onTap: () {
-        print("Activity:"+activity.getId.toString()+"::"+activity.getName);
-        Navigator.pushReplacementNamed(context, ActivityPage.route);
+        // print("Activity:"+activity.getId.toString()+"::"+activity.getName);
+        Navigator.pushNamed(context, ActivityPage.route);
       },
       child: Container(
         margin: const EdgeInsets.all(7),
@@ -312,13 +313,13 @@ class _MatterPageState extends State<MatterPage> {
     if(_matter.getTeacher!=null){//hay profesor registrado
       _teacherFullName = _matter.getTeacher!.getFullName;
       if(_matter.getTeacher!.getEmail!=null){
-        print(_matter.getTeacher!.getEmail!);
+        // print(_matter.getTeacher!.getEmail!);
         _teacherEmail = _matter.getTeacher!.getEmail!;
       }else{
         _teacherEmail = "NO asignado";
       }
       if(_matter.getTeacher!.getCellPhone!=null){
-        print(_matter.getTeacher!.getCellPhone.toString());
+        // print(_matter.getTeacher!.getCellPhone.toString());
         _teacherCellphone = _matter.getTeacher!.getCellPhone.toString();
       }else{
         _teacherCellphone = "NO asignado";

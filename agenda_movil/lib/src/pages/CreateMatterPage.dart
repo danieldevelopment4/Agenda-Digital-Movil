@@ -23,11 +23,9 @@ class _CreateMatterPageState extends State<CreateMatterPage> {
   late Size _size;
   late Management _management;
 
-  late TextStyle _appBarTitlle;
   late TextStyle _notificationTitle;
   late TextStyle _notificationText;
   late TextStyle _subTitlle;
-  late TextStyle _text;
   late TextStyle _cardText;
   late TextStyle _cardSubText;
   late ButtonStyle _colorButton;
@@ -54,9 +52,6 @@ class _CreateMatterPageState extends State<CreateMatterPage> {
     
     _size = MediaQuery.of(context).size;//dimeiones de la pantalla
     _management = Provider.of(context);
-    _appBarTitlle = const TextStyle(
-      fontSize: 30,
-    );
     _notificationTitle = const TextStyle(
       fontSize: 15,
       fontWeight: FontWeight.bold
@@ -67,9 +62,6 @@ class _CreateMatterPageState extends State<CreateMatterPage> {
     _subTitlle = TextStyle(
       color: Colors.blue[700],
       fontSize: 30,
-    );
-    _text = const TextStyle(
-      fontSize: 20,
     );
     _cardText = const TextStyle(
       fontWeight: FontWeight.bold,

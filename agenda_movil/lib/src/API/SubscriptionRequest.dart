@@ -56,7 +56,7 @@ class SubscriptionRequest {
 
   Future<Map<String, dynamic>> unsubscribe(String host, Map<String, String> header, Map<String, dynamic> body) async {
     try {
-      print('body: ${body}');
+      // print('body: ${body}');
       var url = Uri.parse(host+"/subscription/unsubscribe");
       var response = await http.post(url, body: jsonEncode(body), headers: header);
       // print('Response status: ${response.statusCode}');

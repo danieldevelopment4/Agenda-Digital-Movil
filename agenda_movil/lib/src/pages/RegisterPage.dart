@@ -246,7 +246,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 const SizedBox(height: 12),
                 TextButton(
                   onPressed: () =>
-                      Navigator.pushReplacementNamed(context, LogginPage.route),
+                      Navigator.pushNamed(context, LogginPage.route),
                   child: const Text(
                     "Cancelar",
                   ),

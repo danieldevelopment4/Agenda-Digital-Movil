@@ -4,6 +4,7 @@ import 'dart:math';
 
 import 'package:agenda_movil/src/Logic/Management.dart';
 import 'package:agenda_movil/src/Logic/Provider.dart';
+import 'package:agenda_movil/src/pages/RecoverPage.dart';
 import 'package:agenda_movil/src/pages/RegisterPage.dart';
 import 'package:flutter/material.dart';
 
@@ -41,7 +42,8 @@ class _LogginPageState extends State<LogginPage> {
       fontSize: 24,
     );
     _subTitlle = TextStyle(
-        fontWeight: FontWeight.w700, fontSize: 22, color: Colors.blue[700]);
+      fontWeight: FontWeight.w700, fontSize: 22, color: Colors.blue[700]
+    );
     _buttonText = TextButton.styleFrom(
       primary: Colors.white, //color de la letra
       onSurface: Colors.white, //color de la letra cuando el boton esta DESACTIVADO
@@ -63,8 +65,12 @@ class _LogginPageState extends State<LogginPage> {
 
     return Scaffold(
         body: Stack(
-      children: [_back(context), _login(context)],
-    ));
+          children: [
+            _back(context), 
+            _login(context)
+          ],
+      )
+    );
   }
 
   Widget _back(BuildContext context) {
@@ -100,7 +106,7 @@ class _LogginPageState extends State<LogginPage> {
         Column(
           children: [
             const SizedBox(
-              height: 300,
+              height: 280,
               width: double.infinity,
             ),
             Container(
@@ -198,29 +204,32 @@ class _LogginPageState extends State<LogginPage> {
                   ),
                   const SizedBox(height: 12),
                   TextButton(
-                    onPressed: () => Navigator.pushReplacementNamed(context, RegisterPage.route),
+                    onPressed: () => Navigator.pushNamed(context, RegisterPage.route),
                     child: const Text(
                       "Registrarse",
                     ),
                     style: _buttonText,
                   ),
                   const SizedBox(height: 12),
-                  TextButton(
-                    onPressed: null,
-                    child: const Text(
-                      "Google Login",
-                    ),
-                    style: _buttonText,
-                  )
+                  // TextButton(
+                  //   onPressed: null,
+                  //   child: const Text(
+                  //     "Google Login",
+                  //   ),
+                  //   style: _buttonText,
+                  // )
                 ],
               ),
             ),
             const SizedBox(
-              height: 70,
+              height: 45,
               width: double.infinity,
             ),
             TextButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.pushNamed(context, RecoverPage.route);
+                _management.setIndex=-1;
+              },
               child: const Text("¿Olvidaste tu contraseña?"),
               style: _outSideButtonText,
             )

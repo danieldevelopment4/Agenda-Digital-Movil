@@ -2,7 +2,9 @@
 
 import 'package:agenda_movil/src/pages/AdtivityPage.dart';
 import 'package:agenda_movil/src/pages/RatePage.dart';
+import 'package:agenda_movil/src/pages/RecoverPage.dart';
 import 'package:agenda_movil/src/pages/SettingsPage.dart';
+import 'package:agenda_movil/src/pages/TutorialPage.dart';
 import 'package:flutter/material.dart';
 
 import 'package:agenda_movil/src/pages/Error404.dart';
@@ -21,6 +23,7 @@ Map<String, WidgetBuilder>getRoutes(){
     HomePage.CalendarRoute : (BuildContext context) => HomePage(2),
     LogginPage.route : (BuildContext context) => const LogginPage(),
     RegisterPage.route : (BuildContext context) => const RegisterPage(),
+    RecoverPage.route : (BuildContext context) => const RecoverPage(),
     CreateActivityPage.route : (BuildContext context) => const CreateActivityPage(),
     CreateMatterPage.route : (BuildContext context) => const CreateMatterPage(),
     TeacherPage.createRoute : (BuildContext context) => TeacherPage(true),
@@ -29,6 +32,7 @@ Map<String, WidgetBuilder>getRoutes(){
     ActivityPage.route: (BuildContext context) => const ActivityPage(),
     SettingsPage.route: (BuildContext context) => const SettingsPage(),
     RatePage.route : (BuildContext context) => const RatePage(),
+    TutorialPage.route : (BuildContext context) => const TutorialPage(),
   };
 }
 

@@ -37,7 +37,7 @@ class _BottomBarMenuState extends State<BottomBarMenu> {
             ),
             onPressed: () {
               _management.setIndex=0;
-              Navigator.pushReplacementNamed(context, HomePage.TableRoute);
+              Navigator.pushNamed(context, HomePage.TableRoute);
             },
             splashColor: Colors.white,
           ),
@@ -50,7 +50,7 @@ class _BottomBarMenuState extends State<BottomBarMenu> {
             ),
             onPressed: () {
               _management.setIndex=1;
-              Navigator.pushReplacementNamed(context, HomePage.HomeRoute);
+              Navigator.pushNamed(context, HomePage.HomeRoute);
             },
             splashColor: Colors.white,
           ),
@@ -63,7 +63,7 @@ class _BottomBarMenuState extends State<BottomBarMenu> {
             ),
             onPressed: () {
               _management.setIndex=2;
-              Navigator.pushReplacementNamed(context, HomePage.CalendarRoute);
+              Navigator.pushNamed(context, HomePage.CalendarRoute);
             },
             splashColor: Colors.white,
           ),
