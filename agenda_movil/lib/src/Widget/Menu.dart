@@ -65,7 +65,7 @@ class Menu extends StatelessWidget {
             ),
             decoration: const BoxDecoration(
               image: DecorationImage(
-                image: AssetImage("Files/Assets/menuHeader.jpg"),
+                image: AssetImage("assets/images/menuHeader.jpg"),
                 fit: BoxFit.cover
               ),
             ),

@@ -20,6 +20,10 @@ class Streams with Validator{
   final _activityNoDaysRecordatoriesStream = BehaviorSubject<String>();
   final _activitySubmissionDateStream = BehaviorSubject<String>();
   final _activityTermStream = BehaviorSubject<String>();
+  //submit
+  final _submitNoteStream = BehaviorSubject<String>();
+  final _submitStateStream = BehaviorSubject<String>();
+  
   //teacher
   final _teacherIdStream = BehaviorSubject<String>();
   final _teacherNameStream = BehaviorSubject<String>();
@@ -46,6 +50,10 @@ class Streams with Validator{
   Stream<String> get activitySubmissionDateStream => _activitySubmissionDateStream.stream.transform(validateActivitySubmissionDateStream);
   Stream<String> get activityTermStream => _activityTermStream.stream.transform(validateActivityTerm);
   Stream<bool> get buttonCreateActivityStream => CombineLatestStream.combine5(activityNameStream, activityPercentStream, activityNoDaysRecordatoriesStream, activitySubmissionDateStream, activityTermStream, (n, p, nd, sd, t) =>  true);
+  //submit
+  Stream<String> get submitNoteStream => _submitNoteStream.stream.transform(validateSubmitNote);
+  Stream<String> get submitStateStream => _submitStateStream.stream.transform(validateSubmitState);
+  Stream<bool> get buttonCreateSubmitStream => CombineLatestStream.combine2(submitNoteStream, submitStateStream, (n, s) => true);
   //teacher
   Stream<String> get teacherIdStream => _teacherIdStream.stream.transform(validateTeacherId);
   Stream<String> get teacherNameStream => _teacherNameStream.stream.transform(validateTeacherName);
@@ -70,6 +78,9 @@ class Streams with Validator{
   Function(String) get changeActivityNoDaysRecordatories => _activityNoDaysRecordatoriesStream.sink.add;
   Function(String) get changeActivitySubmissionDate => _activitySubmissionDateStream.sink.add;
   Function(String) get changeActivityTerm => _activityTermStream.sink.add;
+  //submit
+  Function(String) get changeSubmitNote => _submitNoteStream.sink.add;
+  Function(String) get changeSubmitState => _submitStateStream.sink.add;
   //teacher
   Function(String) get changeTeacherId => _teacherIdStream.sink.add;
   Function(String) get changeTeacherName => _teacherNameStream.sink.add;
@@ -78,6 +89,9 @@ class Streams with Validator{
   Function(String) get changeTeachereCellphone => _teacherCellphoneStream.sink.add;
 
   //validateIfHasData
+  //submit
+  bool get submitStateHasData => _submitStateStream.hasValue;
+  //teacher
   bool get teacherIdHasData => _teacherIdStream.hasValue;
   bool get teacherEmailHasData => _teacherEmailStream.hasValue;
   bool get teacherCellphoneHasData => _teacherCellphoneStream.hasValue;
@@ -98,6 +112,9 @@ class Streams with Validator{
   String get activityNoDaysRecordatories => _activityNoDaysRecordatoriesStream.value;
   String get activitySubmissionDate => _activitySubmissionDateStream.value;
   String get activityTerm => _activityTermStream.value;
+  //submit
+  String get submitNote => _submitNoteStream.value;
+  String get submitState => _submitStateStream.value;
   //teacher
   String get teacherId => _teacherIdStream.value;
   String get teacherName => _teacherNameStream.value;
@@ -156,6 +173,15 @@ class Streams with Validator{
   void resetActivityTerm(){
     _activityTermStream.sink.add("");
     _activityTermStream.sink.addError("null");
+  }
+  //submit
+  void resetSubmitNote(){
+    _submitNoteStream.sink.add("");
+    _submitNoteStream.sink.addError("null");
+  }
+  void resetSubmitState(){
+    _submitStateStream.sink.add("");
+    _submitStateStream.sink.addError("null");
   }
   //teacher
   void resetTeacherId(){

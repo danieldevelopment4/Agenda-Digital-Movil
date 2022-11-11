@@ -87,7 +87,7 @@ class Validator{
 
   final validateActivityDescription = StreamTransformer<String,String>.fromHandlers(
     handleData: (activityDescription, sink){
-      if(activityDescription.length>255){
+      if(activityDescription.length>150){
         sink.addError("El nombre es demasiado largo");
       }else{
         sink.add(activityDescription);
@@ -135,6 +135,26 @@ class Validator{
         sink.addError("No se puede establecer un valor inferior a 1");
       }else{
         sink.add(activityTerm.toString());
+      }
+    }
+  );
+  //submit
+  final validateSubmitNote = StreamTransformer<String,String>.fromHandlers(
+    handleData: (note, sink){
+      if(note.isNotEmpty && double.parse(note)>=0 && note[note.length-1]!="."){
+        sink.add(note);
+      }else{
+        sink.addError("Nota no valida");
+      }
+    }
+  );
+
+  final validateSubmitState = StreamTransformer<String,String>.fromHandlers(
+    handleData: (state, sink){
+      if(state.isNotEmpty){
+        sink.add(state);
+      }else{
+        sink.addError("Estado de entrega no valido");
       }
     }
   );

@@ -26,11 +26,13 @@ environment:
 # dependencies can be manually updated by changing the version numbers below to
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
-dependencies: #dependencias que seran usadas en tiempo de ejecucion
+dependencies:
   flutter:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
+  intl: ^0.17.0
+
   
 
   # The following adds the Cupertino Icons font to your application.
@@ -48,6 +50,7 @@ dependencies: #dependencias que seran usadas en tiempo de ejecucion
   elegant_notification: ^1.6.4 #Despliegua una notificacion elegante para informar al usuario
   flutter_pdfview: ^1.2.5 #permite visualizar archivos pdf
   path_provider: ^2.0.11 #permite acceder a las propiedades de los assets
+  flutter_translate: ^4.0.3 #Traduccion de textos a diferentes idiomas
 
 dev_dependencies: #dependencias que seran usadas unicamente en tiempo de compilacion
 
@@ -75,11 +78,10 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    # - Files/
-    - Files/Tutorial/Tutorial.pdf
-    - Files/Assets/LogoN.png
-    - Files/Assets/LogoB.png
-    - Files/Assets/menuHeader.jpg
+    - assets/
+    - assets/i18n/
+    - assets/pdfs/
+    - assets/images/
 
   #assets:
 

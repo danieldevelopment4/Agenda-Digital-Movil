@@ -14,7 +14,7 @@ import 'package:percent_indicator/linear_percent_indicator.dart';
 
 import '../Logic/Management.dart';
 import '../Logic/Provider.dart';
-import 'AdtivityPage.dart';
+import 'ActivityPage.dart';
 
 class MatterPage extends StatefulWidget {
   const MatterPage({Key? key}) : super(key: key);
@@ -213,17 +213,17 @@ class _MatterPageState extends State<MatterPage> {
                   
                 ],
               ),
-              TextField(
-                controller: searchTextField,
-                decoration: InputDecoration(
-                  hintText: "Filtrar",
-                  prefix: Icon(Icons.search_rounded, color: Colors.blue[700]!),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: Colors.blue[700]!)
-                  )
-                ), 
-              ),
+              // TextField(
+              //   controller: searchTextField,
+              //   decoration: InputDecoration(
+              //     hintText: "Filtrar",
+              //     prefix: Icon(Icons.search_rounded, color: Colors.blue[700]!),
+              //     border: OutlineInputBorder(
+              //       borderRadius: BorderRadius.circular(12),
+              //       borderSide: BorderSide(color: Colors.blue[700]!)
+              //     )
+              //   ), 
+              // ),
             ],
           ),
         ),
@@ -236,7 +236,7 @@ class _MatterPageState extends State<MatterPage> {
     );
   }
 
-  Widget _card(ActivityModel activity, int matterIndex){
+  Widget _card(ActivityModel activity, int activityIndex){
     TextStyle titleStile = const TextStyle(
       fontSize: 20,
     );
@@ -269,11 +269,16 @@ class _MatterPageState extends State<MatterPage> {
       }
     }
     column.add(ListTile(title: Row(children: row,)));
-    column.add(Text(
-      (activity.getDescription!=null)?activity.getDescription!:"",
-      style: subtitleStile,
-    ));
-    column.add(Divider(color: color, height: 2.8,));
+    
+    if(activity.getDescription!=null){
+      column.add(Row(
+        children: <Widget>[
+          Text(activity.getDescription!),
+          const Expanded(child: SizedBox())
+        ],
+      ));
+    }
+    column.add(Divider(color: color, thickness: 1,));
     row1.add(Text(activity.getSubmissionDate.split(' ')[0], style: subtitleStile,));
     row1.add(const Icon(Icons.calendar_month, color: Colors.grey,));
     row1.add(const Expanded(child: SizedBox()));
@@ -286,6 +291,7 @@ class _MatterPageState extends State<MatterPage> {
 
     return GestureDetector(
       onTap: () {
+        _management.setActivityIndex = activityIndex;
         // print("Activity:"+activity.getId.toString()+"::"+activity.getName);
         Navigator.pushNamed(context, ActivityPage.route);
       },

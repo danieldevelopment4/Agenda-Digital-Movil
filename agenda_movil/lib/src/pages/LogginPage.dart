@@ -94,7 +94,7 @@ class _LogginPageState extends State<LogginPage> {
       Container(
         padding: EdgeInsets.only(top: size.height * .1212),
         child: const Image(
-          image: AssetImage("Files/Assets/LogoB.png"),
+          image: AssetImage("assets/images/LogoB.png"),
         ),
       )
     ]);

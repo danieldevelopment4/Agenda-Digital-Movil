@@ -13,6 +13,7 @@ class SubscriptionRequest {
 
   Future<bool> viewSubscriptions(String host, Map<String, String> header, Map<String, dynamic> body) async {
     try {
+      // print('body: ${body}');
       var url = Uri.parse( host+"/subscription/show");
       var response = await http.post(url, body: jsonEncode(body), headers: header);
       // print('Response body: ${response.body}');

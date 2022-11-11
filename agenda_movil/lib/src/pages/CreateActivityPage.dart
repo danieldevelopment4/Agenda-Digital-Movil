@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 
 import '../Logic/Management.dart';
 import '../Logic/Provider.dart';
+import '../Widget/Menu.dart';
 
 class CreateActivityPage extends StatefulWidget {
   const CreateActivityPage({Key? key}) : super(key: key);
@@ -66,22 +67,8 @@ class _CreateActivityPageState extends State<CreateActivityPage> {
           "Agenda Digital",
           style: _appBarTitlle
         ),
-        leading: Builder(
-          builder: (BuildContext context) {
-            return IconButton(
-              icon: const Icon(Icons.arrow_back),
-              iconSize: 30,
-              onPressed: () {
-                Scaffold.of(context).openDrawer();
-                reset();
-                Navigator.pop(context);
-              },
-              tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
-            );
-          }
-        )
       ),
-      // drawer: Menu(),
+      drawer: Menu(),
       bottomNavigationBar: BottomBarMenu(),
       body: Container(
         padding: const EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
@@ -295,7 +282,7 @@ class _CreateActivityPageState extends State<CreateActivityPage> {
     setState(() {
       _createActivityLoading=true;
     });
-    Map<String, dynamic> response = await _management.createTeacherRequest();
+    Map<String, dynamic> response = await _management.createActivityRequest();
     setState(() {
       reset();
       _createActivityLoading=false;

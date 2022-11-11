@@ -266,6 +266,7 @@ class _HomePageState extends State<HomePage> {
             ), 
             const Expanded(child: SizedBox()),
             IconButton(icon: const Icon(Icons.add), iconSize: 30, color: Colors.blue[700], onPressed: (){
+                _management.setIndex=-1;
                 Navigator.pushNamed(context, CreateMatterPage.route);
               }
             ),

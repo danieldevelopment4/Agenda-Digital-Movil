@@ -1,6 +1,6 @@
 // ignore_for_file: file_names
 
-import 'package:agenda_movil/src/pages/AdtivityPage.dart';
+import 'package:agenda_movil/src/pages/ActivityPage.dart';
 import 'package:agenda_movil/src/pages/RatePage.dart';
 import 'package:agenda_movil/src/pages/RecoverPage.dart';
 import 'package:agenda_movil/src/pages/SettingsPage.dart';

@@ -3,6 +3,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:agenda_movil/src/Model/ActivityModel.dart';
 import 'package:path/path.dart';
 
 import 'package:agenda_movil/src/API/ActivityRequest.dart';
@@ -42,7 +43,7 @@ class Management{
   var streams = Streams();
 
 //tutorial
-  final _path = "Files/Tutorial/Tutorial.pdf";
+  final _path = "assets/pdfs/Tutorial.pdf";
   late File _file;
   File get getFile{
     return _file;
@@ -215,9 +216,24 @@ class Management{
   }
 
   //activity
+  int _activityIndex =-1;
+
+  int get getActivityIndex{
+    return _activityIndex;
+  }
+
+  set setActivityIndex(int activityIndex){
+    _activityIndex = activityIndex;
+  }
+
+  ActivityModel getActivity(){
+    return _subsciptionList[_matterIndex].getMatter.getActivitiesList[_activityIndex];
+  }
+
   Future<Map<String, dynamic>> createActivityRequest(){
     Map<String, dynamic> body = {
         "name": streams.activityName,
+        "description": streams.activityDescription,
         "percent": streams.activityPercent,
         "matter": {
             "id": _subsciptionList[_matterIndex].getMatter.getId
