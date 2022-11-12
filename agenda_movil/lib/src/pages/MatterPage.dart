@@ -10,6 +10,7 @@ import 'package:agenda_movil/src/pages/HomePage.dart';
 import 'package:agenda_movil/src/pages/TeacherPage.dart';
 import 'package:elegant_notification/elegant_notification.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
 import '../Logic/Management.dart';
@@ -41,6 +42,34 @@ class _MatterPageState extends State<MatterPage> {
   TextEditingController searchTextField = TextEditingController();
   bool _searchTeacherLoading = false;
   bool _addTeacherLoading = false;
+  late final Map<String, String> _messages = {
+    "Tutoria" : 
+      "Cordial saludo, soy "+_management.getStudent.getFullName+", estudiante de "+_management.getSubscriptionList[_management.getMatterIndex].getMatter.getName+
+      ", quisiera saber sumercé en que horarios y en que espacio me permitiria una tutoria.\nMuchas gracias, quedo atento",
+    "Excusa llegada tardia" : 
+      "Cordial saludo, soy "+_management.getStudent.getFullName+", estudiante de "+_management.getSubscriptionList[_management.getMatterIndex].getMatter.getName+
+      "",
+    "Excusa ausencia medica" : 
+      "Cordial saludo, soy "+_management.getStudent.getFullName+", estudiante de "+_management.getSubscriptionList[_management.getMatterIndex].getMatter.getName+
+      ", le informo que no podre asistir a la clase del dia de hoy debido a una cita medica que vengo tramitando desde hace tiempo."+
+      "\nMuchas gracias por su comprension",
+    "Excusa ausencia informal" : 
+      "Cordial saludo, soy "+_management.getStudent.getFullName+", estudiante de "+_management.getSubscriptionList[_management.getMatterIndex].getMatter.getName+
+      ", le informo que no podre asistir a la clase del dia de hoy debido a unos asuntos personales los cuales no he podido posponer"+
+      "\nMuchas gracias por su comprension",
+    "Excusa ausencia academica" : 
+      "Cordial saludo, soy "+_management.getStudent.getFullName+", estudiante de "+_management.getSubscriptionList[_management.getMatterIndex].getMatter.getName+
+      ", le informo que no podre asistir a la clase del dia de hoy debido a unos asuntos academicos a los que debo de asistir"+
+      "\nMuchas gracias por su comprension",
+    "Excusa entrega tardia": 
+      "Cordial saludo, soy "+_management.getStudent.getFullName+", estudiante de "+_management.getSubscriptionList[_management.getMatterIndex].getMatter.getName+
+      ", debido a multiples problemas tecnicos se me dificulto la entrega de la actividad a la hora especificada, sin embargo en pro de "+
+      "la academia le envio la actividad por este medio con ansias de que me lo pueda aceptar.\ Muchas gracias por su tiemp y compresnsion,"+
+      "quedo atento.",
+    "Entrega de trabajo": 
+      "Cordial saludo, soy "+_management.getStudent.getFullName+", estudiante de "+_management.getSubscriptionList[_management.getMatterIndex].getMatter.getName+
+      ", hago entrega de la actividad por este medio tal como se habia acordado.\nQuedo atento a cualquier inquietud",
+  };
 
   String _teacherId="";
   String _teacherFullName="";
@@ -103,7 +132,7 @@ class _MatterPageState extends State<MatterPage> {
         ),
         
       ),
-      drawer: Menu(),
+      drawer: const Menu(),
       bottomNavigationBar: BottomBarMenu(),
       body: PageView(
       controller: PageController(initialPage: 1),
@@ -130,11 +159,9 @@ class _MatterPageState extends State<MatterPage> {
           percent+=_activitiesList[i].getPercen;
           if(_activitiesList[i].getSumission!=null){
             if (_activitiesList[i].getSumission!.getNote!=null) {
-              note += _activitiesList[i].getSumission!.getNote!*_activitiesList[i].getPercen;
+              note += _activitiesList[i].getSumission!.getNote!*_activitiesList[i].getPercen/100;
             }
           }
-        }else{
-          break;
         }
       }
     }
@@ -314,8 +341,40 @@ class _MatterPageState extends State<MatterPage> {
     );
   }
  
+  Widget _messageCard(String title, String message){
+    return Container(
+      margin: const EdgeInsets.all(7),
+      child: Card(
+        elevation: 10,//sombreado
+        shape: RoundedRectangleBorder(
+          side: BorderSide(color: Colors.blue[600]!),
+          borderRadius: const BorderRadius.all(Radius.circular(12)),
+        ),
+        child: Container(
+          padding: const EdgeInsets.all(7),
+          child: Row(
+            children: [
+              Expanded(
+                child: ListTile(
+                  title: Text(title),
+                  subtitle: Text(message),
+                ),
+              ),
+              TextButton(
+                child: Icon(Icons.copy, color: Colors.blue[600], size: 30,),
+                onPressed: ()async{
+                  await Clipboard.setData(ClipboardData(text: message));
+                },
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget _teacher(BuildContext context){
-    
+    List<Widget> message = List.empty(growable: true);
     if(_matter.getTeacher!=null){//hay profesor registrado
       _teacherFullName = _matter.getTeacher!.getFullName;
       if(_matter.getTeacher!.getEmail!=null){
@@ -330,6 +389,13 @@ class _MatterPageState extends State<MatterPage> {
       }else{
         _teacherCellphone = "NO asignado";
       }
+      message.add(_messageCard("Tutoria", _messages["Tutoria"]!));
+      message.add(_messageCard("Excusa llegada tardia", _messages["Excusa llegada tardia"]!));
+      message.add(_messageCard("Excusa ausencia medica", _messages["Excusa ausencia medica"]!));
+      message.add(_messageCard("Excusa ausencia informal", _messages["Excusa ausencia informal"]!));
+      message.add(_messageCard("Excusa ausencia academica", _messages["Excusa ausencia academica"]!));
+      message.add(_messageCard("Excusa entrega tardia", _messages["Excusa entrega tardia"]!));
+      message.add(_messageCard("Entrega de trabajo", _messages["Entrega de trabajo"]!));
       return Column(
         children: <Widget>[
           Text(
@@ -361,33 +427,10 @@ class _MatterPageState extends State<MatterPage> {
             ],
           ),
           const Divider(height: 2,),
-          const Center(child: Text("Plantillas mensajes ;)")),
-          const Divider(height: 2,),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: <Widget>[
-              TextButton(
-                style: TextButton.styleFrom(
-                  backgroundColor: Colors.red,
-                ),
-                child: const Icon(Icons.mail, color: Colors.white, size: 30,),
-                onPressed: (){_sendEmail();},
-              ),
-              TextButton(
-                style: TextButton.styleFrom(
-                  backgroundColor: Colors.green,
-                ),
-                child: const Icon(Icons.whatsapp, color: Colors.white, size: 30,),
-                onPressed: (){((_matter.getTeacher!.getCellPhone!=null)?_sendWhatsApp():null);},
-              ),
-              TextButton(
-                style: TextButton.styleFrom(
-                  backgroundColor: Colors.blue,
-                ),
-                child: const Icon(Icons.telegram, color: Colors.white, size: 30,),
-                onPressed: (){((_matter.getTeacher!.getCellPhone!=null)?_sendTelegram():null);},
-              ),
-            ]
+          Expanded(
+            child: ListView(
+              children: message,
+            ),
           )
         ],
       );
@@ -460,7 +503,8 @@ class _MatterPageState extends State<MatterPage> {
                 fontSize: 18,
               ),
             )
-          )
+          ),
+          // const Divider(),
         ],
       );
     }
@@ -511,19 +555,7 @@ class _MatterPageState extends State<MatterPage> {
     _notificateRequest(response);
   }
 
-  void _sendEmail(){
-
-  }
-  
-  void _sendWhatsApp(){
-    
-  }
-
-  void _sendTelegram(){
-    
-  }
-
-   Widget _extras(){
+ Widget _extras(){
     List<Widget> extras = List.empty(growable: true);
     extras.add(Text(
         "Estudiantes registrados",

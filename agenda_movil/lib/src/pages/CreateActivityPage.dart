@@ -68,7 +68,7 @@ class _CreateActivityPageState extends State<CreateActivityPage> {
           style: _appBarTitlle
         ),
       ),
-      drawer: Menu(),
+      drawer: const Menu(),
       bottomNavigationBar: BottomBarMenu(),
       body: Container(
         padding: const EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
@@ -290,7 +290,7 @@ class _CreateActivityPageState extends State<CreateActivityPage> {
     _notificateRequest(response);
   }
 
-    void _notificateRequest(Map<String, dynamic> response){
+  void _notificateRequest(Map<String, dynamic> response){
     if (response["status"]) {
       _management.viewSubscripciptionsRequest();
       ElegantNotification.success(

@@ -150,7 +150,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _notes(){
+  Widget _notes(){ 
     
     List<TableRow> rows = List.empty(growable: true);
     rows.add(TableRow(
@@ -163,6 +163,7 @@ class _HomePageState extends State<HomePage> {
     );
     for (int i = 0; i < _subscriptionList.length; i++) {
       int percent = 0;
+
       double note = 0;
       MatterModel matter = _subscriptionList[i].getMatter;
       if(!_subscriptionList[i].getRequest){
@@ -174,7 +175,7 @@ class _HomePageState extends State<HomePage> {
               percent+=activitiesList[i].getPercen;
               if(activitiesList[i].getSumission!=null){
                 if (activitiesList[i].getSumission!.getNote!=null) {
-                  note += activitiesList[i].getSumission!.getNote!*activitiesList[i].getPercen;
+                  note += activitiesList[i].getSumission!.getNote!*activitiesList[i].getPercen/100;
                 }
               }
             }else{
@@ -187,7 +188,7 @@ class _HomePageState extends State<HomePage> {
           children: <Widget>[
             _rowContainer(matter.getName, Colors.black),
             _rowContainer(percent.toString(), Colors.black),
-            _rowContainer(note.toString(), (note<3)?Colors.deepOrange:Colors.green[700]!),
+            _rowContainer(note.toStringAsFixed(2), (note<3)?Colors.deepOrange:Colors.green[700]!),
           ]
         )
       );

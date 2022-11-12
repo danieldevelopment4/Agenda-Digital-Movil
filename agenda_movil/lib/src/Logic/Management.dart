@@ -3,6 +3,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:agenda_movil/src/API/SubmitRequest.dart';
 import 'package:agenda_movil/src/Model/ActivityModel.dart';
 import 'package:path/path.dart';
 
@@ -86,8 +87,6 @@ class Management{
     print("setSubscriptionList");
     _subsciptionList = subscriptionListFromJson(_percistence.subscription);
   }
-
-
 
   //Student-Login-Register
   Future<Map<String, dynamic>> logingRequest() {
@@ -232,37 +231,71 @@ class Management{
 
   Future<Map<String, dynamic>> createActivityRequest(){
     Map<String, dynamic> body = {
-        "name": streams.activityName,
-        "description": streams.activityDescription,
-        "percent": streams.activityPercent,
-        "matter": {
-            "id": _subsciptionList[_matterIndex].getMatter.getId
-        },
-        "noDaysRecordatories": streams.activityNoDaysRecordatories,
-        "submissionDate": streams.activitySubmissionDate,
-        "term": streams.activityTerm
+      "name": streams.activityName,
+      "description": streams.activityDescription,
+      "percent": streams.activityPercent,
+      "matter": {
+          "id": _subsciptionList[_matterIndex].getMatter.getId
+      },
+      "noDaysRecordatories": streams.activityNoDaysRecordatories,
+      "submissionDate": streams.activitySubmissionDate.split(" ")[0],
+      "term": streams.activityTerm
     };
     return ActivityRequest().create(host, header, body);
   }
 
   Future<Map<String, dynamic>> addTeacher(String teacherId){
     Map<String, dynamic> body = {
-        "id": _subsciptionList[_matterIndex].getMatter.getId,
-        "name": _subsciptionList[_matterIndex].getMatter.getName,
-        "teacher": {
-            "id": teacherId
-        }
+      "id": _subsciptionList[_matterIndex].getMatter.getId,
+      "name": _subsciptionList[_matterIndex].getMatter.getName,
+      "teacher": {
+          "id": teacherId
+      }
     };
     return MatterRequest().updateTeacher(host, header, body);
   }
 
   Future<Map<String, dynamic>> removeTeacher(){
-    Map<String, dynamic> body = {
-        "id": _subsciptionList[_matterIndex].getMatter.getId,
-        "name": _subsciptionList[_matterIndex].getMatter.getName,
-        "teacher": null
+  Map<String, dynamic> body = {
+      "id": _subsciptionList[_matterIndex].getMatter.getId,
+      "name": _subsciptionList[_matterIndex].getMatter.getName,
+      "teacher": null
     };
     return MatterRequest().updateTeacher(host, header, body);
+  }
+
+  //submit
+  Future<Map<String, dynamic>> createSubmitRequest(){
+    Map<String, dynamic> body = {
+      "note": streams.submitNote,
+      "state": streams.submitState,
+      "activity": {
+          "id": _subsciptionList[_matterIndex].getMatter.getActivitiesList[_activityIndex].getId
+      },
+      "subscription": {
+          "matter": {
+              "id": _subsciptionList[_matterIndex].getMatter.getId
+          },
+          "student":getStudent.toJson()
+      }
+    };
+    return SubmitRequest().create(host, header, body);
+  }
+  
+  Future<Map<String, dynamic>> editSubmitRequest(){
+    Map<String, dynamic> body = {
+      "id": _subsciptionList[_matterIndex].getMatter.getActivitiesList[_activityIndex].getSumission!.getId,
+      "note": streams.submitNote,
+      "state": streams.submitState,
+    };
+    return SubmitRequest().edit(host, header, body);
+  }
+  
+  Future<Map<String, dynamic>> deleteSubmitRequest(){
+    Map<String, dynamic> body = {
+      "id": _subsciptionList[_matterIndex].getMatter.getActivitiesList[_activityIndex].getSumission!.getId,
+    };
+    return SubmitRequest().delete(host, header, body);
   }
 
   //teacher

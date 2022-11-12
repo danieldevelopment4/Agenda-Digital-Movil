@@ -1,7 +1,5 @@
 // ignore_for_file: file_names
 
-import 'package:agenda_movil/src/Model/SubmitStateEnum.dart';
-
 class SubmitModel{
 
   SubmitModel(
@@ -14,12 +12,12 @@ class SubmitModel{
 
   final int id;
   final double? note;
-  final SubmitStateEnum state;
+  final String state;
 
   factory SubmitModel.fromJson(Map<String, dynamic> json) => SubmitModel(
     id: json["id"],
     note: json["note"],
-    state: SubmitStateEnum.values.firstWhere((e)=>e.toString().split('.')[1].toUpperCase()==json["state"].toUpperCase()),
+    state: json["state"],
   );
 
   int get getId{

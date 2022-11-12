@@ -12,15 +12,20 @@ import 'package:flutter/material.dart';
 import '../pages/TutorialPage.dart';
 
 
-class Menu extends StatelessWidget {
-  Menu({Key? key}) : super(key: key);
+class Menu extends StatefulWidget {
+  const Menu({Key? key}) : super(key: key);
 
+  @override
+  State<Menu> createState() => _MenuState();
+}
+
+class _MenuState extends State<Menu> {
   late Size size;
+  late Management _management;
+
   late ButtonStyle _buttonStyle;
   late TextStyle _headerTextStyle;
   late TextStyle _optionsStyle;
-
-  late Management _management;
 
   final Percistence _percistence = Percistence();
 
@@ -93,15 +98,15 @@ class Menu extends StatelessWidget {
               Navigator.pushNamed(context, TeacherPage.createRoute);
             },
           ),
-          ListTile(
-            leading: Icon(Icons.pending_actions, color: Colors.blue[700], size: 42),
-            title: Text(
-              "Estudio asistido",
-              style: _optionsStyle,
-            ),
-            onTap: (){
-            },
-          ),
+          // ListTile(
+          //   leading: Icon(Icons.pending_actions, color: Colors.blue[700], size: 42),
+          //   title: Text(
+          //     "Estudio asistido",
+          //     style: _optionsStyle,
+          //   ),
+          //   onTap: (){
+          //   },
+          // ),
           ListTile(
             leading: Icon(Icons.rate_review, color: Colors.blue[700], size: 42),
             title: Text(
