@@ -1,5 +1,7 @@
 // ignore_for_file: file_names
 
+import 'dart:ffi';
+
 class TeacherModel {
   TeacherModel(
     {
@@ -15,7 +17,7 @@ class TeacherModel {
   final String name;
   final String lastName;
   final String? email;
-  final String? cellphone;
+  final int? cellphone;
 
   factory TeacherModel.fromJson(Map<String, dynamic> json) => TeacherModel(
     id: json["id"],
@@ -45,7 +47,7 @@ class TeacherModel {
     return email;
   }
 
-  String? get getCellPhone{
+  int? get getCellPhone{
     return cellphone;
   }
 

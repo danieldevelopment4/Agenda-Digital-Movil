@@ -67,7 +67,7 @@ class _RecoverPageState extends State<RecoverPage> {
   }
 
   Widget _back(BuildContext context) {
-    final size = MediaQuery.of(context).size; //dimeiones de la pantalla
+    final size = MediaQuery.of(context).size; //dimenciones de la pantalla
     return Stack(children: <Widget>[
       Container(
         //fondo morado
@@ -87,7 +87,7 @@ class _RecoverPageState extends State<RecoverPage> {
       Container(
         padding: EdgeInsets.only(top: size.height * .1212),
         child: const Image(
-          image: AssetImage("Files/Assets/LogoB.png"),
+          image: AssetImage("assets/images/LogoB.png"),
         ),
       )
     ]);
@@ -136,7 +136,7 @@ class _RecoverPageState extends State<RecoverPage> {
                         controller: _emailTextField,
                         keyboardType: TextInputType.emailAddress,
                         decoration: InputDecoration(
-                          hintText: "daga70414@gmail.com",
+                          hintText: "TuCorreo@gmail.com",
                           label: const Text("Correo"),
                           errorText: (snapshot.error.toString() != "null")? snapshot.error.toString(): null,
                           errorStyle: const TextStyle(color: Colors.red),

@@ -120,7 +120,7 @@ class _TeacherPageState extends State<TeacherPage> {
                 controller: _nameTextField,
                 keyboardType: TextInputType.name,
                 decoration: InputDecoration(
-                  hintText: "Daniel Alejandro",
+                  hintText: "Nombre Maestro",
                   label: const Text("Nombre del docente"), 
                   errorText: (snapshot.error.toString()!="null")?snapshot.error.toString():null,
                   errorStyle: const TextStyle(color: Colors.red),
@@ -137,7 +137,7 @@ class _TeacherPageState extends State<TeacherPage> {
                 controller: _lastnameTextField,
                 keyboardType: TextInputType.name,
                 decoration: InputDecoration(
-                  hintText: "Gómez Acero",
+                  hintText: "Apellido Maestro",
                   label: const Text("Apellido del docente"), 
                   errorText: (snapshot.error.toString()!="null")?snapshot.error.toString():null,
                   errorStyle: const TextStyle(color: Colors.red),
@@ -154,7 +154,7 @@ class _TeacherPageState extends State<TeacherPage> {
                 controller: _emailTextField,
                 keyboardType: TextInputType.emailAddress,
                 decoration: InputDecoration(
-                  hintText: "daga70414@gmail.com",
+                  hintText: "CorreoMaestro@gmail.com",
                   label: const Text("Correo del docente"), 
                   errorText: (snapshot.error.toString()!="null")?snapshot.error.toString():null,
                   errorStyle: const TextStyle(color: Colors.red),
@@ -171,7 +171,7 @@ class _TeacherPageState extends State<TeacherPage> {
                 controller: _cellphoneTextField,
                 keyboardType: TextInputType.phone,
                 decoration: InputDecoration(
-                  hintText: "3007798350",
+                  hintText: "CalMaestro",
                   label: const Text("Celular del docente"), 
                   errorText: (snapshot.error.toString()!="null")?snapshot.error.toString():null,
                   errorStyle: const TextStyle(color: Colors.red),
@@ -198,8 +198,8 @@ class _TeacherPageState extends State<TeacherPage> {
         _management.streams.changeTeacherEmail(teacher.getEmail!);
       }
       if(teacher.getCellPhone!=null){
-        _cellphoneTextField.text = teacher.getCellPhone!;
-        _management.streams.changeTeachereCellphone(teacher.getCellPhone!);
+        _cellphoneTextField.text = teacher.getCellPhone!.toString();
+        _management.streams.changeTeachereCellphone(teacher.getCellPhone!.toString());
       }
 
     }

@@ -138,7 +138,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       controller: _nameTextField,
                       textCapitalization: TextCapitalization.sentences,
                       decoration: InputDecoration(
-                        hintText: "Daniel",
+                        hintText: "TuNombre",
                         label: const Text("Nombre"),
                         errorText: (snapshot.error.toString() != "null")
                             ? snapshot.error.toString()
@@ -162,7 +162,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       controller: _lastNameTextField,
                       textCapitalization: TextCapitalization.sentences,
                       decoration: InputDecoration(
-                        hintText: "Gomez",
+                        hintText: "TuApellido",
                         label: const Text("Apellido"),
                         errorText: (snapshot.error.toString() != "null") ? snapshot.error.toString() : null,
                         errorStyle: const TextStyle(color: Colors.red),
@@ -184,7 +184,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       controller: _emailTextField,
                       keyboardType: TextInputType.emailAddress,
                       decoration: InputDecoration(
-                        hintText: "daga70414@gmail.com",
+                        hintText: "TuCorreo@gmail.com",
                         label: const Text("Correo"),
                         errorText: (snapshot.error.toString() != "null")
                             ? snapshot.error.toString()

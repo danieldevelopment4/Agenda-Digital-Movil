@@ -138,7 +138,7 @@ class _LogginPageState extends State<LogginPage> {
                         controller: _emailTextField,
                         keyboardType: TextInputType.emailAddress,
                         decoration: InputDecoration(
-                          hintText: "daga70414@gmail.com",
+                          hintText: "TuCorreo@gmail.com",
                           label: const Text("Correo"),
                           errorText: (snapshot.error.toString() != "null")? snapshot.error.toString(): null,
                           errorStyle: const TextStyle(color: Colors.red),
