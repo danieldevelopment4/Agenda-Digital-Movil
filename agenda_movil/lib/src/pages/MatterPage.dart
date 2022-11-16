@@ -162,6 +162,8 @@ class _MatterPageState extends State<MatterPage> {
               note += _activitiesList[i].getSumission!.getNote!*_activitiesList[i].getPercen/100;
             }
           }
+        }else{
+            break;
         }
       }
     }

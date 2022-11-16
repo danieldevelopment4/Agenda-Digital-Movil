@@ -1,6 +1,7 @@
 // ignore_for_file: file_names
 
 import 'package:agenda_movil/src/pages/LogginPage.dart';
+import 'package:elegant_notification/elegant_notification.dart';
 import 'package:flutter/material.dart';
 
 import '../Logic/Management.dart';
@@ -21,6 +22,8 @@ class _RecoverPageState extends State<RecoverPage> {
   
   late TextStyle _subTitlle;
   late TextStyle _cardSubText;
+  late TextStyle _notificationTitle;
+  late TextStyle _notificationText;
   late ButtonStyle _buttonText;
 
   final TextEditingController _emailTextField = TextEditingController();
@@ -45,6 +48,13 @@ class _RecoverPageState extends State<RecoverPage> {
       textStyle: const TextStyle(
         fontSize: 18,
       ),
+    );
+    _notificationTitle = const TextStyle(
+      fontSize: 15,
+      fontWeight: FontWeight.bold
+    );
+    _notificationText = const TextStyle(
+      fontSize: 15,
     );
     return Scaffold(
         body: Stack(
@@ -115,7 +125,7 @@ class _RecoverPageState extends State<RecoverPage> {
                   const SizedBox(height: 20),
                   Text(
                     "Para poder recuperar el acceso a tu cuenta ingresa tu direccion de corre al "
-                    "cual te enviaremos una neuva contraseña",
+                    "cual te enviaremos una nueva contraseña",
                     style: _cardSubText,
                   ),
                   StreamBuilder(
@@ -184,8 +194,39 @@ class _RecoverPageState extends State<RecoverPage> {
     );
   }
 
-  void recoverRequest(){
+  void recoverRequest()async{
+    Map<String, dynamic> response = await _management.recoverPasswordRequest();
+    _notificateRequest(response);
+    setState(() {
+      _emailTextField.text = "";
+      _management.streams.resetEmail();
+      _load = false;
+    });
+  }
 
+  void _notificateRequest(Map<String, dynamic> response)async{
+    if (response["status"]) {
+      ElegantNotification.success(
+        title: Text("Accion exitosa", style: _notificationTitle,),
+        description:  Text(response["message"], style: _notificationText,),
+        toastDuration: const Duration(seconds: 2, milliseconds: 500)
+      ).show(context);
+      setState(() {});
+    } else {
+      if(response["type"]=="info"){
+        ElegantNotification.info(
+          title: Text("Informacion", style: _notificationTitle,),
+          description:  Text(response["message"], style: _notificationText,),
+          toastDuration: const Duration(seconds: 4),
+        ).show(context);
+      }else{
+        ElegantNotification.error(
+          title: Text("Error", style: _notificationTitle,),
+          description:  Text(response["message"], style: _notificationText,),
+          toastDuration: const Duration(seconds: 3, milliseconds: 500)
+        ).show(context);
+      }
+    }
   }
 
 }

@@ -5,6 +5,7 @@ import 'dart:math';
 import 'package:agenda_movil/src/Logic/Management.dart';
 import 'package:agenda_movil/src/Logic/Provider.dart';
 import 'package:agenda_movil/src/pages/LogginPage.dart';
+import 'package:agenda_movil/src/pages/RecoverPage.dart';
 import 'package:flutter/material.dart';
 
 import 'HomePage.dart';
@@ -23,8 +24,9 @@ class _RegisterPageState extends State<RegisterPage> {
   late Management _management;
 
   late TextStyle _subTitlle;
-  late ButtonStyle _buttonText;
   late TextStyle _dialogText;
+  late ButtonStyle _buttonText;
+  late ButtonStyle _outSideButtonText;
 
   final TextEditingController _nameTextField = TextEditingController();
   final TextEditingController _lastNameTextField = TextEditingController();
@@ -49,6 +51,14 @@ class _RegisterPageState extends State<RegisterPage> {
       backgroundColor: Colors.blue[700],
       minimumSize: Size(_size.width * .55, 40), //tamaño minimo deo boton, con esto todos quedaran iguales
       maximumSize: Size(_size.width * .55, 40), //tamaño minimo deo boton, con esto todos quedaran iguales
+      textStyle: const TextStyle(
+        fontSize: 18,
+      ),
+    );
+    _outSideButtonText = TextButton.styleFrom(
+      primary: Colors.blue[700], //color de la letra
+      onSurface:
+          Colors.blue[700], //color de la letra cuando el boton esta DESACTIVADO
       textStyle: const TextStyle(
         fontSize: 18,
       ),
@@ -260,15 +270,12 @@ class _RegisterPageState extends State<RegisterPage> {
             width: double.infinity,
           ),
           TextButton(
-            onPressed: () {},
-            child: const Text("¿Olvido la contraseña?"),
-            style: TextButton.styleFrom(
-                primary: Colors.blue[700], //color de la letra
-                onSurface: Colors.blue[
-                    700], //color de la letra cuando el boton esta DESACTIVADO
-                minimumSize: Size(size.width * .1,
-                    40) //tamaño minimo deo boton, con esto todos quedaran iguales
-                ),
+            onPressed: () {
+              Navigator.pushNamed(context, RecoverPage.route);
+              _management.setIndex=-1;
+            },
+            child: const Text("¿Olvidaste la contraseña?"),
+            style: _outSideButtonText,
           )
         ]),
       ],

@@ -88,7 +88,7 @@ class _HomePageState extends State<HomePage> {
           style: _appBar
         ),
       ),
-      drawer: Menu(),
+      drawer: const Menu(),
       body: PageView(
         controller: _pageController,
         scrollDirection: Axis.horizontal,
@@ -195,20 +195,18 @@ class _HomePageState extends State<HomePage> {
     }
 
 
-    return Expanded(
-      child: ListView(
-        children: <Widget>[
-          Table(
-            columnWidths: const {
-              0: FlexColumnWidth(70),
-              1: FlexColumnWidth(15),
-              2: FlexColumnWidth(15)
-            },
-            children: rows,
-            defaultVerticalAlignment: TableCellVerticalAlignment.top,
-          )
-        ],
-      ),
+    return ListView(
+      children: <Widget>[
+        Table(
+          columnWidths: const {
+            0: FlexColumnWidth(70),
+            1: FlexColumnWidth(15),
+            2: FlexColumnWidth(15)
+          },
+          children: rows,
+          defaultVerticalAlignment: TableCellVerticalAlignment.top,
+        )
+      ],
     );
   }
 

@@ -107,6 +107,13 @@ class Management{
     return StudentRequest().register(host, header, body);
   }
 
+  Future<Map<String, dynamic>> recoverPasswordRequest() {
+    Map<String, String> body = {
+      "email": streams.studentEmail,
+    };
+    return StudentRequest().recoverPassword(host, header, body);
+  }
+
   //rate
   Future<Map<String, dynamic>> rateRequest(Map<String, String> body) {
     return RateRequest().rate(host, header, body);
@@ -377,8 +384,5 @@ class Management{
     }
     return TeacherRequest().update(host, header, body);
   }
-
-  
-
 
 }
