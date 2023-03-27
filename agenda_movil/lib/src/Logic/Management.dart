@@ -5,6 +5,7 @@ import 'dart:io';
 
 import 'package:agenda_movil/src/API/SubmitRequest.dart';
 import 'package:agenda_movil/src/Model/ActivityModel.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path/path.dart';
 
 import 'package:agenda_movil/src/API/ActivityRequest.dart';
@@ -41,6 +42,7 @@ class Management{
     "content-type": "application/json"
   };
 
+  late PackageInfo packageInfo;
   var streams = Streams();
 
 //tutorial
@@ -60,29 +62,37 @@ class Management{
     await file.writeAsBytes(bytes, flush: true);
 
     _file = file;
+
+    packageInfo = await PackageInfo.fromPlatform();
   }
 
 //BottonMenuBar
   int _currentIndex = 1;
+ 
   int get getIndex {
     return _currentIndex;
   }
+ 
   set setIndex(int index) {
     _currentIndex = index;
   }
 
   late StudentModel? _student;
+ 
   StudentModel get getStudent{
     return _student!;
   }
+ 
   void setStudent(){
     _student = studentFromJson(_percistence.student);
   }
 
   List<SubscriptionModel> _subsciptionList = List.empty(growable: true);
+ 
   List<SubscriptionModel> get getSubscriptionList{
     return _subsciptionList;
   }
+ 
   void setSubscriptionList(){
     print("setSubscriptionList");
     _subsciptionList = subscriptionListFromJson(_percistence.subscription);
@@ -113,6 +123,15 @@ class Management{
     };
     return StudentRequest().recoverPassword(host, header, body);
   }
+
+  Future<Map<String, dynamic>> setNewPasswordRequest() {
+    Map<String, String> body = {
+      "id": _student!.getId,
+      "password": streams.studentPassword
+    };
+    return StudentRequest().setNewPassword(host, header, body);
+  }
+
 
   //rate
   Future<Map<String, dynamic>> rateRequest(Map<String, String> body) {
@@ -383,6 +402,20 @@ class Management{
       };
     }
     return TeacherRequest().update(host, header, body);
+  }
+
+  //version
+  late final String _version = packageInfo.version;
+
+  String get getVersion{
+    return _version;
+  }
+
+  Future<Map<String, dynamic>> lookForUpdateRequest(){
+    Map<String, dynamic> body = {
+      "version": _version
+    };
+    return TeacherRequest().searchTeacherRequest(host, header, body);
   }
 
 }

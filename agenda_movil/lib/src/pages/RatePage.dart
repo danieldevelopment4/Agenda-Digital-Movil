@@ -78,8 +78,8 @@ class _RatePageState extends State<RatePage> {
         backgroundColor: Colors.blue[700],
         title: Text("Agenda Digital", style: _appBarTitlle),
       ),
-      drawer: Menu(),
-      bottomNavigationBar: BottomBarMenu(),
+      drawer: const Menu(),
+      bottomNavigationBar: const BottomBarMenu(),
       body: Container(
         padding: const EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
         child: ListView(

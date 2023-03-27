@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: "Agenda Digital",
         debugShowCheckedModeBanner: false,
-        initialRoute: (_percistence.student!="")?HomePage.HomeRoute:LogginPage.route,
+        initialRoute: (_percistence.student!="")?HomePage.homeRoute:LogginPage.route,
         // initialRoute: Loggin.route,
         routes: getRoutes(),
         onGenerateRoute: (settings){

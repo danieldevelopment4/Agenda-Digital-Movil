@@ -1,9 +1,10 @@
 // ignore_for_file: file_names
 
+import 'package:agenda_movil/src/Logic/Management.dart';
+import 'package:agenda_movil/src/Logic/Provider.dart';
+import 'package:agenda_movil/src/pages/ChangePasswordPanel.dart';
 import 'package:flutter/material.dart';
 
-import '../Logic/Management.dart';
-import '../Logic/Provider.dart';
 import '../Widget/BottomBarMenu.dart';
 import '../Widget/Menu.dart';
 
@@ -18,7 +19,7 @@ class SettingsPage extends StatefulWidget {
 
 class _SettingsPageState extends State<SettingsPage> {
    late Size _size;
-  late Management _management;
+   late Management _management;
   
   late TextStyle _titlle;
   late TextStyle _subTitlle;
@@ -54,12 +55,12 @@ class _SettingsPageState extends State<SettingsPage> {
         ),
         
       ),
-      drawer: Menu(),
-      bottomNavigationBar: BottomBarMenu(),
+      drawer: const Menu(),
+      bottomNavigationBar: const BottomBarMenu(),
       body: ListView(
         children: <Widget>[
           _userData(),
-          _appData(),
+          // _appData(),
           _version()
         ],
       )
@@ -83,32 +84,34 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
             Divider( height: .5, thickness: 1.3, color: Colors.blue[700]),
             TextButton(
-              onPressed: (){}, 
+              onPressed: (){
+                Navigator.pushNamed(context, ChangePasswordPanel.route);
+              }, 
               child:Row(
                 children: const <Widget>[
                   Icon(Icons.perm_contact_calendar_sharp, size: 30,),
                   Expanded(child: SizedBox(),),
-                  Text("Modificar informacion"),
+                  Text("Modificar contraseña"),
                   Expanded(child: SizedBox(),),
                   Icon(Icons.arrow_forward_ios, size: 30,)
                 ],
               ),
               style: _buttonText,
             ),
-            Divider( height: .5, thickness: 1.3, color: Colors.blue[700]),
-            TextButton(
-              onPressed: (){}, 
-              child:Row(
-                children: const <Widget>[
-                  Icon(Icons.color_lens, size: 30,),
-                  Expanded(child: SizedBox(),),
-                  Text("Modificar color"),
-                  Expanded(child: SizedBox(),),
-                  Icon(Icons.arrow_forward_ios, size: 30,)
-                ],
-              ),
-              style: _buttonText,
-            )
+            // Divider( height: .5, thickness: 1.3, color: Colors.blue[700]),
+            // TextButton(
+            //   onPressed: (){}, 
+            //   child:Row(
+            //     children: const <Widget>[
+            //       Icon(Icons.color_lens, size: 30,),
+            //       Expanded(child: SizedBox(),),
+            //       Text("Modificar color"),
+            //       Expanded(child: SizedBox(),),
+            //       Icon(Icons.arrow_forward_ios, size: 30,)
+            //     ],
+            //   ),
+            //   style: _buttonText,
+            // )
           ]
         ),
       ),
@@ -180,7 +183,7 @@ class _SettingsPageState extends State<SettingsPage> {
               style: _subTitlle,
             ),
             Text(
-              "V:",
+              "V: "+_management.getVersion,
               // style: _subTitlle,
             ),
             Divider( height: .5, thickness: 1.3, color: Colors.blue[700]),

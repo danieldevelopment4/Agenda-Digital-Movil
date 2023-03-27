@@ -64,7 +64,7 @@ class _MatterPageState extends State<MatterPage> {
     "Excusa entrega tardia": 
       "Cordial saludo, soy "+_management.getStudent.getFullName+", estudiante de "+_management.getSubscriptionList[_management.getMatterIndex].getMatter.getName+
       ", debido a multiples problemas tecnicos se me dificulto la entrega de la actividad a la hora especificada, sin embargo en pro de "+
-      "la academia le envio la actividad por este medio con ansias de que me lo pueda aceptar.\ Muchas gracias por su tiemp y compresnsion,"+
+      "la academia le envio la actividad por este medio con ansias de que me lo pueda aceptar.\n Muchas gracias por su tiemp y compresnsion,"+
       "quedo atento.",
     "Entrega de trabajo": 
       "Cordial saludo, soy "+_management.getStudent.getFullName+", estudiante de "+_management.getSubscriptionList[_management.getMatterIndex].getMatter.getName+
@@ -133,7 +133,7 @@ class _MatterPageState extends State<MatterPage> {
         
       ),
       drawer: const Menu(),
-      bottomNavigationBar: BottomBarMenu(),
+      bottomNavigationBar: const BottomBarMenu(),
       body: PageView(
       controller: PageController(initialPage: 1),
       children: <Widget>[
@@ -200,6 +200,15 @@ class _MatterPageState extends State<MatterPage> {
           progressColor: Colors.blue[300],
         ),
         Divider(height: 8, color: Colors.blue[700]),
+        Text(
+          "Intiva a tus amigos y compañeros",
+          style: _headerSubTitlle,
+        ),
+        Text(
+          "ID: "+_matter.getId.toString(),
+          style: _headerSubTitlle,
+        ),
+        Divider(height: 8, color: Colors.blue[700]),
         const Expanded(child: SizedBox()),
         Divider(height: 8, color: Colors.blue[700]),
         TextButton(
@@ -208,7 +217,7 @@ class _MatterPageState extends State<MatterPage> {
           onPressed: ()async{
             Map<String, dynamic> response = await _management.exitMatterRequest();
             _notificateRequest(response);
-            Navigator.pushReplacementNamed(context, HomePage.HomeRoute);
+            Navigator.pushReplacementNamed(context, HomePage.homeRoute);
             setState(() {});
           },
         )
@@ -378,6 +387,7 @@ class _MatterPageState extends State<MatterPage> {
   Widget _teacher(BuildContext context){
     List<Widget> message = List.empty(growable: true);
     if(_matter.getTeacher!=null){//hay profesor registrado
+      _teacherId= _matter.getTeacher!.getId.toString();
       _teacherFullName = _matter.getTeacher!.getFullName;
       if(_matter.getTeacher!.getEmail!=null){
         // print(_matter.getTeacher!.getEmail!);
@@ -407,7 +417,9 @@ class _MatterPageState extends State<MatterPage> {
           Row(
             children: <Widget>[
               Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
+                  Text("ID: "+_teacherId, style: _headerSubTitlle,),
                   Text("Nombre: "+_teacherFullName, style: _headerSubTitlle,),
                   Text("Correo: "+_teacherEmail, style: _headerSubTitlle,),
                   Text("Celular: "+_teacherCellphone, style: _headerSubTitlle,),

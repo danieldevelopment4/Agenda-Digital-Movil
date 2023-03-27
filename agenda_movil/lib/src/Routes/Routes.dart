@@ -1,6 +1,7 @@
 // ignore_for_file: file_names
 
 import 'package:agenda_movil/src/pages/ActivityPage.dart';
+import 'package:agenda_movil/src/pages/ChangePasswordPanel.dart';
 import 'package:agenda_movil/src/pages/RatePage.dart';
 import 'package:agenda_movil/src/pages/RecoverPage.dart';
 import 'package:agenda_movil/src/pages/SettingsPage.dart';
@@ -18,9 +19,9 @@ import 'package:agenda_movil/src/pages/TeacherPage.dart';
 
 Map<String, WidgetBuilder>getRoutes(){
   return <String,WidgetBuilder>{
-    HomePage.TableRoute : (BuildContext context) => HomePage(0),
-    HomePage.HomeRoute : (BuildContext context) => HomePage(1),
-    HomePage.CalendarRoute : (BuildContext context) => HomePage(2),
+    HomePage.tableRoute : (BuildContext context) => HomePage(0),
+    HomePage.homeRoute : (BuildContext context) => HomePage(1),
+    HomePage.calendarRoute : (BuildContext context) => HomePage(2),
     LogginPage.route : (BuildContext context) => const LogginPage(),
     RegisterPage.route : (BuildContext context) => const RegisterPage(),
     RecoverPage.route : (BuildContext context) => const RecoverPage(),
@@ -31,6 +32,7 @@ Map<String, WidgetBuilder>getRoutes(){
     MatterPage.route : (BuildContext context) => const MatterPage(),
     ActivityPage.route: (BuildContext context) => const ActivityPage(),
     SettingsPage.route: (BuildContext context) => const SettingsPage(),
+    ChangePasswordPanel.route: (BuildContext context) => const ChangePasswordPanel(),
     RatePage.route : (BuildContext context) => const RatePage(),
     TutorialPage.route : (BuildContext context) => const TutorialPage(),
   };

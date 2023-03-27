@@ -28,7 +28,6 @@ class _TeacherPageState extends State<TeacherPage> {
 
   late TextStyle _notificationTitle;
   late TextStyle _notificationText;
-  late TextStyle _appBarTitlle;
   late TextStyle _subTitlle;
   late ButtonStyle _sendButton;
 
@@ -38,13 +37,13 @@ class _TeacherPageState extends State<TeacherPage> {
   final TextEditingController _cellphoneTextField = TextEditingController();
 
   bool _teacherLoading = false;
-  bool _updateTeacherLoading = false;
 
   bool _create = true;
   bool _setData = true;
 
   @override
   void initState() {
+    super.initState();
     _create = widget._create;    
   }
 
@@ -52,9 +51,6 @@ class _TeacherPageState extends State<TeacherPage> {
   Widget build(BuildContext context) {
     _size = MediaQuery.of(context).size;//dimeiones de la pantalla
     _management = Provider.of(context);
-    _appBarTitlle = const TextStyle(
-      fontSize: 30,
-    );
     _notificationTitle = const TextStyle(
       fontSize: 15,
       fontWeight: FontWeight.bold
@@ -85,22 +81,15 @@ class _TeacherPageState extends State<TeacherPage> {
           style: _subTitlle
         ),
       ),
-      drawer: Menu(),
-      bottomNavigationBar:  BottomBarMenu(),
+      drawer: const Menu(),
+      bottomNavigationBar:  const BottomBarMenu(),
      body: Column(
       children: <Widget>[
         Text(
           (_create)?"Registrar nuevo docente":"Actualizar Docente",
           style: _subTitlle,
         ),
-        Expanded(
-          child: ListView(
-            children: [
-              _textFields(),
-              const Expanded(child: SizedBox()),
-            ],
-          ),
-        ),
+        Expanded(child: _textFields()),
         _sendRegister(),
         const SizedBox(height: 10,)
       ],
@@ -111,7 +100,7 @@ class _TeacherPageState extends State<TeacherPage> {
   Widget _textFields(){
     Container textFields = Container(
       padding: const EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
-      child: Column(
+      child: ListView(
         children: <Widget>[
           StreamBuilder(
             stream: _management.streams.teacherNameStream, 

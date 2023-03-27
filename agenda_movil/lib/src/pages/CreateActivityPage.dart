@@ -69,7 +69,7 @@ class _CreateActivityPageState extends State<CreateActivityPage> {
         ),
       ),
       drawer: const Menu(),
-      bottomNavigationBar: BottomBarMenu(),
+      bottomNavigationBar: const BottomBarMenu(),
       body: Container(
         padding: const EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
         child: Column(

@@ -82,7 +82,6 @@ class _MenuState extends State<Menu> {
               style: _optionsStyle,
             ),
             onTap: ()async{
-              await _management.viewSubscripciptionsRequest();
               _management.setIndex=-1;
               Navigator.pushNamed(context, SettingsPage.route);
             },

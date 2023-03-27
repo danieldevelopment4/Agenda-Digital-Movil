@@ -7,7 +7,6 @@ import 'package:agenda_movil/src/Widget/Menu.dart';
 import 'package:elegant_notification/elegant_notification.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 
 class CreateMatterPage extends StatefulWidget {
   const CreateMatterPage({Key? key}) : super(key: key);
@@ -28,7 +27,6 @@ class _CreateMatterPageState extends State<CreateMatterPage> {
   late TextStyle _subTitlle;
   late TextStyle _cardText;
   late TextStyle _cardSubText;
-  late ButtonStyle _colorButton;
   late ButtonStyle _sendButton;
 
   // late Color _color;
@@ -70,12 +68,6 @@ class _CreateMatterPageState extends State<CreateMatterPage> {
     _cardSubText = const TextStyle(
       fontSize: 18,
     );
-    _colorButton = TextButton.styleFrom(
-      // backgroundColor: _color, 
-      minimumSize: const Size(65, 38), //tamaño minimo deo boton, con esto todos quedaran iguales
-      maximumSize: const Size(65, 38), //tamaño minimo deo boton, con esto todos quedaran iguales
-      shape: const StadiumBorder()
-    );
     _sendButton = TextButton.styleFrom(
       primary: Colors.white, //color de la letra 
       onSurface: Colors.white, //color de la letra cuando el boton esta DESACTIVADO
@@ -95,8 +87,8 @@ class _CreateMatterPageState extends State<CreateMatterPage> {
           style: _subTitlle
         ),
       ),
-      drawer: Menu(),
-      bottomNavigationBar: BottomBarMenu(),
+      drawer: const Menu(),
+      bottomNavigationBar: const BottomBarMenu(),
       body: Container(
         padding: const EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
         child: Column(
@@ -207,34 +199,9 @@ class _CreateMatterPageState extends State<CreateMatterPage> {
           //   ],
           // ),
           _expandableTeacher(),
-          _expandableSchedule(),
+          // _expandableSchedule(),
         ],
       ),
-    );
-  }
-
-  Widget _colorPicker(){
-    return AlertDialog(
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
-      title: const Text("Elije un color"),
-      content: SingleChildScrollView(
-        child: ColorPicker(
-          pickerColor: Colors.purple, //default color
-          onColorChanged: (Color color){ //on color picked
-              setState(() {
-                // _color = color;
-              });
-          }, 
-        ),
-      ),
-      actions: <Widget>[
-        ElevatedButton(
-          child: const Text("Guardar"),
-          onPressed: () {
-            Navigator.of(context).pop(); //dismiss the color picker
-          },
-        ),
-      ],
     );
   }
 

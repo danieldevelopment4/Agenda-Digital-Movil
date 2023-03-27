@@ -6,7 +6,7 @@ import 'package:agenda_movil/src/pages/HomePage.dart';
 import 'package:flutter/material.dart';
 
 class BottomBarMenu extends StatefulWidget {
-  BottomBarMenu({Key? key}) : super(key: key);
+  const BottomBarMenu({Key? key}) : super(key: key);
 
   @override
   _BottomBarMenuState createState() => _BottomBarMenuState();
@@ -20,7 +20,6 @@ class _BottomBarMenuState extends State<BottomBarMenu> {
 
    @override
   Widget build(BuildContext context) {
-    final Size size = MediaQuery.of(context).size;
     _management = Provider.of(context);
     return Container(
       decoration: BoxDecoration(
@@ -29,43 +28,45 @@ class _BottomBarMenuState extends State<BottomBarMenu> {
       child: Row(
         children: <Widget>[
           const Expanded(child: SizedBox()),
-          IconButton(
-            icon: Icon(
+          GestureDetector(
+            onTap: () {
+              _management.setIndex=0;
+              Navigator.pushNamed(context, HomePage.tableRoute);
+            },
+            child: Icon(
               Icons.table_chart,
-              size: 40,
+              size: 50,
               color: _management.getIndex == 0 ? Colors.blue[700] : Colors.grey,
             ),
-            onPressed: () {
-              _management.setIndex=0;
-              Navigator.pushNamed(context, HomePage.TableRoute);
-            },
-            splashColor: Colors.white,
           ),
           const Expanded(child: SizedBox()),
-          IconButton(
-            icon: Icon(
+          GestureDetector(
+            onTap: () {
+              _management.setIndex=1;
+              Navigator.pushNamed(context, HomePage.homeRoute);
+            },
+            onDoubleTap: ()async{
+              await _management.viewSubscripciptionsRequest();
+              _management.setIndex=1;
+              Navigator.pushNamed(context, HomePage.homeRoute);
+            },
+            child: Icon(
               Icons.home,
-              size: 40,
+              size: 50,
               color: _management.getIndex == 1 ? Colors.blue[700] : Colors.grey,
             ),
-            onPressed: () {
-              _management.setIndex=1;
-              Navigator.pushNamed(context, HomePage.HomeRoute);
-            },
-            splashColor: Colors.white,
           ),
           const Expanded(child: SizedBox()),
-          IconButton(
-            icon: Icon(
+          GestureDetector(
+            onTap: () {
+              _management.setIndex=2;
+              Navigator.pushNamed(context, HomePage.calendarRoute);
+            },
+            child: Icon(
               Icons.calendar_month,
-              size: 40,
+              size: 50,
               color: _management.getIndex == 2 ? Colors.blue[700] : Colors.grey,
             ),
-            onPressed: () {
-              _management.setIndex=2;
-              Navigator.pushNamed(context, HomePage.CalendarRoute);
-            },
-            splashColor: Colors.white,
           ),
           const Expanded(child: SizedBox()),
         ],
@@ -74,29 +75,3 @@ class _BottomBarMenuState extends State<BottomBarMenu> {
   }
 }
 
-class _BBMPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    Paint paint = Paint()
-      ..color = Colors.white
-      ..style = PaintingStyle.fill;
-
-    Path path = Path();
-    path.moveTo(0, 20); // Start
-    path.quadraticBezierTo(size.width * 0.20, 0, size.width * 0.35, 0);
-    path.quadraticBezierTo(size.width * 0.40, 0, size.width * 0.40, 20);
-    path.arcToPoint(Offset(size.width * 0.60, 20), radius: const Radius.circular(20.0), clockwise: false);
-    path.quadraticBezierTo(size.width * 0.60, 0, size.width * 0.65, 0);
-    path.quadraticBezierTo(size.width * 0.80, 0, size.width, 20);
-    path.lineTo(size.width, size.height);
-    path.lineTo(0, size.height);
-    path.lineTo(0, 20);
-    canvas.drawShadow(path, Colors.blue[700]!, -1, true);
-    canvas.drawPath(path, paint);
-  }
-
-  @override
-  bool shouldRepaint(CustomPainter oldDelegate) {
-    return false;
-  }
-}

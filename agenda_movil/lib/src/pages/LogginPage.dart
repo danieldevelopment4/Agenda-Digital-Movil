@@ -252,7 +252,7 @@ class _LogginPageState extends State<LogginPage> {
     if (response["status"]) {
       _management.setStudent();
       await _management.viewSubscripciptionsRequest();
-      Navigator.pushReplacementNamed(context, HomePage.HomeRoute);
+      Navigator.pushReplacementNamed(context, HomePage.homeRoute);
     } else {
       setState(() {
         _management.streams.resetEmail();

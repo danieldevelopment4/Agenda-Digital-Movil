@@ -43,7 +43,6 @@ class StudentRequest {
       // print('Response status: ${response.statusCode}');
       // print('Response body: ${response.body}');
       if (response.statusCode == 200) {
-        _percistence.student = response.body;
         return {
           "status": true, // "OK"
           "message": "La cuenta ha sido registrada exitosamente"
@@ -65,14 +64,13 @@ class StudentRequest {
 
   Future<Map<String, dynamic>> recoverPassword(String host, Map<String, String> header, Map<String, String> body) async {
     try {
-      print('body: ${body}');
+      // print('body: ${body}');
       var url = Uri.parse( host+"/student/recoverPassword");
-      print('url: ${url}');
+      // print('url: ${url}');
       var response = await http.post(url, body: jsonEncode(body), headers: header);
       // print('Response status: ${response.statusCode}');
-      print('Response body: ${response.body}');
+      // print('Response body: ${response.body}');
       if (response.statusCode == 200) {
-        _percistence.student = response.body;
         return {
           "status": true, // "OK"
           "message": "Revisa tu correo, pronto te llegara tu nueva contraseña"
@@ -81,6 +79,34 @@ class StudentRequest {
         return {
           "status": false, // "ERROR"
           "message": "El correo ingresado no esta registrado"
+        };
+      }
+    } on SocketException{
+      return {
+        "status": false, // "ERROR"
+        "message": "Error en la conexion"
+      };
+    }
+    throw Exception;
+  }
+
+  Future<Map<String, dynamic>> setNewPassword(String host, Map<String, String> header, Map<String, String> body) async {
+    try {
+      // print('body: ${body}');
+      var url = Uri.parse( host+"/student/setPassword");
+      // print('url: ${url}');
+      var response = await http.post(url, body: jsonEncode(body), headers: header);
+      // print('Response status: ${response.statusCode}');
+      // print('Response body: ${response.body}');
+      if (response.statusCode == 200) {
+        return {
+          "status": true, // "OK"
+          "message": "¡¡Genial!! Tu nueva contraseña ya se encuentra lista"
+        };
+      }else if (response.statusCode == 400) {
+        return {
+          "status": false, // "ERROR"
+          "message": "..."
         };
       }
     } on SocketException{

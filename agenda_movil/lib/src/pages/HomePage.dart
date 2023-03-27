@@ -1,4 +1,4 @@
-// ignore_for_file: constant_identifier_names
+// ignore_for_file: file_names
 
 import 'package:agenda_movil/src/Logic/Management.dart';
 import 'package:agenda_movil/src/Logic/Provider.dart';
@@ -21,9 +21,9 @@ class HomePage extends StatefulWidget {
   }
 
   late final int _route;
-  static const String TableRoute = "TableRoute";
-  static const String HomeRoute = "HomeRoute";
-  static const String CalendarRoute = "CalendarRoute";
+  static const String tableRoute = "TableRoute";
+  static const String homeRoute = "HomeRoute";
+  static const String calendarRoute = "CalendarRoute";
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -102,7 +102,7 @@ class _HomePageState extends State<HomePage> {
           setState(() {});
         },
       ),
-      bottomNavigationBar:  BottomBarMenu(),
+      bottomNavigationBar:  const BottomBarMenu(),
       
     );
   }

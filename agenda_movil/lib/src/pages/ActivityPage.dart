@@ -99,7 +99,7 @@ class _ActivityPageState extends State<ActivityPage> {
         
       ),
       drawer: const Menu(),
-      bottomNavigationBar: BottomBarMenu(),
+      bottomNavigationBar: const BottomBarMenu(),
       body: Column(
         children: <Widget>[
           _activityData(),

@@ -386,7 +386,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
   void _logginSuccessful(BuildContext context) {
     // print("_logginSuccessful");
-    Navigator.pushReplacementNamed(context, HomePage.HomeRoute);
+    Navigator.pushReplacementNamed(context, HomePage.homeRoute);
   }
 
   void _logginDeclined(BuildContext context) {
